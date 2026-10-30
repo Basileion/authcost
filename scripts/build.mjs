@@ -22,7 +22,7 @@ const HEADSLOT='<!-- seo-meta-slot -->'+(fs.existsSync(R('seo/head-extra.html'))
 const INDEXNOW_KEY=fs.existsSync(R('indexnow.key'))?fs.readFileSync(R('indexnow.key'),'utf8').trim():'';
 fs.rmSync(D,{recursive:true,force:true});const W=(p,s)=>{fs.mkdirSync(path.dirname(path.join(D,p)),{recursive:true});fs.writeFileSync(path.join(D,p),s)};
 const mark=`<svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--ink)"/><path d="M10 16a6 6 0 0 1 12 0v5a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2v-5z" fill="none" stroke="var(--bg)" stroke-width="2"/><circle cx="16" cy="16" r="2.2" fill="var(--acc)"/></svg>`;
-const NAV=[['/','Ledger'],['/calculator.html','Calculator'],['/compare/','Compare'],['/guides/','Guides'],['/changes.html','Price log'],['/vendors/','Vendors'],['/pro.html','Pro']];
+const NAV=[['/','Ledger'],['/calculator/','Calculator'],['/compare/','Compare'],['/guides/','Guides'],['/changes.html','Price log'],['/vendors/','Vendors'],['/pro.html','Pro']];
 const urls=[];
 const WEBSITE_LD={'@context':'https://schema.org','@type':'WebSite','@id':SITE+'/#website',name:NAME,url:SITE+'/',description:'Auth and identity vendor list prices (MAU, MRU, SSO connections), sourced and dated.',inLanguage:'en',publisher:{'@id':SITE+'/#org'}};
 const ORG_LD={'@context':'https://schema.org','@type':'Organization','@id':SITE+'/#org',name:NAME,url:SITE+'/',sameAs:['https://bsky.app/profile/o11ywatch.bsky.social']};
@@ -39,7 +39,7 @@ ${(['404.html','offline.html'].includes(file)?[]:[...(file==='index.html'?[WEBSI
 <a class="btn cta" href="/#ledger-mail">Weekly ledger</a></div></header>
 <main id="main" class="wrap">${body}</main>
 <footer class="ds-foot"><div class="wrap"><div class="brand-blurb"><a class="brand" href="/" style="margin-bottom:12px">${mark}${NAME}</a><p>${NAME} — auth and identity list prices, normalized and sourced. Last check ${lastChecked}. Some outbound links may become affiliate links; they never affect ranking. Not affiliated with any vendor.</p></div>
-<div class="col"><h3>Product</h3><nav aria-label="Product"><a href="/calculator.html">Calculator</a><a href="/compare/">Compare</a><a href="/guides/">Guides</a><a href="/pro.html">Pro</a></nav></div>
+<div class="col"><h3>Product</h3><nav aria-label="Product"><a href="/calculator/">Calculator</a><a href="/compare/">Compare</a><a href="/guides/">Guides</a><a href="/pro.html">Pro</a></nav></div>
 <div class="col"><h3>Data</h3><nav aria-label="Data"><a href="/changes.html">Price log</a><a href="/methodology.html">Methodology</a><a href="/data.html">Data</a><a href="/api/plans.csv">CSV</a><a href="/rss.xml">RSS</a></nav></div>
 <div class="col"><h3>Money</h3><nav aria-label="Money"><a href="/sponsor.html">Sponsor</a><a href="https://o11y-watch.pages.dev/audit.html">Observability audit</a></nav></div>
 <div class="portfolio" role="navigation" aria-label="More pricing ledgers"><div class="eyebrow">More pricing ledgers</div><ul><li><a href="https://o11y-watch.pages.dev/" rel="noopener">O11y Watch</a> — observability vendor free tiers and paid_from prices, sourced.</li><li><a href="https://vpsledger.pages.dev/" rel="noopener">VPSLedger</a> — VPS true monthly cost after promos, fees, and egress.</li><li><a href="https://ratecardai.pages.dev/" rel="noopener">Ratecard</a> — published AI API $/1M token rates with source dates.</li></ul></div><div class="legal">Verify prices on the vendor’s page before buying. Affiliate disclosure on methodology.</div></div></footer>
@@ -180,7 +180,7 @@ const trust=`<ul class="trust"><li><b>Source-linked</b> every price links the ve
 page({file:'index.html',title:`${NAME} — stop overpaying for auth`,desc:`At ${heroSc.label}, verified auth plans in our ledger differ by up to ${yr(heroGap)} a year. ${NAME} shows MAU/MRU and SSO connection costs for ${vendors.length} vendors — every price sourced.`,ld:[ORG_LD,faqLd,{'@context':'https://schema.org','@type':'Dataset',name:`${NAME} auth price ledger`,description:'Auth and identity list prices with source URL, check date and verification status per row.',url:SITE+'/',dateModified:lastChecked,license:'https://creativecommons.org/licenses/by/4.0/',creator:{'@id':SITE+'/#org'},distribution:[{'@type':'DataDownload',encodingFormat:'application/json',contentUrl:SITE+'/api/plans.json'},{'@type':'DataDownload',encodingFormat:'text/csv',contentUrl:SITE+'/api/plans.csv'}]}],body:`
 <section class="hero"><div class="hero-grid"><div><div class="eyebrow">${asOf}</div><h1>At 50k users and 5 SSO connections, verified plans differ by up to <span class="acc">${yr(heroGap)} a year</span>.</h1>
 <p class="lede">${NAME} shows what auth actually costs — base plan, MAU/MRU overage, and enterprise SSO fees — so you pick the cheaper stack and hear when it changes.</p>
-<div class="cta-row"><a class="btn" href="/calculator.html">Rank plans for my MAU</a><a class="btn ghost" href="/pro.html">See Pro</a></div>
+<div class="cta-row"><a class="btn" href="/calculator/">Rank plans for my MAU</a><a class="btn ghost" href="/pro.html">See Pro</a></div>
 <p class="micro">Free · no signup · no card. Prices from official pages only.</p></div>
 <aside class="check" id="check" aria-labelledby="check-h"><div class="eyebrow">Instant check · live data</div><h2 id="check-h" class="h3">What will auth cost?</h2>
 <div class="filters"><label>Monthly users (MAU/MRU)<input id="k-mau" type="number" min="0" step="1000" value="50000"></label>
@@ -208,7 +208,7 @@ ${mailBox('h','Know the week an auth price changes','Send me the weekly ledger')
 <h2>Questions</h2>${faq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}`});
 
 // ---- Calculator
-page({file:'calculator.html',og:'calculator',title:`Auth cost calculator — MAU, MFA and SSO | ${NAME}`,desc:'Pick MAU, MFA, and enterprise SSO connections. See every verifiable plan ranked by monthly cost. Shareable URL and embed snippet.',body:`
+page({file:'calculator/index.html',og:'calculator',title:`Auth cost calculator — MAU, MFA and SSO | ${NAME}`,desc:'Pick MAU, MFA, and enterprise SSO connections. See every verifiable plan ranked by monthly cost. Shareable URL and embed snippet.',body:`
 <section class="hero"><div class="eyebrow">Cost calculator · ${asOf}</div><h1>Your MAU, MFA, and SSO count in — your bill out.</h1>
 <p class="lede">Rank verified plans by estimated monthly cost from published list prices only. The URL updates as you type; copy it or embed the calculator.</p></section>
 <div class="panel" id="calc"><div class="filters" style="margin:0">
@@ -227,7 +227,7 @@ page({file:'calculator.html',og:'calculator',title:`Auth cost calculator — MAU
 <div class="row"><button class="btn" type="button" id="c-copy" data-grow="calculator_share">Copy share link</button> <button class="btn ghost" type="button" id="c-copy-embed" data-grow="calculator_embed">Copy embed snippet</button> <span class="note" id="c-sh" role="status"></span></div>
 <label>Shareable URL<textarea id="c-url" readonly rows="2" aria-label="Shareable calculator URL"></textarea></label>
 <label>Embed iframe<textarea id="c-embed" readonly rows="3" aria-label="Embeddable iframe snippet"></textarea></label>
-<p class="note"><a id="c-back" href="/calculator.html">Open full calculator</a> · <a href="/">Back to the AuthCost ledger</a></p>
+<p class="note"><a id="c-back" href="/calculator/">Open full calculator</a> · <a href="/">Back to the AuthCost ledger</a></p>
 </div>
 <div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro.html">See Pro early access</a>.</p></div>
 <script>try{if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embed')}catch(e){}</script>`});
@@ -355,7 +355,7 @@ for(const g of guides){
 <p><b>10k users · 1 SSO:</b> ${r10.slice(0,3).map(x=>`${esc(x.p.vendor)} ${esc(x.p.plan)} ${usd(x.e.total)}/mo`).join(' · ')||'—'}</p>
 <p><b>50k users · 5 SSO:</b> ${r50.slice(0,3).map(x=>`${esc(x.p.vendor)} ${esc(x.p.plan)} ${usd(x.e.total)}/mo`).join(' · ')||'—'}</p>
 <p class="note">${asOf}. ${meth}.</p></div>
-<p><a class="btn" href="/calculator.html">Run your own scenario</a></p>
+<p><a class="btn" href="/calculator/">Run your own scenario</a></p>
 ${mailBox('g'+g.slug,'Get auth price changes weekly','Send me the weekly ledger')}`});
 }
 
@@ -368,11 +368,11 @@ W('api/plans.csv',['id,vendor,plan,base_mo,included_users,user_unit,overage_per_
   ...plans.map(p=>[p.id,p.vendor,p.plan,p.base_mo,p.included_users,p.user_unit,p.overage_per_user,p.sso_included,p.sso_extra_mo,p.status,p.source,p.checked].map(csvEscape).join(','))].join('\n'));
 W('api/changes.csv',['date,vendor,kind,summary,source,observed',...changes.map(c=>[c.date,c.vendor,c.kind,c.summary,c.source,c.observed].map(csvEscape).join(','))].join('\n'));
 
-W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology.html\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator.html)\n- [Calculator pretty URL](${SITE}/calculator)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Methodology](${SITE}/methodology.html)\n`);
-W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator.html?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator.html?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
+W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology.html\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator/)\n- [Calculator pretty URL](${SITE}/calculator)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Methodology](${SITE}/methodology.html)\n`);
+W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator/?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator/?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
 
 W('manifest.webmanifest',JSON.stringify({name:`${NAME} — Auth cost of ownership`,short_name:NAME,start_url:'/?source=pwa',scope:'/',display:'standalone',background_color:'#f7f5f0',theme_color:'#141821',icons:[{src:'/assets/icon-192.png',sizes:'192x192',type:'image/png'},{src:'/assets/icon-512.png',sizes:'512x512',type:'image/png'}]}));
-const V='ac-'+Date.now().toString(36),pre=['/','/calculator.html','/compare/','/changes.html','/pro.html','/assets/style.css','/assets/app.js','/api/plans.json','/offline.html'];
+const V='ac-'+Date.now().toString(36),pre=['/','/calculator/','/compare/','/changes.html','/pro.html','/assets/style.css','/assets/app.js','/api/plans.json','/offline.html'];
 W('sw.js',`const V='${V}',PRE=${JSON.stringify(pre)};self.addEventListener('install',e=>e.waitUntil(caches.open(V).then(c=>c.addAll(PRE)).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;e.respondWith(fetch(r).then(res=>{const c=res.clone();caches.open(V).then(x=>x.put(r,c));return res}).catch(()=>caches.match(r).then(m=>m||(r.mode==='navigate'?caches.match('/offline.html'):undefined))))});`);
 page({file:'offline.html',title:`Offline | ${NAME}`,desc:'Offline',body:`<section class="hero"><h1>You are offline.</h1><a class="btn" href="/">Open the ledger</a></section>`});
 page({file:'404.html',title:`Not found | ${NAME}`,desc:'Not found',body:`<section class="hero"><h1>Page not found.</h1><a class="btn" href="/">Back to the ledger</a></section>`});
@@ -389,5 +389,5 @@ W('api/estimate-meta.json',JSON.stringify({scenarios:SCENARIOS,lastChecked,nVer}
 for(const f of ['style.css','app.js'])W('assets/'+f,fs.readFileSync(R('src/'+f)));
 if(fs.existsSync(R('assets')))fs.cpSync(R('assets'),path.join(D,'assets'),{recursive:true});
 
-W('_redirects','/calculator /calculator.html 200\n/calculator/ /calculator.html 200\n');
+W('_redirects','/calculator.html /calculator/ 301\n');
 console.log(`built ${urls.length} pages (${sm.length} in sitemap) → dist/ (${plans.length} plans, ${nVer} verified, ${vendors.length} vendors)`);

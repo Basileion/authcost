@@ -12,7 +12,7 @@ Prices from each vendor's own pricing page only. Verified rows were read on the 
 - [Full dump](https://authcost.pages.dev/llms-full.txt)
 
 ## Key pages
-- [Calculator (MAU / MFA / SSO)](https://authcost.pages.dev/calculator.html)
+- [Calculator (MAU / MFA / SSO)](https://authcost.pages.dev/calculator/)
 - [Calculator pretty URL](https://authcost.pages.dev/calculator)
 - [Compare hub](https://authcost.pages.dev/compare/)
 - [Guides](https://authcost.pages.dev/guides/)

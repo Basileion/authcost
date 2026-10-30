@@ -88,7 +88,7 @@ async function renderHome(){
   const top=ranked.slice(0,5);
   kOut.innerHTML=`<p><b>Cheapest:</b> ${top[0].p.vendor} ${top[0].p.plan} at <b>${usd(top[0].e.total)}/mo</b> (${yr(top[0].e.total)}/yr)</p>
   <ol style="margin:8px 0 0;padding-left:18px">${top.map(x=>`<li>${x.p.vendor} ${x.p.plan}: ${usd(x.e.total)}/mo</li>`).join('')}</ol>
-  <p class="note">${ranked.length} plans ranked · <a href="/calculator.html?mau=${mau}&sso=${sso}&mfa=0">Open full calculator</a></p>`;
+  <p class="note">${ranked.length} plans ranked · <a href="/calculator/?mau=${mau}&sso=${sso}&mfa=0">Open full calculator</a></p>`;
 }
 if(kOut){ [kMau,kSso].forEach(el=>el&&el.addEventListener('input',renderHome)); renderHome(); }
 
@@ -120,7 +120,7 @@ function calcParams(){
 
 function shareUrl(opts={}){
   const {mau,sso,fed,mfa,vo}=calcParams();
-  const u=new URL(location.origin+'/calculator.html');
+  const u=new URL(location.origin+'/calculator/');
   u.searchParams.set('mau',String(mau));
   u.searchParams.set('sso',String(sso));
   u.searchParams.set('fed',String(fed));

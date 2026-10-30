@@ -1,9 +1,9 @@
 # AuthCost — full ledger
 
 ## Calculator
-Interactive MAU / MFA / SSO cost ranking: https://authcost.pages.dev/calculator.html?mau=50000&sso=5&mfa=0
+Interactive MAU / MFA / SSO cost ranking: https://authcost.pages.dev/calculator/?mau=50000&sso=5&mfa=0
 Share via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.
-Embed: <iframe src="https://authcost.pages.dev/calculator.html?embed=1&mau=50000&sso=5" title="AuthCost calculator" width="100%" height="720" loading="lazy"></iframe>
+Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso=5" title="AuthCost calculator" width="100%" height="720" loading="lazy"></iframe>
 
 19 plans, 19 verified, 8 vendors. Checked through 2026-10-30.
 
