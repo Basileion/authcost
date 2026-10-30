@@ -19,3 +19,6 @@ Prices from each vendor's own pricing page only. Verified rows were read on the 
 - [Alternatives](https://authcost.pages.dev/alternatives/)
 - [Auth pricing by MAU](https://authcost.pages.dev/guides/auth-cost-by-mau.html)
 - [Methodology](https://authcost.pages.dev/methodology.html)
+- [About](https://authcost.pages.dev/about)
+- [Privacy](https://authcost.pages.dev/privacy)
+- [Terms](https://authcost.pages.dev/terms)
