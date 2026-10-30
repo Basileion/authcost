@@ -9,11 +9,12 @@ const CHECKOUT_PRO_MONTHLY='https://o11y-watch.kit.com/products/authcost-pro';
 const CHECKOUT_PRO_ANNUAL='https://o11y-watch.kit.com/products/authcost-pro';
 const CHECKOUT_SPONSOR='https://o11y-watch.kit.com/products/authcost-founding-sponsor-slot';
 const CONTACT='mailto:basileion.ops@gmail.com';
-const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending'};
+const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending'}; // replace #pending when affiliate programs approved
 const NAME='AuthCost';
 const rd=f=>JSON.parse(fs.readFileSync(R('data/'+f),'utf8'));
 const vendors=rd('vendors.json'),plans=rd('plans.json'),changes=rd('changes.json').sort((a,b)=>b.date.localeCompare(a.date));
 const P=Object.fromEntries(vendors.map(v=>[v.id,v]));
+const aff=id=>{const a=AFFILIATES[id];return (a&&a!=='#pending')?a:(P[id]?P[id].source:'#');};
 const nVer=plans.filter(p=>p.status==='verified').length,lastChecked=plans.map(p=>p.checked).sort().at(-1);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const usd=v=>v==null||Number.isNaN(v)?'—':'$'+(Number.isInteger(v)?v.toFixed(0):v>=1?v.toFixed(2):v.toFixed(4));
@@ -255,7 +256,7 @@ for(const v of vendors){
   }).join('');
   page({file:`vendors/${v.id}.html`,og:'home',title:`${v.name} pricing — auth cost | ${NAME}`,desc:`${v.name} auth pricing with MAU/MRU and SSO fees, ranked against ${vendors.length-1} other vendors. Source checked ${v.checked}.`,body:`
 <section class="hero"><div class="eyebrow">Vendor</div><h1>${esc(v.name)}</h1>
-<p class="lede">Billing unit: <b>${esc(v.billing_unit)}</b> — ${esc(v.billing_unit_note)} Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a>, checked ${v.checked}. <a href="${AFFILIATES[v.id]||v.source}" rel="noopener">Visit ${esc(v.name)}</a></p></section>
+<p class="lede">Billing unit: <b>${esc(v.billing_unit)}</b> — ${esc(v.billing_unit_note)} Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a>, checked ${v.checked}. <a href="${aff(v.id)}" rel="noopener">Visit ${esc(v.name)}</a></p></section>
 <div class="verdict"><div class="eyebrow">Answer · ${esc(v.name)} cost by MAU (no SSO)</div><p>${MAU_TIERS.map(m=>{const b=bestFor(v.id,m);return b?`<b>${kfmt(m)} users:</b> ${usd(b.e.total)}/mo${star(b.p)} on ${esc(b.p.plan)}`:`<b>${kfmt(m)} users:</b> no published self-serve price`}).join(' · ')}.</p><ul>${ranks}</ul><p class="note">${asOf}. ${meth}.</p>${ctaRow()}</div>
 <p>${esc(v.summary)}</p>
 <h2>${esc(v.name)} cost at 10k, 50k and 100k users</h2>
@@ -378,26 +379,27 @@ page({file:'changes.html',og:'changes',title:`Auth price-change log | ${NAME}`,d
 W('rss.xml',`<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${NAME} — auth price log</title><link>${SITE}/changes.html</link><description>Dated, sourced auth price changes.</description>${changes.map(c=>`<item><title>${esc(c.vendor+': '+c.kind+' ('+c.date+')')}</title><link>${esc(c.source)}</link><guid isPermaLink="false">${esc(c.vendor+c.date+c.kind)}</guid><pubDate>${new Date(c.observed+'T12:00:00Z').toUTCString()}</pubDate><description>${esc(c.summary)}</description></item>`).join('')}</channel></rss>`);
 
 // ---- Pro / sponsor / methodology / data
-const proFaq=[['What triggers an alert?','A confirmed change on a source page for a plan or vendor you watch: base fee, overage, or SSO ladder.'],['Is Pro available now?','Yes — checkout via Kit. Free ledger stays free.'],['Cancel?','Yes, anytime once checkout is live.']];
+const proFaq=[['What triggers an alert?','A confirmed change on a source page for a plan or vendor you watch: base fee, overage, or SSO ladder.'],['Is Pro available now?','Yes — checkout via Kit. Free ledger stays free.'],['Cancel?','Yes, anytime. Access lasts through the paid period.'],['Monthly or annual?','Both: $9/mo or $90/yr. You pick the plan on the Kit checkout page.']];
 page({file:'pro.html',og:'pro',title:`${NAME} Pro — auth price alerts ($9/mo, early access)`,desc:`$90/yr for alerts on the auth plans you watch plus CSV export. Early access.`,ld:[{'@context':'https://schema.org','@type':'Product',name:`${NAME} Pro`,offers:[{'@type':'Offer',price:'9.00',priceCurrency:'USD'},{'@type':'Offer',price:'90.00',priceCurrency:'USD'}]}],body:`
 <section class="hero"><div class="eyebrow">${NAME} Pro · early access</div><h1>$90 a year for alerts before the auth invoice moves.</h1>
 <p class="lede">Watch the vendors and plans you run. Pro emails you when published prices change.</p></section>
 <div class="pricing"><div class="plan"><h2 class="h3">Free</h2><div class="price">$0</div><ul><li>Ledger, calculator, comparisons</li><li>Weekly email of price changes</li></ul>${signup('pf','Get the free weekly ledger')}</div>
-<div class="plan feat"><div class="ribbon">Recommended</div><h2 class="h3">Pro</h2><div class="price">$90<small> / year</small></div><p class="mut">$9/mo billed monthly · suggested to match Ratecard/VPSLedger</p>
+<div class="plan feat"><div class="ribbon">Recommended</div><h2 class="h3">Pro</h2><div class="price">$90<small> / year</small></div><p class="mut">or $9/mo billed monthly — pick either on Kit checkout</p>
 <ul><li><b>Alerts</b> for vendors you watch</li><li><b>CSV export</b> of scenarios and history</li><li>Everything in Free</li></ul>
-<a class="btn" href="${CHECKOUT_PRO_ANNUAL}">Continue with Pro annual</a>
-<p class="micro">Checkout placeholder until Kurt approves Kit product.</p></div></div>
+<a class="btn" href="${CHECKOUT_PRO_ANNUAL}" rel="noopener">Get Pro — $9/mo or $90/yr</a>
+<p class="micro">Cancel anytime · early access · choose monthly or annual on Kit</p></div></div>
 <h2>Questions</h2>${proFaq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}`});
 page({file:'checkout.html',og:'pro',title:`Review your order — ${NAME} Pro`,desc:'Summary before secure checkout.',body:`
-<section class="hero narrow"><div class="eyebrow">Review</div><h1>Review AuthCost Pro</h1><p class="lede">Kit checkout placeholder — product not created yet.</p></section>
-<div class="panel"><dl class="sum"><dt>Plan</dt><dd>Pro · annual suggested $90</dd><dt>Monthly option</dt><dd>$9</dd></dl>
-<a class="btn wide" href="${CHECKOUT_PRO_ANNUAL}">Continue to checkout</a></div>`});
+<section class="hero narrow"><div class="eyebrow">Review</div><h1>Review AuthCost Pro</h1><p class="lede">Payment is handled by Kit on the next page. Pick $9/mo or $90/yr there.</p></section>
+<div class="panel"><dl class="sum"><dt>Plan</dt><dd>Pro · $90/yr or $9/mo</dd><dt>What you get</dt><dd>Watched-vendor alerts + CSV export + Free</dd><dt>Cancel</dt><dd>Anytime</dd></dl>
+<a class="btn wide" href="${CHECKOUT_PRO_ANNUAL}" rel="noopener">Continue to secure checkout</a>
+<p class="micro">You choose monthly or annual on Kit’s checkout page.</p></div>`});
 page({file:'sponsor.html',og:'sponsor',title:`Sponsor ${NAME}`,desc:'Reach founders choosing an auth stack. Founding rates.',body:`
 <section class="hero"><div class="eyebrow">Sponsorship · founding rates</div><h1>Reach buyers at the moment they pick auth.</h1></section>
 <div class="grid3"><div class="plan feat"><h2 class="h3">Founding newsletter slot</h2><div class="price">$49<small class="note"> / placement</small></div>
 <ul><li>One labeled sponsor placement</li><li>Never affects rankings</li></ul>
-<a class="btn" href="${CHECKOUT_SPONSOR}">Reserve a founding slot</a>
-<p class="micro">Kit product placeholder.</p></div>
+<a class="btn" href="${CHECKOUT_SPONSOR}" rel="noopener">Reserve a founding slot — $49</a>
+<p class="micro">One labeled placement · never affects rankings</p></div>
 <div class="plan"><h2 class="h3">Rules</h2><ul><li>Sponsors never affect data</li><li>Always labeled</li><li>Auth / identity / security-adjacent only</li></ul>
 <a class="btn ghost" href="${CONTACT}">Contact</a></div></div>`});
 page({file:'methodology.html',title:`Methodology | ${NAME}`,desc:'How AuthCost reads and normalizes auth prices.',body:`<section class="hero"><div class="eyebrow">Methodology</div><h1>How the ledger is kept.</h1></section>
