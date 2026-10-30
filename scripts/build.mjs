@@ -231,7 +231,7 @@ page({file:'calculator/index.html',og:'calculator',title:`Auth cost calculator �
 <label>Embed iframe<textarea id="c-embed" readonly rows="3" aria-label="Embeddable iframe snippet"></textarea></label>
 <p class="note"><a id="c-back" href="/calculator/">Open full calculator</a> · <a href="/">Back to the AuthCost ledger</a></p>
 </div>
-<div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro.html">See Pro early access</a>.</p></div>
+<div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro.html">See Pro</a>.</p></div>
 <script>try{if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embed')}catch(e){}</script>`});
 
 // ---- Shared MAU-tier helpers (search/GEO pages)
@@ -380,14 +380,14 @@ W('rss.xml',`<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><
 
 // ---- Pro / sponsor / methodology / data
 const proFaq=[['What triggers an alert?','A confirmed change on a source page for a plan or vendor you watch: base fee, overage, or SSO ladder.'],['Is Pro available now?','Yes — checkout via Kit. Free ledger stays free.'],['Cancel?','Yes, anytime. Access lasts through the paid period.'],['Monthly or annual?','Both: $9/mo or $90/yr. You pick the plan on the Kit checkout page.']];
-page({file:'pro.html',og:'pro',title:`${NAME} Pro — auth price alerts ($9/mo, early access)`,desc:`$90/yr for alerts on the auth plans you watch plus CSV export. Early access.`,ld:[{'@context':'https://schema.org','@type':'Product',name:`${NAME} Pro`,offers:[{'@type':'Offer',price:'9.00',priceCurrency:'USD'},{'@type':'Offer',price:'90.00',priceCurrency:'USD'}]}],body:`
-<section class="hero"><div class="eyebrow">${NAME} Pro · early access</div><h1>$90 a year for alerts before the auth invoice moves.</h1>
+page({file:'pro.html',og:'pro',title:`${NAME} Pro — auth price alerts ($9/mo)`,desc:`$90/yr for alerts on the auth plans you watch plus CSV export. Founding price — cancel anytime via Kit.`,ld:[{'@context':'https://schema.org','@type':'Product',name:`${NAME} Pro`,offers:[{'@type':'Offer',price:'9.00',priceCurrency:'USD'},{'@type':'Offer',price:'90.00',priceCurrency:'USD'}]}],body:`
+<section class="hero"><div class="eyebrow">${NAME} Pro</div><h1>$90 a year for alerts before the auth invoice moves.</h1>
 <p class="lede">Watch the vendors and plans you run. Pro emails you when published prices change.</p></section>
 <div class="pricing"><div class="plan"><h2 class="h3">Free</h2><div class="price">$0</div><ul><li>Ledger, calculator, comparisons</li><li>Weekly email of price changes</li></ul>${signup('pf','Get the free weekly ledger')}</div>
 <div class="plan feat"><div class="ribbon">Recommended</div><h2 class="h3">Pro</h2><div class="price">$90<small> / year</small></div><p class="mut">or $9/mo billed monthly — pick either on Kit checkout</p>
 <ul><li><b>Alerts</b> for vendors you watch</li><li><b>CSV export</b> of scenarios and history</li><li>Everything in Free</li></ul>
 <a class="btn" href="${CHECKOUT_PRO_ANNUAL}" rel="noopener">Get Pro — $9/mo or $90/yr</a>
-<p class="micro">Cancel anytime · early access · choose monthly or annual on Kit</p></div></div>
+<p class="micro">Founding price $9/mo or $90/yr — cancel anytime via Kit</p></div></div>
 <h2>Questions</h2>${proFaq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}`});
 page({file:'checkout.html',og:'pro',title:`Review your order — ${NAME} Pro`,desc:'Summary before secure checkout.',body:`
 <section class="hero narrow"><div class="eyebrow">Review</div><h1>Review AuthCost Pro</h1><p class="lede">Payment is handled by Kit on the next page. Pick $9/mo or $90/yr there.</p></section>
