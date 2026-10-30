@@ -293,6 +293,68 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - source: https://supabase.com/pricing (2026-10-30)
 - notes: Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits — not auth-only.
 
+## Cost by MAU (cheapest verified plan per vendor, USD/month, no SSO)
+| Vendor | 10k | 50k | 100k | 1M |
+|---|---|---|---|---|
+| Clerk | $0 (Hobby) | $0 (Hobby) | $1025 (Pro) | $17225 (Pro) |
+| Auth0 | $0 (Free) | n/a | n/a | n/a |
+| Amazon Cognito | $0 (Lite) | $220 (Lite) | $495.00 (Lite) | $4635 (Lite) |
+| WorkOS | $0 (AuthKit) | $0 (AuthKit) | $0 (AuthKit) | $0 (AuthKit) |
+| Stytch | $0 (Pay as you go (B2B)) | n/a | n/a | n/a |
+| Logto | $0 (Free) | $0 (Free) | $24* (Pro) | $24* (Pro) |
+| Kinde | $0 (Free) | $716.25 (Pro) | $1533.85 (Plus) | $15191.45 (Scale) |
+| Supabase Auth | $0 (Free (platform)) | $0 (Free (platform)) | $25 (Pro (platform)) | $2950 (Pro (platform)) |
+* Logto Pro bills access tokens, not MAU (50k tokens included, then $0.08 per 100) — the figure is base fee only; token overage depends on your usage.
+
+## Search pages
+- Clerk pricing: https://authcost.pages.dev/vendors/clerk.html
+- Clerk alternatives: https://authcost.pages.dev/alternatives/clerk.html
+- Auth0 pricing: https://authcost.pages.dev/vendors/auth0.html
+- Auth0 alternatives: https://authcost.pages.dev/alternatives/auth0.html
+- Amazon Cognito pricing: https://authcost.pages.dev/vendors/cognito.html
+- Amazon Cognito alternatives: https://authcost.pages.dev/alternatives/cognito.html
+- WorkOS pricing: https://authcost.pages.dev/vendors/workos.html
+- WorkOS alternatives: https://authcost.pages.dev/alternatives/workos.html
+- Stytch pricing: https://authcost.pages.dev/vendors/stytch.html
+- Stytch alternatives: https://authcost.pages.dev/alternatives/stytch.html
+- Logto pricing: https://authcost.pages.dev/vendors/logto.html
+- Logto alternatives: https://authcost.pages.dev/alternatives/logto.html
+- Kinde pricing: https://authcost.pages.dev/vendors/kinde.html
+- Kinde alternatives: https://authcost.pages.dev/alternatives/kinde.html
+- Supabase Auth pricing: https://authcost.pages.dev/vendors/supabase.html
+- Supabase Auth alternatives: https://authcost.pages.dev/alternatives/supabase.html
+- Auth pricing by MAU: every vendor at 10k, 50k, 100k and 1M users: https://authcost.pages.dev/guides/auth-cost-by-mau.html
+- Cheapest auth at 100k users: https://authcost.pages.dev/guides/cheapest-auth-100k.html
+- Auth free tiers compared: https://authcost.pages.dev/guides/auth-free-tiers-compared.html
+- Clerk vs Auth0 pricing: https://authcost.pages.dev/compare/clerk-vs-auth0.html
+- Clerk vs Amazon Cognito pricing: https://authcost.pages.dev/compare/clerk-vs-cognito.html
+- Clerk vs WorkOS pricing: https://authcost.pages.dev/compare/clerk-vs-workos.html
+- Clerk vs Stytch pricing: https://authcost.pages.dev/compare/clerk-vs-stytch.html
+- Clerk vs Kinde pricing: https://authcost.pages.dev/compare/clerk-vs-kinde.html
+- Clerk vs Supabase Auth pricing: https://authcost.pages.dev/compare/clerk-vs-supabase.html
+- Clerk vs Logto pricing: https://authcost.pages.dev/compare/clerk-vs-logto.html
+- Auth0 vs Amazon Cognito pricing: https://authcost.pages.dev/compare/auth0-vs-cognito.html
+- Auth0 vs WorkOS pricing: https://authcost.pages.dev/compare/auth0-vs-workos.html
+- Auth0 vs Stytch pricing: https://authcost.pages.dev/compare/auth0-vs-stytch.html
+- Auth0 vs Kinde pricing: https://authcost.pages.dev/compare/auth0-vs-kinde.html
+- Auth0 vs Supabase Auth pricing: https://authcost.pages.dev/compare/auth0-vs-supabase.html
+- Auth0 vs Logto pricing: https://authcost.pages.dev/compare/auth0-vs-logto.html
+- Amazon Cognito vs WorkOS pricing: https://authcost.pages.dev/compare/cognito-vs-workos.html
+- Amazon Cognito vs Stytch pricing: https://authcost.pages.dev/compare/cognito-vs-stytch.html
+- Amazon Cognito vs Kinde pricing: https://authcost.pages.dev/compare/cognito-vs-kinde.html
+- Amazon Cognito vs Supabase Auth pricing: https://authcost.pages.dev/compare/cognito-vs-supabase.html
+- Amazon Cognito vs Logto pricing: https://authcost.pages.dev/compare/cognito-vs-logto.html
+- WorkOS vs Stytch pricing: https://authcost.pages.dev/compare/workos-vs-stytch.html
+- WorkOS vs Kinde pricing: https://authcost.pages.dev/compare/workos-vs-kinde.html
+- WorkOS vs Supabase Auth pricing: https://authcost.pages.dev/compare/workos-vs-supabase.html
+- WorkOS vs Logto pricing: https://authcost.pages.dev/compare/workos-vs-logto.html
+- Stytch vs Kinde pricing: https://authcost.pages.dev/compare/stytch-vs-kinde.html
+- Stytch vs Supabase Auth pricing: https://authcost.pages.dev/compare/stytch-vs-supabase.html
+- Stytch vs Logto pricing: https://authcost.pages.dev/compare/stytch-vs-logto.html
+- Kinde vs Supabase Auth pricing: https://authcost.pages.dev/compare/kinde-vs-supabase.html
+- Kinde vs Logto pricing: https://authcost.pages.dev/compare/kinde-vs-logto.html
+- Supabase Auth vs Logto pricing: https://authcost.pages.dev/compare/supabase-vs-logto.html
+
 ## Changes
 - 2027-01-01 Clerk (fee-start): Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing. [https://clerk.com/pricing]
 - 2026-10-30 AuthCost (launch-seed): Initial ledger seeded from official pricing pages (Clerk, Auth0, Cognito, WorkOS, Stytch, Logto, Kinde, Supabase Auth). [https://clerk.com/pricing]

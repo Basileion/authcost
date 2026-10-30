@@ -39,7 +39,7 @@ ${(['404.html','offline.html'].includes(file)?[]:[...(file==='index.html'?[WEBSI
 <a class="btn cta" href="/#ledger-mail">Weekly ledger</a></div></header>
 <main id="main" class="wrap">${body}</main>
 <footer class="ds-foot"><div class="wrap"><div class="brand-blurb"><a class="brand" href="/" style="margin-bottom:12px">${mark}${NAME}</a><p>${NAME} — auth and identity list prices, normalized and sourced. Last check ${lastChecked}. Some outbound links may become affiliate links; they never affect ranking. Not affiliated with any vendor.</p></div>
-<div class="col"><h3>Product</h3><nav aria-label="Product"><a href="/calculator/">Calculator</a><a href="/compare/">Compare</a><a href="/guides/">Guides</a><a href="/pro.html">Pro</a></nav></div>
+<div class="col"><h3>Product</h3><nav aria-label="Product"><a href="/calculator/">Calculator</a><a href="/compare/">Compare</a><a href="/alternatives/">Alternatives</a><a href="/guides/">Guides</a><a href="/pro.html">Pro</a></nav></div>
 <div class="col"><h3>Data</h3><nav aria-label="Data"><a href="/changes.html">Price log</a><a href="/methodology.html">Methodology</a><a href="/data.html">Data</a><a href="/api/plans.csv">CSV</a><a href="/rss.xml">RSS</a></nav></div>
 <div class="col"><h3>Money</h3><nav aria-label="Money"><a href="/sponsor.html">Sponsor</a><a href="https://o11y-watch.pages.dev/audit.html">Observability audit</a></nav></div>
 <div class="portfolio" role="navigation" aria-label="More pricing ledgers"><div class="eyebrow">More pricing ledgers</div><ul><li><a href="https://o11y-watch.pages.dev/" rel="noopener">O11y Watch</a> — observability vendor free tiers and paid_from prices, sourced.</li><li><a href="https://vpsledger.pages.dev/" rel="noopener">VPSLedger</a> — VPS true monthly cost after promos, fees, and egress.</li><li><a href="https://ratecardai.pages.dev/" rel="noopener">Ratecard</a> — published AI API $/1M token rates with source dates.</li></ul></div><div class="legal">Verify prices on the vendor’s page before buying. Affiliate disclosure on methodology.</div></div></footer>
@@ -232,6 +232,18 @@ page({file:'calculator/index.html',og:'calculator',title:`Auth cost calculator �
 <div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro.html">See Pro early access</a>.</p></div>
 <script>try{if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embed')}catch(e){}</script>`});
 
+// ---- Shared MAU-tier helpers (search/GEO pages)
+const MAJOR=['clerk','auth0','cognito','workos','stytch','kinde','supabase','logto'];
+const MAU_TIERS=[10000,50000,100000];
+const kfmt=n=>n>=1e6?(n/1e6)+'M':(n/1000)+'k';
+const cmpSlug=(x,y)=>MAJOR.indexOf(x)<MAJOR.indexOf(y)?`${x}-vs-${y}`:`${y}-vs-${x}`;
+const bestFor=(vid,mau,sso=0)=>rankScenario(mau,sso).find(z=>z.p.vendor_id===vid)||null;
+const star=p=>p.user_unit==='token'?'*':'';
+const cell=(z,hl)=>z?`<td class="n"${hl?' style="font-weight:600"':''}>${usd(z.e.total)}${star(z.p)}<br><span class="src">${esc(z.p.plan)}</span></td>`:'<td class="n" title="No verifiable published price for this scenario">—</td>';
+const tokNote='* Logto Pro bills access tokens, not MAU (50k tokens included, then $0.08 per 100) — the figure is base fee only; token overage depends on your usage.';
+const ctaRow=(mau=50000,sso=0)=>`<div class="cta-row"><a class="btn" href="/calculator/?mau=${mau}&sso=${sso}" data-grow="seo_calc_cta">Price my exact MAU + SSO</a><a class="btn ghost" href="/pro.html" data-grow="seo_pro_cta">Get alerts when prices move (Pro)</a></div>`;
+const vLinks=v=>`<p class="note">More on ${esc(v.name)}: <a href="/vendors/${v.id}.html">${esc(v.name)} pricing</a> · <a href="/alternatives/${v.id}.html">cheaper ${esc(v.name)} alternatives</a> · ${MAJOR.filter(x=>x!==v.id&&P[x]).map(x=>`<a href="/compare/${cmpSlug(v.id,x)}.html">vs ${esc(P[x].name)}</a>`).join(' · ')}</p>`;
+
 // ---- Vendors
 for(const v of vendors){
   const ps=plans.filter(p=>p.vendor_id===v.id);
@@ -243,8 +255,12 @@ for(const v of vendors){
   page({file:`vendors/${v.id}.html`,og:'home',title:`${v.name} pricing — auth cost | ${NAME}`,desc:`${v.name} auth pricing with MAU/MRU and SSO fees, ranked against ${vendors.length-1} other vendors. Source checked ${v.checked}.`,body:`
 <section class="hero"><div class="eyebrow">Vendor</div><h1>${esc(v.name)}</h1>
 <p class="lede">Billing unit: <b>${esc(v.billing_unit)}</b> — ${esc(v.billing_unit_note)} Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a>, checked ${v.checked}. <a href="${AFFILIATES[v.id]||v.source}" rel="noopener">Visit ${esc(v.name)}</a></p></section>
-<div class="verdict"><div class="eyebrow">Verdict · common scenarios</div><ul>${ranks}</ul><p class="note">${asOf}. ${meth}.</p></div>
+<div class="verdict"><div class="eyebrow">Answer · ${esc(v.name)} cost by MAU (no SSO)</div><p>${MAU_TIERS.map(m=>{const b=bestFor(v.id,m);return b?`<b>${kfmt(m)} users:</b> ${usd(b.e.total)}/mo${star(b.p)} on ${esc(b.p.plan)}`:`<b>${kfmt(m)} users:</b> no published self-serve price`}).join(' · ')}.</p><ul>${ranks}</ul><p class="note">${asOf}. ${meth}.</p>${ctaRow()}</div>
 <p>${esc(v.summary)}</p>
+<h2>${esc(v.name)} cost at 10k, 50k and 100k users</h2>
+<div class="tbl"><table><thead><tr><th>Plan</th>${MAU_TIERS.map(m=>`<th class="n">${kfmt(m)} users</th>`).join('')}</tr></thead><tbody>${ps.map(p=>`<tr><td>${esc(p.plan)}</td>${MAU_TIERS.map(m=>{const e=estimate(p,m,0);return e&&e.total!=null?`<td class="n">${usd(e.total)}${star(p)}</td>`:'<td class="n" title="Not priceable from published figures">—</td>'}).join('')}</tr>`).join('')}</tbody></table></div>
+<p class="note">Monthly USD, no SSO, list price. “—” = the vendor publishes no fixed self-serve price for that volume (custom / contact sales) or the plan caps below it. ${ps.some(p=>p.user_unit==='token')?tokNote:''}</p>
+${vLinks(v)}
 <div class="tbl"><table><thead><tr><th>Plan</th><th class="n">Base</th><th class="n">Included</th><th>Unit</th><th class="n">Overage</th><th class="n">SSO</th><th>Status</th><th>Notes</th></tr></thead>
 <tbody>${ps.map(p=>`<tr><td>${esc(p.plan)}</td><td class="n">${usd(p.base_mo)}</td><td class="n">${p.included_users??'—'}</td><td>${esc(p.user_unit||'—')}</td><td class="n">${p.overage_per_user!=null?usd(p.overage_per_user):'—'}</td><td class="n">${p.sso_unlimited?'unlimited':(p.sso_included!=null?p.sso_included+' incl.':'—')}${p.sso_extra_mo!=null?' · +'+usd(p.sso_extra_mo):''}</td><td>${tag(p.status)}</td><td style="white-space:normal;min-width:220px" class="src">${esc(p.notes)}</td></tr>`).join('')}</tbody></table></div>
 ${mailBox('v'+v.id,`Get alerted if ${v.name} changes prices`,`Watch ${v.name} for me`)}`});
@@ -254,7 +270,6 @@ page({file:'vendors/index.html',title:`Auth vendors tracked | ${NAME}`,desc:`All
 <tbody>${vendors.map(v=>{const ps=plans.filter(p=>p.vendor_id===v.id);return `<tr><td><a href="/vendors/${v.id}.html">${esc(v.name)}</a></td><td>${esc(v.billing_unit)}</td><td class="n">${ps.length}</td><td class="n">${ps.filter(p=>p.status==='verified').length}</td><td class="src"><a href="${v.source}">source</a> · ${v.checked}</td></tr>`}).join('')}</tbody></table></div>`});
 
 // ---- Compare pairs (major)
-const MAJOR=['clerk','auth0','cognito','workos','stytch','kinde','supabase','logto'];
 const pairs=[];
 for(let i=0;i<MAJOR.length;i++)for(let j=i+1;j<MAJOR.length;j++)if(P[MAJOR[i]]&&P[MAJOR[j]])pairs.push([P[MAJOR[i]],P[MAJOR[j]]]);
 for(const [a,b] of pairs){
@@ -273,16 +288,87 @@ for(const [a,b] of pairs){
     const cell=z=>z?`<td class="n">${usd(z.e.total)}<br><span class="src">${esc(z.p.plan)}</span></td>`:'<td class="n">—</td>';
     return `<tr><td>${esc(s.label)}</td>${cell(x)}${cell(y)}</tr>`;
   }).join('');
-  page({file:`compare/${slug}.html`,og:'compare',title:`${a.name} vs ${b.name} — auth pricing | ${NAME}`,desc:`${a.name} vs ${b.name}: which is cheaper at 10k and 50k users with SSO, and by how much per year.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'Which is cheaper?',acceptedAnswer:{'@type':'Answer',text:answer}},{'@type':'Question',name:'Last verified?',acceptedAnswer:{'@type':'Answer',text:lastChecked}}]}],body:`
+  page({file:`compare/${slug}.html`,og:'compare',title:`${a.name} vs ${b.name} pricing (${lastChecked.slice(0,4)}) — cost at 10k/50k/100k users | ${NAME}`,desc:`${a.name} vs ${b.name} pricing: which is cheaper at 10k, 50k and 100k users, with and without enterprise SSO, and by how much per year. Sourced list prices.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'Which is cheaper?',acceptedAnswer:{'@type':'Answer',text:answer}},{'@type':'Question',name:'Last verified?',acceptedAnswer:{'@type':'Answer',text:lastChecked}}]}],body:`
 <section class="hero"><div class="eyebrow"><a href="/compare/">Compare</a> · last verified ${lastChecked}</div><h1>${esc(a.name)} vs ${esc(b.name)}</h1>
 <p class="lede"><b>Answer:</b> ${esc(answer)}</p></section>
+${ctaRow()}
+<h2>Cost by MAU (no SSO)</h2>
+<div class="tbl"><table><thead><tr><th>Monthly users</th><th class="n">${esc(a.name)}</th><th class="n">${esc(b.name)}</th></tr></thead><tbody>${MAU_TIERS.map(m=>`<tr><td>${kfmt(m)} users</td>${cell(bestFor(a.id,m))}${cell(bestFor(b.id,m))}</tr>`).join('')}</tbody></table></div>
+<h2>With enterprise SSO</h2>
 <div class="tbl"><table><thead><tr><th>Scenario</th><th class="n">${esc(a.name)}</th><th class="n">${esc(b.name)}</th></tr></thead><tbody>${rows}</tbody></table></div>
+<p class="note">Cheapest verified plan per vendor, monthly USD list price. ${[a,b].some(x=>x.id==='logto')?tokNote:''} ${meth}.</p>
 <div class="grid2">${[a,b].map(x=>`<div class="panel"><h3><a href="/vendors/${x.id}.html">${esc(x.name)}</a></h3><p>${esc(x.summary)}</p><p class="src">Source: <a href="${x.source}">${esc(x.source.replace(/^https?:\/\//,''))}</a> · ${x.checked}</p></div>`).join('')}</div>
+<p class="note">Also see: <a href="/alternatives/${a.id}.html">${esc(a.name)} alternatives</a> · <a href="/alternatives/${b.id}.html">${esc(b.name)} alternatives</a> · <a href="/guides/auth-cost-by-mau.html">all vendors by MAU</a></p>
 ${mailBox('c',`Watch ${a.name} vs ${b.name}`,'Watch this pair for me')}`});
 }
 page({file:'compare/index.html',og:'compare',title:`Auth vendor comparisons — ${pairs.length} head-to-heads | ${NAME}`,desc:'Head-to-head auth pricing for major identity vendors.',body:`<section class="hero"><div class="eyebrow">Compare</div><h1>Head to head, on the whole auth bill.</h1><p class="lede">${pairs.length} pairings across ${MAJOR.length} vendors.</p></section>
 <div class="pairs">${pairs.map(([a,b])=>`<a href="/compare/${a.id}-vs-${b.id}.html">${esc(a.name)} vs ${esc(b.name)}</a>`).join('')}</div>
 ${mailBox('ci','The cheapest auth plan for your MAU, weekly','Send me the weekly ledger')}`});
+
+
+// ---- Alternatives (search/GEO)
+const altOrder=(vid)=>vendors.filter(x=>x.id!==vid).map(x=>({v:x,c:MAU_TIERS.map(m=>bestFor(x.id,m)),s:bestFor(x.id,50000,5)})).sort((A,B)=>(A.c[1]?.e.total??1e12)-(B.c[1]?.e.total??1e12)||(A.c[0]?.e.total??1e12)-(B.c[0]?.e.total??1e12));
+for(const v of vendors){
+  const me=MAU_TIERS.map(m=>bestFor(v.id,m)), meS=bestFor(v.id,50000,5);
+  const alts=altOrder(v.id);
+  const lines=MAU_TIERS.map((m,i)=>{
+    const others=alts.map(a=>a.c[i]).filter(Boolean).sort((x,y)=>x.e.total-y.e.total);const top=others[0];
+    if(!top) return null;
+    if(!me[i]) return `at ${kfmt(m)} users ${v.name} publishes no fixed self-serve price; the cheapest verified alternative is ${top.p.vendor} ${top.p.plan} at ${usd(top.e.total)}/mo${star(top.p)}`;
+    const cheaper=others.filter(x=>x.e.total<me[i].e.total).length;
+    return `at ${kfmt(m)} users ${v.name} ${me[i].p.plan} costs ${usd(me[i].e.total)}/mo${star(me[i].p)} and ${cheaper} of ${others.length} priceable alternatives are cheaper${cheaper?` (cheapest: ${top.p.vendor} ${top.p.plan} at ${usd(top.e.total)}/mo${star(top.p)}, ${yr(me[i].e.total-top.e.total)}/yr less)`:''}`;
+  }).filter(Boolean);
+  const answer=`As of ${lastChecked}: ${lines.join('; ')}.`;
+  page({file:`alternatives/${v.id}.html`,og:'compare',title:`${v.name} alternatives — cheaper auth at 10k/50k/100k users | ${NAME}`,desc:`Cheaper ${v.name} alternatives ranked by real monthly cost at 10k, 50k and 100k users and with 5 SSO connections. ${vendors.length-1} vendors, sourced list prices.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:`What is the cheapest ${v.name} alternative?`,acceptedAnswer:{'@type':'Answer',text:answer}},{'@type':'Question',name:'Where do the prices come from?',acceptedAnswer:{'@type':'Answer',text:'Each vendor’s own pricing page; every row in the AuthCost ledger links its source and check date. Scenarios a vendor does not publish a price for are left blank.'}}]}],body:`
+<section class="hero"><div class="eyebrow"><a href="/alternatives/">Alternatives</a> · last verified ${lastChecked}</div><h1>${esc(v.name)} alternatives, ranked by what you’d actually pay</h1>
+<p class="lede"><b>Answer:</b> ${esc(answer)}</p>${ctaRow()}</section>
+<div class="tbl"><table><thead><tr><th>Vendor (cheapest verified plan)</th>${MAU_TIERS.map(m=>`<th class="n">${kfmt(m)} users</th>`).join('')}<th class="n">50k + 5 SSO</th><th scope="col">Head to head</th></tr></thead><tbody>
+<tr style="background:var(--surface-2,rgba(0,0,0,.03))"><td><b><a href="/vendors/${v.id}.html">${esc(v.name)}</a></b> <span class="src">(current)</span></td>${me.map(z=>cell(z,true)).join('')}${cell(meS,true)}<td></td></tr>
+${alts.map(a=>`<tr><td><a href="/vendors/${a.v.id}.html">${esc(a.v.name)}</a></td>${a.c.map(z=>cell(z)).join('')}${cell(a.s)}<td><a href="/compare/${cmpSlug(v.id,a.v.id)}.html">${esc(v.name)} vs ${esc(a.v.name)}</a></td></tr>`).join('')}</tbody></table></div>
+<p class="note">Monthly USD list prices, cheapest verified plan per vendor for each scenario, sorted by 50k-user cost. “—” = no fixed published price for that volume (custom / contact sales, or overage not printed). Billing units differ: Clerk counts retained users (MRU), most others MAU. ${tokNote} ${meth}.</p>
+<div class="grid2"><div class="panel"><h3>Why teams leave ${esc(v.name)}</h3><p>${esc(v.summary)}</p><p class="src">Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a> · ${v.checked}</p></div>
+<div class="panel"><h3>Check before you switch</h3><p>Unit (${esc(v.billing_unit)}), SSO per-connection fees, and MFA availability change the ranking more than the headline price. Run your exact numbers in the <a href="/calculator/">calculator</a> and read <a href="/guides/mau-vs-mru.html">MAU vs MRU</a>.</p></div></div>
+${mailBox('a'+v.id,`Hear when ${v.name} or its alternatives change prices`,'Send me the weekly ledger')}`});
+}
+page({file:'alternatives/index.html',og:'compare',title:`Cheaper auth alternatives — ${vendors.length} vendors ranked | ${NAME}`,desc:`Cheaper alternatives to Clerk, Auth0, Cognito, WorkOS, Stytch, Kinde, Supabase Auth and Logto, ranked by monthly cost at 10k/50k/100k users.`,body:`<section class="hero"><div class="eyebrow">Alternatives · ${asOf}</div><h1>Paying too much for auth? Find the cheaper alternative.</h1><p class="lede">Each page ranks every other tracked vendor by real monthly cost at 10k, 50k and 100k users — sourced list prices only.</p>${ctaRow()}</section>
+<div class="pairs">${vendors.map(v=>`<a href="/alternatives/${v.id}.html">${esc(v.name)} alternatives</a>`).join('')}</div>
+${mailBox('ai','The cheapest auth plan for your MAU, weekly','Send me the weekly ledger')}`});
+
+// ---- Data guides (tables computed from the ledger)
+const T1M=[...MAU_TIERS,1000000];
+const allRows=T1M.map(m=>rankScenario(m,0));
+const DATA_GUIDES=[];
+{ // cost by MAU, every vendor
+  const slug='auth-cost-by-mau';DATA_GUIDES.push({slug,title:'Auth pricing by MAU: every vendor at 10k, 50k, 100k and 1M users'});
+  const ans=T1M.map((m,i)=>{const r=allRows[i];return r[0]?`${kfmt(m)} users: cheapest ${r[0].p.vendor} ${r[0].p.plan} ${usd(r[0].e.total)}/mo${star(r[0].p)}`:null}).filter(Boolean).join('; ');
+  page({file:`guides/${slug}.html`,title:`Auth pricing by MAU (10k, 50k, 100k, 1M users) — ${vendors.length} vendors | ${NAME}`,desc:`Monthly auth cost for Clerk, Auth0, Cognito, WorkOS, Stytch, Kinde, Supabase Auth and Logto at 10k, 50k, 100k and 1M users. Sourced, checked ${lastChecked}.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'What is the cheapest auth provider by MAU?',acceptedAnswer:{'@type':'Answer',text:`As of ${lastChecked}: ${ans}.`}}]}],body:`
+<section class="hero"><div class="eyebrow"><a href="/guides/">Guides</a> · ${asOf}</div><h1>Auth pricing by MAU, every vendor</h1><p class="lede"><b>Answer (no SSO):</b> ${esc(ans)}.</p>${ctaRow(100000,0)}</section>
+<div class="tbl"><table><thead><tr><th>Vendor</th>${T1M.map(m=>`<th class="n">${kfmt(m)} users</th>`).join('')}<th scope="col">Alternatives</th></tr></thead><tbody>${vendors.map(v=>`<tr><td><a href="/vendors/${v.id}.html">${esc(v.name)}</a></td>${T1M.map(m=>cell(bestFor(v.id,m))).join('')}<td><a href="/alternatives/${v.id}.html">cheaper?</a></td></tr>`).join('')}</tbody></table></div>
+<p class="note">Cheapest verified plan per vendor, monthly USD list price, no SSO / MFA / SMS. “—” = no fixed published price at that volume. ${tokNote} ${meth}.</p>
+${mailBox('gm','Get auth price changes weekly','Send me the weekly ledger')}`});
+}
+{ // 100k
+  const slug='cheapest-auth-100k';DATA_GUIDES.push({slug,title:'Cheapest auth at 100k users'});
+  const r=rankScenario(100000,0),rs=rankScenario(100000,10);
+  const tb=rr=>`<div class="tbl"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Monthly</th><th class="n">Annual</th></tr></thead><tbody>${rr.map((x,i)=>`<tr><td class="n">${i+1}</td><td><a href="/vendors/${x.p.vendor_id}.html">${esc(x.p.vendor)}</a> ${esc(x.p.plan)}</td><td class="n">${usd(x.e.total)}${star(x.p)}</td><td class="n">${yr(x.e.total)}</td></tr>`).join('')}</tbody></table></div>`;
+  const ans=r.length>=2?`At 100k users with no SSO, ${r[0].p.vendor} ${r[0].p.plan} is cheapest at ${usd(r[0].e.total)}/mo${star(r[0].p)}; the most expensive verified plan is ${r.at(-1).p.vendor} ${r.at(-1).p.plan} at ${usd(r.at(-1).e.total)}/mo — a ${yr(r.at(-1).e.total-r[0].e.total)}/yr gap.`:'';
+  page({file:`guides/${slug}.html`,title:`Cheapest auth provider at 100k users (${lastChecked.slice(0,4)}) | ${NAME}`,desc:`Every verified auth plan ranked by monthly cost at 100,000 users, with and without 10 SSO connections. Sourced list prices.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'What is the cheapest auth at 100k users?',acceptedAnswer:{'@type':'Answer',text:ans}}]}],body:`
+<section class="hero"><div class="eyebrow"><a href="/guides/">Guides</a> · ${asOf}</div><h1>Cheapest auth at 100k users</h1><p class="lede"><b>Answer:</b> ${esc(ans)}</p>${ctaRow(100000,0)}</section>
+<h2>100k users, no SSO (${r.length} plans priceable)</h2>${tb(r)}
+<h2>100k users, 10 SSO connections (${rs.length} plans priceable)</h2>${tb(rs)}
+<p class="note">Plans without a published price at this volume are omitted (e.g. Auth0 paid tiers above 500 MAU, Stytch MAU overage). SSO for Cognito/Supabase assumes 200 federated MAU per connection. ${tokNote} ${meth}.</p>
+${mailBox('g100','Get auth price changes weekly','Send me the weekly ledger')}`});
+}
+{ // free tiers
+  const slug='auth-free-tiers-compared';DATA_GUIDES.push({slug,title:'Auth free tiers compared'});
+  const fr=plans.filter(p=>p.tier==='free'||(p.base_mo===0&&p.included_users)).sort((a,b)=>(b.included_users||0)-(a.included_users||0));
+  const ans=`Largest free allowances as of ${lastChecked}: ${fr.slice(0,4).map(p=>`${p.vendor} ${p.plan} ${Number(p.included_users).toLocaleString('en-US')} ${p.user_unit}`).join(', ')}.`;
+  page({file:`guides/${slug}.html`,title:`Auth free tiers compared — MAU limits and free SSO | ${NAME}`,desc:`Free MAU/MRU allowances and included SSO connections for ${vendors.length} auth vendors, from official pricing pages.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'Which auth provider has the biggest free tier?',acceptedAnswer:{'@type':'Answer',text:ans}}]}],body:`
+<section class="hero"><div class="eyebrow"><a href="/guides/">Guides</a> · ${asOf}</div><h1>Auth free tiers, compared</h1><p class="lede"><b>Answer:</b> ${esc(ans)}</p>${ctaRow(10000,0)}</section>
+<div class="tbl"><table><thead><tr><th>Plan</th><th class="n">Free users</th><th>Unit</th><th class="n">SSO incl.</th><th>Notes</th><th>Source</th></tr></thead><tbody>${fr.map(p=>`<tr><td><a href="/vendors/${p.vendor_id}.html">${esc(p.vendor)}</a> ${esc(p.plan)}</td><td class="n">${Number(p.included_users).toLocaleString('en-US')}</td><td>${esc(p.user_unit)}</td><td class="n">${p.sso_included??'—'}</td><td style="white-space:normal;min-width:240px" class="src">${esc(p.notes)}</td><td class="src"><a href="${p.source}">source</a> · ${p.checked}</td></tr>`).join('')}</tbody></table></div>
+<p class="note">Includes $0-base plans with a free allowance (e.g. Cognito, WorkOS AuthKit, Stytch pay-as-you-go). ${meth}.</p>
+${mailBox('gft','Hear when a free tier shrinks','Send me the weekly ledger')}`});
+}
 
 // ---- Changes + RSS
 page({file:'changes.html',og:'changes',title:`Auth price-change log | ${NAME}`,desc:'Dated, sourced auth and identity price changes.',body:`<section class="hero"><div class="eyebrow">Price log · <a href="/rss.xml">RSS</a></div><h1>Every change, dated and sourced.</h1></section>
@@ -344,8 +430,13 @@ const guides=[
   {slug:'auth0-free-tier',title:'Auth0 free tier limits',body:'25k MAU, 1 Enterprise Connection, and when Essentials $35 applies.'},
   {slug:'enterprise-sso-cost',title:'What enterprise SSO really costs',body:'Per-connection vs included-unlimited vs federated-MAU models across eight vendors.'}
 ];
-page({file:'guides/index.html',title:`Auth pricing guides | ${NAME}`,desc:`${guides.length} guides on auth cost, MAU vs MRU, and SSO fees.`,body:`<section class="hero"><div class="eyebrow">Guides</div><h1>Auth cost, explained.</h1></section>
-<ul class="pairs" style="display:grid;gap:8px">${guides.map(g=>`<li><a href="/guides/${g.slug}.html">${esc(g.title)}</a></li>`).join('')}</ul>`});
+page({file:'guides/index.html',title:`Auth pricing guides | ${NAME}`,desc:`${guides.length+DATA_GUIDES.length} guides, ${vendors.length} vendor pricing pages, alternatives and ${pairs.length} head-to-heads on auth cost, MAU vs MRU and SSO fees.`,body:`<section class="hero"><div class="eyebrow">Guides</div><h1>Auth cost, explained.</h1></section>
+<h2>Data tables</h2><ul class="pairs" style="display:grid;gap:8px">${DATA_GUIDES.map(g=>`<li><a href="/guides/${g.slug}.html">${esc(g.title)}</a></li>`).join('')}</ul>
+<h2>Guides</h2><ul class="pairs" style="display:grid;gap:8px">${guides.map(g=>`<li><a href="/guides/${g.slug}.html">${esc(g.title)}</a></li>`).join('')}</ul>
+<h2>Pricing by vendor</h2><div class="pairs">${vendors.map(v=>`<a href="/vendors/${v.id}.html">${esc(v.name)} pricing</a>`).join('')}</div>
+<h2>Cheaper alternatives</h2><div class="pairs">${vendors.map(v=>`<a href="/alternatives/${v.id}.html">${esc(v.name)} alternatives</a>`).join('')}</div>
+<h2>Head to head</h2><div class="pairs">${pairs.map(([a,b])=>`<a href="/compare/${a.id}-vs-${b.id}.html">${esc(a.name)} vs ${esc(b.name)} pricing</a>`).join('')}</div>
+${ctaRow()}`});
 for(const g of guides){
   const r10=rankScenario(10000,1),r50=rankScenario(50000,5);
   page({file:`guides/${g.slug}.html`,title:`${g.title} | ${NAME}`,desc:g.body,body:`
@@ -368,8 +459,8 @@ W('api/plans.csv',['id,vendor,plan,base_mo,included_users,user_unit,overage_per_
   ...plans.map(p=>[p.id,p.vendor,p.plan,p.base_mo,p.included_users,p.user_unit,p.overage_per_user,p.sso_included,p.sso_extra_mo,p.status,p.source,p.checked].map(csvEscape).join(','))].join('\n'));
 W('api/changes.csv',['date,vendor,kind,summary,source,observed',...changes.map(c=>[c.date,c.vendor,c.kind,c.summary,c.source,c.observed].map(csvEscape).join(','))].join('\n'));
 
-W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology.html\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator/)\n- [Calculator pretty URL](${SITE}/calculator)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Methodology](${SITE}/methodology.html)\n`);
-W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator/?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator/?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
+W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology.html\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator/)\n- [Calculator pretty URL](${SITE}/calculator)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Alternatives](${SITE}/alternatives/)\n- [Auth pricing by MAU](${SITE}/guides/auth-cost-by-mau.html)\n- [Methodology](${SITE}/methodology.html)\n`);
+W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator/?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator/?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Cost by MAU (cheapest verified plan per vendor, USD/month, no SSO)\n| Vendor | ${T1M.map(kfmt).join(' | ')} |\n|---|${T1M.map(()=>'---').join('|')}|\n${vendors.map(v=>`| ${v.name} | ${T1M.map(m=>{const b=bestFor(v.id,m);return b?usd(b.e.total)+star(b.p)+' ('+b.p.plan+')':'n/a'}).join(' | ')} |`).join('\n')}\n${tokNote}\n\n## Search pages\n${vendors.map(v=>`- ${v.name} pricing: ${SITE}/vendors/${v.id}.html\n- ${v.name} alternatives: ${SITE}/alternatives/${v.id}.html`).join('\n')}\n${DATA_GUIDES.map(g=>`- ${g.title}: ${SITE}/guides/${g.slug}.html`).join('\n')}\n${pairs.map(([a,b])=>`- ${a.name} vs ${b.name} pricing: ${SITE}/compare/${a.id}-vs-${b.id}.html`).join('\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
 
 W('manifest.webmanifest',JSON.stringify({name:`${NAME} — Auth cost of ownership`,short_name:NAME,start_url:'/?source=pwa',scope:'/',display:'standalone',background_color:'#f7f5f0',theme_color:'#141821',icons:[{src:'/assets/icon-192.png',sizes:'192x192',type:'image/png'},{src:'/assets/icon-512.png',sizes:'512x512',type:'image/png'}]}));
 const V='ac-'+Date.now().toString(36),pre=['/','/calculator/','/compare/','/changes.html','/pro.html','/assets/style.css','/assets/app.js','/api/plans.json','/offline.html'];
