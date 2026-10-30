@@ -42,14 +42,14 @@ ${(['404.html','offline.html'].includes(file)?[]:[...(file==='index.html'?[WEBSI
 <div class="col"><h3>Product</h3><nav aria-label="Product"><a href="/calculator.html">Calculator</a><a href="/compare/">Compare</a><a href="/guides/">Guides</a><a href="/pro.html">Pro</a></nav></div>
 <div class="col"><h3>Data</h3><nav aria-label="Data"><a href="/changes.html">Price log</a><a href="/methodology.html">Methodology</a><a href="/data.html">Data</a><a href="/api/plans.csv">CSV</a><a href="/rss.xml">RSS</a></nav></div>
 <div class="col"><h3>Money</h3><nav aria-label="Money"><a href="/sponsor.html">Sponsor</a><a href="https://o11y-watch.pages.dev/audit.html">Observability audit</a></nav></div>
-<div class="legal">Verify prices on the vendor’s page before buying. Affiliate disclosure on methodology.</div></div></footer>
+<div class="portfolio" role="navigation" aria-label="More pricing ledgers"><div class="eyebrow">More pricing ledgers</div><ul><li><a href="https://o11y-watch.pages.dev/" rel="noopener">O11y Watch</a> — observability vendor free tiers and paid_from prices, sourced.</li><li><a href="https://vpsledger.pages.dev/" rel="noopener">VPSLedger</a> — VPS true monthly cost after promos, fees, and egress.</li><li><a href="https://ratecardai.pages.dev/" rel="noopener">Ratecard</a> — published AI API $/1M token rates with source dates.</li></ul></div><div class="legal">Verify prices on the vendor’s page before buying. Affiliate disclosure on methodology.</div></div></footer>
 <script>window.__GROW__={site:"authcost.pages.dev"/* dormant A/B: ,experiments:[{id:"design-standard-v1",arms:["control","v1"]}] */};</script>
 <script src="/assets/grow.js" defer></script><script type="module" src="/assets/app.js"></script></body></html>`)};
 
 /** Estimate monthly cost for a plan given MAU and SSO connection count. Returns null if unverifiable. */
 export function estimate(plan, mau, sso=0, opts={}){
   if(plan.status!=='verified') return null;
-  const out={base:0,users:0,sso:0,total:null,notes:[]};
+  const out={base:0,users:0,sso:0,mfa:0,total:null,notes:[]};
   // Auth0 paid plans: only published at 500 MAU — refuse higher
   if(plan.vendor_id==='auth0' && plan.tier==='paid' && mau>plan.included_users){
     out.notes.push('Auth0 paid self-serve price published only at ≤500 MAU; higher tiers are custom — omitted.');
@@ -135,7 +135,20 @@ export function estimate(plan, mau, sso=0, opts={}){
     return null;
   }
 
-  out.total=out.base+out.users+out.sso;
+  // MFA: only add verified mfa_extra_mo; omit plans that publish no MFA when required
+  out.mfa=0;
+  if(opts.mfa){
+    if(plan.mfa_available===false){
+      out.notes.push('Plan publishes no MFA — omitted when MFA required.');
+      return null;
+    }
+    if(plan.mfa_extra_mo!=null){
+      out.mfa=plan.mfa_extra_mo;
+      out.notes.push(`MFA add-on ${plan.mfa_extra_mo}/mo (verified).`);
+    }
+  }
+
+  out.total=out.base+out.users+out.sso+out.mfa;
   return out;
 }
 
@@ -144,7 +157,7 @@ const faq=[
   ['What does AuthCost compare?','Published list prices for auth and identity vendors: base plan fees, MAU/MRU allowances and overages, and enterprise SSO / Directory Sync connection fees. Every row links the vendor’s own pricing page and the date we checked it.'],
   ['MAU vs MRU — why does it matter?','Most vendors bill Monthly Active Users (any activity that month). Clerk bills Monthly Retained Users — a user who returns at least one day after signup. MRU is often lower than MAU for apps with many one-time signups, so a raw MAU-to-MAU comparison understates Clerk’s relative price.'],
   ['Why are some rows blank?','We never invent a number. If a rate is “contact sales,” custom, or not printed as a fixed figure on the official page, we leave it blank and mark the gap.'],
-  ['How is the calculator’s cost computed?','Monthly ≈ base plan + max(0, users − included) × overage + SSO connection fees from the published ladder. Cognito/Supabase SAML uses a federated-MAU assumption you can change. Token-based plans (Logto) use base + SSO only unless noted.'],
+  ['How is the calculator’s cost computed?','Monthly ≈ base + max(0, users − included) × overage + SSO fees from the published ladder + verified MFA add-ons when MFA is required. Cognito/Supabase SAML uses a federated-MAU assumption you can change. Token-based plans (Logto) use base + SSO (+ MFA add-on if required) only unless noted. We never invent an MFA price.'],
   ['Do affiliate links change rankings?','No. Ranking is by computed cost only. Affiliate links are labeled when active.']
 ];
 const faqLd={'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))};
@@ -195,19 +208,29 @@ ${mailBox('h','Know the week an auth price changes','Send me the weekly ledger')
 <h2>Questions</h2>${faq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}`});
 
 // ---- Calculator
-page({file:'calculator.html',og:'calculator',title:`Auth cost calculator — MAU and SSO | ${NAME}`,desc:'Enter monthly users and enterprise SSO connections. See every verifiable plan ranked by monthly and annual cost.',body:`
-<section class="hero"><div class="eyebrow">Cost calculator · ${asOf}</div><h1>Your MAU and SSO count in, your bill out.</h1>
-<p class="lede">Rank verified plans by estimated monthly cost. Share the scenario with one URL.</p></section>
+page({file:'calculator.html',og:'calculator',title:`Auth cost calculator — MAU, MFA and SSO | ${NAME}`,desc:'Pick MAU, MFA, and enterprise SSO connections. See every verifiable plan ranked by monthly cost. Shareable URL and embed snippet.',body:`
+<section class="hero"><div class="eyebrow">Cost calculator · ${asOf}</div><h1>Your MAU, MFA, and SSO count in — your bill out.</h1>
+<p class="lede">Rank verified plans by estimated monthly cost from published list prices only. The URL updates as you type; copy it or embed the calculator.</p></section>
 <div class="panel" id="calc"><div class="filters" style="margin:0">
-<label>Monthly users<input id="c-mau" type="number" min="0" step="1000" value="50000"></label>
+<label>Monthly users (MAU/MRU)<input id="c-mau" type="number" min="0" step="1000" value="50000"></label>
 <label>SSO connections<input id="c-sso" type="number" min="0" step="1" value="5"></label>
 <label>Federated MAU (Cognito/Supabase SAML)<input id="c-fed" type="number" min="0" step="100" value="1000"></label>
+<label class="chk"><input id="c-mfa" type="checkbox"> Require MFA</label>
 <label class="chk"><input id="c-vo" type="checkbox" checked> Verified only</label>
-</div></div>
+</div>
+<p class="note" style="margin:12px 0 0">MFA adds a fee only when the vendor publishes one (e.g. Logto $48/mo). Plans that publish “no MFA” are omitted when MFA is required — we never invent an MFA price.</p></div>
 <div class="save" id="c-save" aria-live="polite"></div>
-<div class="tbl" style="margin-top:14px"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Base</th><th class="n">Users</th><th class="n">SSO</th><th class="n">Monthly</th><th class="n">Annual</th><th>Notes</th><th scope="col"><span class="skip">Link</span></th></tr></thead><tbody id="rank"><tr><td colspan="9">Loading…</td></tr></tbody></table></div>
+<div class="tbl" style="margin-top:14px"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Base</th><th class="n">Users</th><th class="n">SSO</th><th class="n">MFA</th><th class="n">Monthly</th><th class="n">Annual</th><th>Notes</th><th scope="col"><span class="skip">Link</span></th></tr></thead><tbody id="rank"><tr><td colspan="10">Loading…</td></tr></tbody></table></div>
 <p class="note">Excludes SMS, custom domains, M2M token overages, taxes and negotiated discounts. Plans that cannot price the scenario (e.g. Auth0 above 500 MAU on self-serve) are omitted. ${meth}.</p>
-<div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro.html">See Pro early access</a>.</p></div>`});
+<div class="panel calc-share" id="c-share-box">
+<h2 class="h3" style="margin-top:0">Share or embed this scenario</h2>
+<div class="row"><button class="btn" type="button" id="c-copy" data-grow="calculator_share">Copy share link</button> <button class="btn ghost" type="button" id="c-copy-embed" data-grow="calculator_embed">Copy embed snippet</button> <span class="note" id="c-sh" role="status"></span></div>
+<label>Shareable URL<textarea id="c-url" readonly rows="2" aria-label="Shareable calculator URL"></textarea></label>
+<label>Embed iframe<textarea id="c-embed" readonly rows="3" aria-label="Embeddable iframe snippet"></textarea></label>
+<p class="note"><a id="c-back" href="/calculator.html">Open full calculator</a> · <a href="/">Back to the AuthCost ledger</a></p>
+</div>
+<div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro.html">See Pro early access</a>.</p></div>
+<script>try{if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embed')}catch(e){}</script>`});
 
 // ---- Vendors
 for(const v of vendors){
@@ -345,8 +368,8 @@ W('api/plans.csv',['id,vendor,plan,base_mo,included_users,user_unit,overage_per_
   ...plans.map(p=>[p.id,p.vendor,p.plan,p.base_mo,p.included_users,p.user_unit,p.overage_per_user,p.sso_included,p.sso_extra_mo,p.status,p.source,p.checked].map(csvEscape).join(','))].join('\n'));
 W('api/changes.csv',['date,vendor,kind,summary,source,observed',...changes.map(c=>[c.date,c.vendor,c.kind,c.summary,c.source,c.observed].map(csvEscape).join(','))].join('\n'));
 
-W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology.html\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator](${SITE}/calculator.html)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Methodology](${SITE}/methodology.html)\n`);
-W('llms-full.txt',`# ${NAME} — full ledger\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
+W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology.html\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator.html)\n- [Calculator pretty URL](${SITE}/calculator)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Methodology](${SITE}/methodology.html)\n`);
+W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator.html?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator.html?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
 
 W('manifest.webmanifest',JSON.stringify({name:`${NAME} — Auth cost of ownership`,short_name:NAME,start_url:'/?source=pwa',scope:'/',display:'standalone',background_color:'#f7f5f0',theme_color:'#141821',icons:[{src:'/assets/icon-192.png',sizes:'192x192',type:'image/png'},{src:'/assets/icon-512.png',sizes:'512x512',type:'image/png'}]}));
 const V='ac-'+Date.now().toString(36),pre=['/','/calculator.html','/compare/','/changes.html','/pro.html','/assets/style.css','/assets/app.js','/api/plans.json','/offline.html'];
@@ -366,4 +389,5 @@ W('api/estimate-meta.json',JSON.stringify({scenarios:SCENARIOS,lastChecked,nVer}
 for(const f of ['style.css','app.js'])W('assets/'+f,fs.readFileSync(R('src/'+f)));
 if(fs.existsSync(R('assets')))fs.cpSync(R('assets'),path.join(D,'assets'),{recursive:true});
 
+W('_redirects','/calculator /calculator.html 200\n/calculator/ /calculator.html 200\n');
 console.log(`built ${urls.length} pages (${sm.length} in sitemap) → dist/ (${plans.length} plans, ${nVer} verified, ${vendors.length} vendors)`);

@@ -13,7 +13,7 @@ if(tt) tt.addEventListener('click',()=>{
 
 function estimate(plan, mau, sso=0, opts={}){
   if(plan.status!=='verified') return null;
-  const out={base:0,users:0,sso:0,total:null,notes:[]};
+  const out={base:0,users:0,sso:0,mfa:0,total:null,notes:[]};
   if(plan.vendor_id==='auth0' && plan.tier==='paid' && mau>plan.included_users) return null;
   if(plan.vendor_id==='auth0' && plan.tier==='free' && mau>plan.included_users) return null;
   if(plan.tier==='free' && plan.included_users!=null && mau>plan.included_users && plan.overage_per_user==null && !plan.overage_per_1m_mau) return null;
@@ -57,7 +57,18 @@ function estimate(plan, mau, sso=0, opts={}){
   } else if(need>(plan.sso_included||0)){
     return null;
   }
-  out.total=out.base+out.users+out.sso;
+  out.mfa=0;
+  if(opts.mfa){
+    if(plan.mfa_available===false){
+      out.notes.push('Plan publishes no MFA — omitted when MFA required.');
+      return null;
+    }
+    if(plan.mfa_extra_mo!=null){
+      out.mfa=plan.mfa_extra_mo;
+      out.notes.push('MFA add-on $'+plan.mfa_extra_mo+'/mo (verified).');
+    }
+  }
+  out.total=out.base+out.users+out.sso+out.mfa;
   return out;
 }
 
@@ -77,7 +88,7 @@ async function renderHome(){
   const top=ranked.slice(0,5);
   kOut.innerHTML=`<p><b>Cheapest:</b> ${top[0].p.vendor} ${top[0].p.plan} at <b>${usd(top[0].e.total)}/mo</b> (${yr(top[0].e.total)}/yr)</p>
   <ol style="margin:8px 0 0;padding-left:18px">${top.map(x=>`<li>${x.p.vendor} ${x.p.plan}: ${usd(x.e.total)}/mo</li>`).join('')}</ol>
-  <p class="note">${ranked.length} plans ranked · <a href="/calculator.html?mau=${mau}&sso=${sso}">Open full calculator</a></p>`;
+  <p class="note">${ranked.length} plans ranked · <a href="/calculator.html?mau=${mau}&sso=${sso}&mfa=0">Open full calculator</a></p>`;
 }
 if(kOut){ [kMau,kSso].forEach(el=>el&&el.addEventListener('input',renderHome)); renderHome(); }
 
@@ -97,27 +108,75 @@ function filterTable(){
 if($('#plans')){ [q,vo].forEach(el=>el&&el.addEventListener('input',filterTable)); vo&&vo.addEventListener('change',filterTable); filterTable(); }
 
 // Calculator
-const rank=$('#rank'), cMau=$('#c-mau'), cSso=$('#c-sso'), cFed=$('#c-fed'), cVo=$('#c-vo'), cSave=$('#c-save');
+const rank=$('#rank'), cMau=$('#c-mau'), cSso=$('#c-sso'), cFed=$('#c-fed'), cMfa=$('#c-mfa'), cVo=$('#c-vo'), cSave=$('#c-save');
+const cUrl=$('#c-url'), cEmbed=$('#c-embed'), cSh=$('#c-sh'), cBack=$('#c-back');
+let calcTracked=false, calcPlans=null;
+
+function calcParams(){
+  const mau=+cMau?.value||0, sso=+cSso?.value||0, fed=+cFed?.value||0;
+  const mfa=!!cMfa?.checked, vo=cVo?!!cVo.checked:true;
+  return {mau,sso,fed,mfa,vo};
+}
+
+function shareUrl(opts={}){
+  const {mau,sso,fed,mfa,vo}=calcParams();
+  const u=new URL(location.origin+'/calculator.html');
+  u.searchParams.set('mau',String(mau));
+  u.searchParams.set('sso',String(sso));
+  u.searchParams.set('fed',String(fed));
+  u.searchParams.set('mfa',mfa?'1':'0');
+  u.searchParams.set('vo',vo?'1':'0');
+  if(opts.embed) u.searchParams.set('embed','1');
+  return u;
+}
+
+function syncShareUI(){
+  const full=shareUrl();
+  const emb=shareUrl({embed:true});
+  if(cUrl) cUrl.value=full.toString();
+  if(cEmbed) cEmbed.value=`<iframe src="${emb.toString()}" title="AuthCost MAU cost calculator" width="100%" height="720" style="border:1px solid #e6e2d9;border-radius:10px" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+  if(cBack){ cBack.href=full.pathname+full.search; }
+}
+
 async function renderCalc(){
   if(!rank) return;
+  if(new URLSearchParams(location.search).get('embed')==='1') document.body.classList.add('embed');
   const params=new URLSearchParams(location.search);
   if(params.has('mau')&&cMau&&!cMau.dataset.touched) cMau.value=params.get('mau');
   if(params.has('sso')&&cSso&&!cSso.dataset.touched) cSso.value=params.get('sso');
-  const plans=await loadPlans();
-  const mau=+cMau.value||0, sso=+cSso.value||0, fed=+cFed?.value||0;
-  const ranked=plans.map(p=>{const e=estimate(p,mau,sso,{federated_mau:fed});return e&&e.total!=null?{p,e}:null}).filter(Boolean)
-    .filter(x=>!cVo?.checked||x.p.status==='verified').sort((a,b)=>a.e.total-b.e.total);
+  if(params.has('fed')&&cFed&&!cFed.dataset.touched) cFed.value=params.get('fed');
+  if(params.has('mfa')&&cMfa&&!cMfa.dataset.touched) cMfa.checked=params.get('mfa')==='1';
+  if(params.has('vo')&&cVo&&!cVo.dataset.touched) cVo.checked=params.get('vo')!=='0';
+  if(!calcPlans) calcPlans=await loadPlans();
+  const {mau,sso,fed,mfa,vo}=calcParams();
+  const ranked=calcPlans.map(p=>{const e=estimate(p,mau,sso,{federated_mau:fed,mfa});return e&&e.total!=null?{p,e}:null}).filter(Boolean)
+    .filter(x=>!vo||x.p.status==='verified').sort((a,b)=>a.e.total-b.e.total);
   const cheapest=ranked[0];
   if(cSave) cSave.innerHTML=cheapest?`<b>Lowest estimate:</b> ${cheapest.p.vendor} ${cheapest.p.plan} at ${usd(cheapest.e.total)}/mo (${yr(cheapest.e.total)}/yr) among ${ranked.length} plans.`:'No verifiable plans for this scenario.';
   rank.innerHTML=ranked.map((x,i)=>`<tr><td class="n">${i+1}</td><td><a href="/vendors/${x.p.vendor_id}.html">${x.p.vendor}</a> · ${x.p.plan}</td>
-    <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td>
+    <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td><td class="n">${usd(x.e.mfa||0)}</td>
     <td class="n"><b>${usd(x.e.total)}</b></td><td class="n">${yr(x.e.total)}</td>
     <td class="src" style="white-space:normal">${(x.e.notes||[]).join(' ')||'—'}</td>
-    <td><a class="btn ghost" style="padding:4px 8px;font-size:12px" href="${x.p.source}" rel="noopener">Source</a></td></tr>`).join('')||'<tr><td colspan="9">No results</td></tr>';
-  const u=new URL(location.href); u.searchParams.set('mau',mau); u.searchParams.set('sso',sso); history.replaceState(null,'',u);
+    <td><a class="btn ghost" style="padding:4px 8px;font-size:12px" href="${x.p.source}" rel="noopener">Source</a></td></tr>`).join('')||'<tr><td colspan="10">No results</td></tr>';
+  const u=shareUrl();
+  if(params.get('embed')==='1') u.searchParams.set('embed','1');
+  history.replaceState(null,'',u.pathname+u.search+(location.hash||''));
+  syncShareUI();
+  if(!calcTracked && window.grow&&window.grow.track){
+    calcTracked=true;
+    window.grow.track('cta_click',{cta:'calculator_use'});
+  }
 }
+
+async function copyText(text, okMsg){
+  try{ await navigator.clipboard.writeText(text); if(cSh) cSh.textContent=okMsg; }
+  catch(e){ if(cSh) cSh.textContent=text; }
+}
+
 if(rank){
   [cMau,cSso,cFed].forEach(el=>el&&el.addEventListener('input',()=>{el.dataset.touched='1';renderCalc()}));
-  cVo&&cVo.addEventListener('change',renderCalc);
+  [cMfa,cVo].forEach(el=>el&&el.addEventListener('change',()=>{el.dataset.touched='1';renderCalc()}));
+  $('#c-copy')?.addEventListener('click',()=>{copyText(shareUrl().toString(),'Share link copied'); window.grow?.track('cta_click',{cta:'calculator_share'});});
+  $('#c-copy-embed')?.addEventListener('click',()=>{copyText(cEmbed?.value||'','Embed snippet copied'); window.grow?.track('cta_click',{cta:'calculator_embed'});});
   renderCalc();
 }

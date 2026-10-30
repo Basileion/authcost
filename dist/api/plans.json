@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-30T18:35:10.291Z",
+  "generated": "2026-10-30T18:48:42.084Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "affiliates": {},
@@ -95,7 +95,8 @@
       "notes": "50k MRU per app. No SSO. No MFA. Fixed 7-day session.",
       "source": "https://clerk.com/pricing",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "mfa_available": false
     },
     {
       "id": "clerk-pro",
@@ -387,7 +388,9 @@
       "notes": "From $24/mo. Unlimited MAU. 50k tokens then $0.08 per 100. Enterprise SSO $48/connector. MFA add-on $48. Organizations add-on $48. Token≠MAU; calculator uses base + SSO only unless tokens estimated.",
       "source": "https://logto.io/pricing",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "mfa_available": true,
+      "mfa_extra_mo": 48
     },
     {
       "id": "kinde-free",
