@@ -3,11 +3,11 @@ import fs from 'node:fs';import path from 'node:path';
 const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');const R=p=>path.join(root,p);const D=R('dist');
 const PROD_URL='https://authcost.pages.dev';
 const SITE=(process.env.SITE_URL||(process.env.PROD?PROD_URL:'http://localhost:4190')).replace(/\/$/,'');
-// Placeholders — replace only after Kurt approves Kit products
-const FORM_ACTION='#pending-kit-form';
-const CHECKOUT_PRO_MONTHLY='#pending-pro';
-const CHECKOUT_PRO_ANNUAL='#pending-pro';
-const CHECKOUT_SPONSOR='#pending-sponsor';
+// Kit (o11y-watch.kit.com) — form + Pro + founding sponsor
+const FORM_ACTION='https://app.kit.com/forms/10121361/subscriptions';
+const CHECKOUT_PRO_MONTHLY='https://o11y-watch.kit.com/products/authcost-pro';
+const CHECKOUT_PRO_ANNUAL='https://o11y-watch.kit.com/products/authcost-pro';
+const CHECKOUT_SPONSOR='https://o11y-watch.kit.com/products/authcost-founding-sponsor-slot';
 const CONTACT='mailto:basileion.ops@gmail.com';
 const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending'};
 const NAME='AuthCost';
@@ -159,7 +159,7 @@ const heroSc=SCENARIOS[2];
 const heroRank=rankScenario(heroSc.mau,heroSc.sso);
 const heroGap=heroRank.length>=2?heroRank.at(-1).e.total-heroRank[0].e.total:0;
 
-const signup=(id='s',hook='Get the weekly auth ledger')=>`<form class="signup" action="${FORM_ACTION}" method="post" data-form="kit"><label for="${id}-e" class="skip">Email</label><input id="${id}-e" type="email" name="email_address" required placeholder="you@company.com" autocomplete="email"><button class="btn" type="submit">${esc(hook)}</button></form><p class="note">Weekly: every auth price change we confirmed, SSO fee moves, and the cheapest verified plan for 10k and 50k users. Free; unsubscribe in one click. <span class="mut">(Kit form placeholder until Kurt approves.)</span></p>`;
+const signup=(id='s',hook='Get the weekly auth ledger')=>`<form class="signup" action="${FORM_ACTION}" method="post" data-form="kit"><label for="${id}-e" class="skip">Email</label><input id="${id}-e" type="email" name="email_address" required placeholder="you@company.com" autocomplete="email"><button class="btn" type="submit">${esc(hook)}</button></form><p class="note">Weekly: every auth price change we confirmed, SSO fee moves, and the cheapest verified plan for 10k and 50k users. Free; unsubscribe in one click.</p>`;
 const mailBox=(id,h,hook)=>`<section class="mail" id="ledger-mail"><div><div class="eyebrow">Free weekly ledger</div><h2 class="h3">${esc(h)}</h2></div><div>${signup(id,hook)}</div></section>`;
 const trust=`<ul class="trust"><li><b>Source-linked</b> every price links the vendor’s own page</li><li><b>Independent</b> no vendor pays for placement</li><li><b>Checked weekly</b> a script diffs every source page</li><li><b>No paid rankings</b> ordered by computed cost only</li></ul>`;
 
@@ -268,7 +268,7 @@ page({file:'changes.html',og:'changes',title:`Auth price-change log | ${NAME}`,d
 W('rss.xml',`<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${NAME} — auth price log</title><link>${SITE}/changes.html</link><description>Dated, sourced auth price changes.</description>${changes.map(c=>`<item><title>${esc(c.vendor+': '+c.kind+' ('+c.date+')')}</title><link>${esc(c.source)}</link><guid isPermaLink="false">${esc(c.vendor+c.date+c.kind)}</guid><pubDate>${new Date(c.observed+'T12:00:00Z').toUTCString()}</pubDate><description>${esc(c.summary)}</description></item>`).join('')}</channel></rss>`);
 
 // ---- Pro / sponsor / methodology / data
-const proFaq=[['What triggers an alert?','A confirmed change on a source page for a plan or vendor you watch: base fee, overage, or SSO ladder.'],['Is Pro available now?','Early access placeholder — Kit product pending Kurt’s approval. Free ledger stays free.'],['Cancel?','Yes, anytime once checkout is live.']];
+const proFaq=[['What triggers an alert?','A confirmed change on a source page for a plan or vendor you watch: base fee, overage, or SSO ladder.'],['Is Pro available now?','Yes — checkout via Kit. Free ledger stays free.'],['Cancel?','Yes, anytime once checkout is live.']];
 page({file:'pro.html',og:'pro',title:`${NAME} Pro — auth price alerts ($9/mo, early access)`,desc:`$90/yr for alerts on the auth plans you watch plus CSV export. Early access.`,ld:[{'@context':'https://schema.org','@type':'Product',name:`${NAME} Pro`,offers:[{'@type':'Offer',price:'9.00',priceCurrency:'USD'},{'@type':'Offer',price:'90.00',priceCurrency:'USD'}]}],body:`
 <section class="hero"><div class="eyebrow">${NAME} Pro · early access</div><h1>$90 a year for alerts before the auth invoice moves.</h1>
 <p class="lede">Watch the vendors and plans you run. Pro emails you when published prices change.</p></section>
@@ -281,7 +281,7 @@ page({file:'pro.html',og:'pro',title:`${NAME} Pro — auth price alerts ($9/mo, 
 page({file:'checkout.html',og:'pro',title:`Review your order — ${NAME} Pro`,desc:'Summary before secure checkout.',body:`
 <section class="hero narrow"><div class="eyebrow">Review</div><h1>Review AuthCost Pro</h1><p class="lede">Kit checkout placeholder — product not created yet.</p></section>
 <div class="panel"><dl class="sum"><dt>Plan</dt><dd>Pro · annual suggested $90</dd><dt>Monthly option</dt><dd>$9</dd></dl>
-<a class="btn wide" href="${CHECKOUT_PRO_ANNUAL}">Continue to checkout (pending)</a></div>`});
+<a class="btn wide" href="${CHECKOUT_PRO_ANNUAL}">Continue to checkout</a></div>`});
 page({file:'sponsor.html',og:'sponsor',title:`Sponsor ${NAME}`,desc:'Reach founders choosing an auth stack. Founding rates.',body:`
 <section class="hero"><div class="eyebrow">Sponsorship · founding rates</div><h1>Reach buyers at the moment they pick auth.</h1></section>
 <div class="grid3"><div class="plan feat"><h2 class="h3">Founding newsletter slot</h2><div class="price">$49<small class="note"> / placement</small></div>
