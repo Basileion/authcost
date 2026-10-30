@@ -1,0 +1,245 @@
+Pricing · Logto
+The real pay-as-you-go pricing you&#x27;ve expected
+Logto provides competitive plan options with transparent and affordable pricing designed for growing companies.
+Free
+$0/mo
+For starting out and trying Logto, no credit card required.
+Up to 50,000 MAU
+50K tokens
+User authentication
+Machine-to-machine app
+Account APIs for account settings
+Audit logs and user management
+Start building
+Pro
+Best Value
+From $24/mo
+For production and teams.
+50K free tokens, then billed by usage
+Unlimited MAU and total applications
+Custom claims and user impersonation
+Passkey sign-in and collect user profile
+Bring your UI and hide Logto branding
+Add-ons, billed separately
+RBAC Organizations (Multi-tenancy) MFA Enterprise SSO SAML & third-party apps
+Enterprise
+Contact us
+For large teams and businesses with enterprise-grade requirements.
+Custom resource quota
+Custom data region
+Logto Private Cloud
+Service-level agreement (SLA)
+Premium support
+Migration support
+Running Logto on your own infrastructure? See self-hosted plans .
+Comparing features
+per month
+Basics
+Base price
+The standard cost before extra token usage and add-ons
+0 $24 Contact
+MAU
+Maximum number of active users allowed in Logto Cloud platform in a given period (month)
+Up to 50K Unlimited* Expanded
+Tokens
+Only access tokens are counted. Learn what tokens are and how they relate to MAU
+50K 50K included
+$0.08 per 100 extra
+Contact
+Applications
+Total applications
+The total amount of applications needed for integration
+3 Unlimited* Contact
+Machine-to-machine apps
+The application type for M2M authentication
+1 1 included
+$8 each extra
+OIDC/OAuth 3rd party apps
+OAuth authorization with a consent screen
+- $8
+Each third-party app
+SAML apps
+Logto as a SAML identity provider
+- $96
+Each SAML app
+API resources
+Resource count
+The number of API resources registered in Logto
+- 3 included
+$4 each extra
+Permission per resource
+The detailed permissions defined under API resources
+- Unlimited* Contact
+UI and branding
+Custom domains
+Use your own unique domains. Supports multiple custom domains.
+$48 for up to 10 domains
+Hide Logto branding
+Remove "Powered by Logto" to spotlight your brand exclusively
+Custom CSS
+User-defined code that modifies the style and appearance of pre-built Logto sign-in UI
+Bring your UI
+Use and upload your own sign-in UI
+App logo and favicon
+Customize the app logo and favicon
+Dark mode
+Enable or disable the dark mode of the sign-in UI
+Internationalization
+Make your product easily adapted to different languages and regions
+Omni sign-in
+Multi-app and cross-domain sign in
+Password sign-in
+Log in with a secret password, and the password policy is configurable
+Passwordless - Email and SMS
+Log in with a one-time code sent via email or SMS
+Email magic links
+Magic links for organization member invitation, user invitation, or sign-in
+Passkey sign-in
+Passkey as the first authentication factor
+Email connector
+Including pre-built email services, SMTP, HTTPS
+SMS connector
+Including SMS services, API Gateway
+Social connectors
+Log in through popular social accounts, Google, Github etc
+Enterprise SSO Add-on
+Enterprise customers log in with their own identity provider, supporting SAML and OIDC
+- $48
+Each connector
+Secret Vault
+Store access and refresh tokens from OAuth/OIDC providers for third-party API access
+Multi-factor authentication Add-on
+Passkeys, authenticator app TOTP, SMS, email and backup codes
+All factors
+Impersonation
+Act on behalf of another user identity
+Personal access token
+Secure token-based access, no credentials required
+User management
+Manage user authentication, authorization, and attributes directly
+Account API
+Build a fully custom account center with APIs end users can access directly
+Out-of-the-box account center
+Quickly integrate out-of-the-box verification and security settings flows with prebuilt UI
+Collect user profile
+Customize sign-up fields to collect additional user information and custom data
+RBAC (Role-based access control) Add-on A bundled add-on that includes all the role-based access control features. These roles apply across the whole tenant and your API resources. For roles scoped to a single organization, see Organizations below.
+- $32 Contact
+User roles
+Define user roles and manage access to your system
+Machine-to-machine roles
+Define machine-to-machine type roles and manage access to your system
+Organizations Add-on A bundled add-on that includes all the organization features
+- $48 Contact
+Organization count
+An organization is a group of users. Usually used in multi-tenancy apps
+Users per organization
+The amount of users under each organization
+Invitation (Management API)
+Invite members to join the organization themselves
+Organization roles
+Define customized roles that only apply within an organization, separate from the tenant-wide roles in the RBAC add-on
+Organization permissions
+Define customized permissions under organizations
+Organization-level MFA
+Require all members of an organization to enable MFA
+JIT provisioning
+Assign memberships and roles to users when they first sign in
+Foundational security
+Suspend users
+Suspend users to block their logins
+Invitation-only sign up
+Restrict users can sign up only by invitation
+Security verification
+Allow the app to require step-up authentication for sensitive actions
+Password policy
+Custom requirements for passwords
+Rotate signing key
+Prevents key leaks and token tampering
+OIDC back-channel logout
+Seamless and secure logout across all connected apps
+CSRF protection
+Use OIDC with ‘state’ checks, PKCE, and CORS to prevent CSRF attacks.
+DoS protection
+Use Cloudflare & Azure firewall protection, flexible computing resources to prevent flood attacks, application layer attacks, etc.
+Advanced security bundle Add-on A bundled add-on with all advanced security features
+Captcha and bot protection
+Provide all kinds of Captcha providers to ensure only real users can sign up
+Identifier lockout (brute-force protection)
+Limit login attempts to prevent brute-force attacks
+Block disposable email addresses
+Block log in attempts from known disposable email services
+Block sub-email addresses
+Prevent the use of "+" email addresses
+Email blocklist
+Block users based on specific attributes or domains
+Developers and platform
+Webhooks
+Send real-time data to another system when an event happens
+1 10 Contact
+Audit log retention
+How long user authentication actions are stored for issue resolution, security, and compliance needs
+3 days 14 days Contact
+Custom token claims
+Allow to add personalized data to a user and machine-to-machine authentication token
+Tenant members
+Number of collaborators who can access and manage the Logto cloud console.
+Support
+Community chat support
+Ask questions and share ideas with others in Discord
+Discord or Slack private channel
+Directly reach out Logto service team with a private space
+Email ticket support
+Directly reach out Logto service team with email communication
+- (48h)
+Faster, prioritized assistance for urgent issues
+- -
+Developer onboarding
+Logto team works directly with your own developers for quick migration and onboarding
+Solution engineer
+A dedicated engineer to suggest architecture and tech design
+SLA
+Defines service standards and response times between you and Logto
+Private Cloud
+Your own dedicated Logto instance, designed to meet your specific security, compliance, and performance needs.
+Compliance
+Standards & Privacy compliant
+Complying with legal, and security standards (e.g., SOC 2) to protect user data and privacy
+SOC 2 report
+Provides SOC 2 compliance reports
+HIPAA/BAA
+Complying with HIPPA/BAA
+* "Unlimited" refers to features without a fixed limit, but is subject to system policies to ensure fair usage, security, and optimal performance.
+Frequently asked questions
+What are tokens and how are they related to MAU?
+Logto adopts token-based authentication following the OAuth 2.0 and OpenID Connect standards. Each authentication or authorization request results in Logto issuing tokens that represent the user’s authentication or authorization status — such as access tokens, ID tokens, and refresh tokens.
+For billing purposes, only access tokens are counted (ID tokens and refresh tokens are excluded).
+An access token is issued and counted in the following scenarios:
+User sign-in: After a user successfully signs in, an opaque access token is issued. This token can be used to call the UserInfo endpoint or Logto Account API for account management.
+Backend API authorization (RBAC): When Role-Based Access Control (RBAC) is enabled to protect your backend APIs, a JWT access token is issued for each resource-specific authorization request following the user’s initial authentication.
+Organization authorization: If the organization feature is enabled, Logto provides organization-level access control by issuing organization access tokens. A separate organization access token is generated for each organization-specific authorization request.
+Machine-to-Machine (M2M) authorization: An access token is issued for each client_credentials authorization request (e.g., when accessing the Logto Management API).
+Token exchanges: A new access token is issued during personal access token exchanges or user impersonation token exchanges.
+Refresh token usage: If offline_access is enabled, a new access token is issued each time a valid refresh token is exchanged after the previous token expires.
+Token vs. MAU and why token-based billing is better
+MAU-based billing charges per unique user per month, regardless of activity. Token-based billing instead charges by actual usage: every time an access token is issued.
+Token-based billing represents true pay-as-you-go pricing. Unlike MAU-based models that charge for the entire month regardless of usage, you only pay for actual authentication and authorization activities. This approach is budget-friendly for low-frequency users who only access your product occasionally, as they generate fewer tokens, resulting in lower costs compared to flat MAU pricing. This makes Logto more cost-effective than competitors, especially for applications with varied engagement patterns.
+For example, one sign-in may consume 1 access token. Using features like M2M or Organizations can generate additional tokens. To keep track, Logto provides real-time token usage monitoring in Console > Dashboard, which helps you better understand the relationship between MAU and tokens for your specific project.
+Should I use organization feature or create multiple Logto tenant?
+Logto’s organization feature is designed for multi-tenant applications. If you need one universal user pool, where a single identity can access multiple organizations, use the organization feature.
+If you have multiple clients, each requiring a separate user pool, create a Logto tenant for each.
+Our pricing is based on each Logto tenant. Each Logto tenant starts at $24 + add-ons.
+More details: Logto Pricing & Billing
+How can I upgrade to Pro plan?
+Within the Logto Cloud Console, you will come across multiple prompts and options suggesting an upgrade if we detect your desire for a higher quota or access to premium features. You can easily navigate to "Settings" and select "Your plan and billing" to choose a suitable plan and proceed with the checkout process.
+Is it possible for me to downgrade to Free plan?
+Absolutely! You have the flexibility to manage your plan on your own. However, it&#x27;s important to note that each plan offers different features and quotas. Prior to downgrading, ensure that you meet the criteria of the lower-tier plan. Once you meet the eligibility requirements, you can proceed with the downgrade. Please be aware that your current billing cycle ends instantly, and it will start a new billing cycle under the new plan.
+How is my bill calculated if I downgrade?
+When considering a downgrade to a lower-tier plan, it&#x27;s important to ensure that you meet certain criteria before making the switch. Once you meet these criteria, you can proceed with the downgrade.
+It&#x27;s worth noting that both downgrades and upgrades take immediate effect. Your quota will be immediately shifted to the Free plan quota. Your base price will be adjusted proportionately, and any refunds owed to you will be deducted from your current bill.
+What happens if I decide to stop using Logto?
+We regret to hear that you have chosen to discontinue using Logto. Before proceeding, please consider the following options: Safely migrate your critical data and resources to an alternative platform or storage solution.
+Delete any unnecessary data and the tenant associated with your account.
+Feel free to reach out to us for expert assistance during this process.
+Try Logto today and unlock a great deal!
+Get started free

@@ -1,0 +1,34 @@
+[
+ {
+  "id": "clerk",
+  "status": "baseline"
+ },
+ {
+  "id": "auth0",
+  "status": "baseline"
+ },
+ {
+  "id": "cognito",
+  "status": "baseline"
+ },
+ {
+  "id": "workos",
+  "status": "baseline"
+ },
+ {
+  "id": "stytch",
+  "status": "baseline"
+ },
+ {
+  "id": "logto",
+  "status": "baseline"
+ },
+ {
+  "id": "kinde",
+  "status": "baseline"
+ },
+ {
+  "id": "supabase",
+  "status": "baseline"
+ }
+]

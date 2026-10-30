@@ -1,0 +1,20 @@
+id,vendor,plan,base_mo,included_users,user_unit,overage_per_user,sso_included,sso_extra_mo,status,source,checked
+clerk-hobby,Clerk,Hobby,0,50000,MRU,,0,,verified,https://clerk.com/pricing,2026-10-30
+clerk-pro,Clerk,Pro,25,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-30
+clerk-business,Clerk,Business,300,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-30
+auth0-free,Auth0,Free,0,25000,MAU,,1,,verified,https://auth0.com/pricing,2026-10-30
+auth0-essentials,Auth0,Essentials (B2C),35,500,MAU,,,,verified,https://auth0.com/pricing,2026-10-30
+auth0-professional,Auth0,Professional (B2C),240,500,MAU,,,,verified,https://auth0.com/pricing,2026-10-30
+cognito-lite,Amazon Cognito,Lite,0,10000,MAU,0.0055,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30
+cognito-essentials,Amazon Cognito,Essentials,0,10000,MAU,0.015,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30
+cognito-plus,Amazon Cognito,Plus,0,0,MAU,0.02,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30
+workos-authkit,WorkOS,AuthKit,0,1000000,MAU,,0,125,verified,https://workos.com/pricing,2026-10-30
+stytch-payg,Stytch,Pay as you go (B2B),0,10000,MAU,,5,125,verified,https://stytch.com/pricing,2026-10-30
+logto-free,Logto,Free,0,50000,MAU,,0,,verified,https://logto.io/pricing,2026-10-30
+logto-pro,Logto,Pro,24,,token,,0,48,verified,https://logto.io/pricing,2026-10-30
+kinde-free,Kinde,Free,0,10500,MAU,,1,,verified,https://kinde.com/pricing/,2026-10-30
+kinde-pro,Kinde,Pro,25,10500,MAU,0.0175,1,,verified,https://kinde.com/pricing/,2026-10-30
+kinde-plus,Kinde,Plus,75,10500,MAU,0.0163,,0,verified,https://kinde.com/pricing/,2026-10-30
+kinde-scale,Kinde,Scale,250,10500,MAU,0.0151,,0,verified,https://kinde.com/pricing/,2026-10-30
+supabase-free,Supabase Auth,Free (platform),0,50000,MAU,,0,,verified,https://supabase.com/pricing,2026-10-30
+supabase-pro,Supabase Auth,Pro (platform),25,100000,MAU,0.00325,,,verified,https://supabase.com/pricing,2026-10-30

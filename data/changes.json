@@ -1,0 +1,20 @@
+[
+  {
+    "date": "2026-10-30",
+    "observed": "2026-10-30",
+    "vendor": "AuthCost",
+    "vendor_id": "authcost",
+    "kind": "launch-seed",
+    "summary": "Initial ledger seeded from official pricing pages (Clerk, Auth0, Cognito, WorkOS, Stytch, Logto, Kinde, Supabase Auth).",
+    "source": "https://clerk.com/pricing"
+  },
+  {
+    "date": "2027-01-01",
+    "observed": "2026-10-30",
+    "vendor": "Clerk",
+    "vendor_id": "clerk",
+    "kind": "fee-start",
+    "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
+    "source": "https://clerk.com/pricing"
+  }
+]

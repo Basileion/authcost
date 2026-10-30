@@ -1,0 +1,18 @@
+# AuthCost
+
+> Auth and identity list prices (base + MAU/MRU + SSO), 19 plan rows, 19 verified, 8 vendors, checked 2026-10-30.
+
+## Methodology
+Prices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: https://authcost.pages.dev/methodology.html
+
+## Data (CC BY 4.0 — attribute "AuthCost" + link https://authcost.pages.dev/)
+- [Plans JSON](https://authcost.pages.dev/api/plans.json)
+- [Plans CSV](https://authcost.pages.dev/api/plans.csv)
+- [Changes JSON](https://authcost.pages.dev/api/changes.json)
+- [Full dump](https://authcost.pages.dev/llms-full.txt)
+
+## Key pages
+- [Calculator](https://authcost.pages.dev/calculator.html)
+- [Compare hub](https://authcost.pages.dev/compare/)
+- [Guides](https://authcost.pages.dev/guides/)
+- [Methodology](https://authcost.pages.dev/methodology.html)

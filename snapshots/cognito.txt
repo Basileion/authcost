@@ -1,0 +1,202 @@
+Amazon Cognito
+Overview
+Features
+Pricing
+Getting Started
+FAQs
+Resources
+Customers
+Amazon Cognito pricing
+Get started for free
+Request a pricing quote
+Pricing overview
+With Amazon Cognito, you pay only for what you use. There are no minimum fees and no upfront commitments. Amazon Cognito charges for identity management and data synchronization, and the pricing for these features are described below.
+Pricing tiers
+Amazon Cognito offers you three pricing tiers to choose from when configuring your user pools, each priced based on your usage:
+Lite
+Lite provides basic user registration, authentication, and management capabilities, including social identity and SAML/OIDC provider integration, and password-based authentication. Lite is targeted for value-oriented use-cases. It includes all Cognito user pool capabilities (without advanced security features) available before November 22, 2024.
+Essentials
+Essentials offers comprehensive and flexible user authentication and access control features, allowing customers to implement secure, scalable, and customized sign-up and sign-in experiences for their application within minutes. It includes all capabilities in Lite along with supporting Managed Login and passwordless login options using passkeys, email, or SMS. Essentials also supports customizing access tokens and disallowing password reuse.
+Plus
+Plus is geared toward customers with elevated security needs for their applications by offering threat protection capabilities against suspicious log-ins. It includes all Essentials tier features and additionally supports risk-based adaptive authentication, compromised credentials detection, and exporting user authentication event logs to analyze threat signals.
+Note:
+Essentials will be the default tier for new users pools created by customers. Customers have the flexibility to switch their user pools between the Lite, Essentials, or Plus tiers anytime based on their application needs.
+Customers are eligible to upgrade their user pools without advanced security features (ASF) in their existing accounts to Essentials and pay the same price as Cognito user pools until November 30, 2025. To be eligible, customers' accounts must have had at least 1 monthly active user (MAU) in the last 12 months on or before 10:00am Pacific Time, November 22, 2024. These customers are also eligible to create new user pools with Essentials tier at the same price as Cognito users pools in those accounts until November 30, 2025.
+Customers with ASF enabled in their user pools will continue paying based on the existing Cognito ASF price. Customers using ASF in Amazon Cognito should consider the Plus tier, which includes all ASF capabilities, additional capabilities such as passwordless log-in, and up to 60% savings compared to using ASF.
+Free Tier
+Amazon Cognito Essentials and Lite have a free tier. The free tier does not automatically expire at the end of your 12-month AWS Free Tier term, and it is available to both existing and new AWS customers indefinitely. Please note - the free tier pricing isn’t available in the AWS GovCloud (US) Regions.
+1. For users who sign in directly via Amazon Cognito or through a social identity provider, Amazon Cognito user pools has a free tier of 10,000 monthly active user (MAU) per month per account or per AWS organization. This free tier is applicable for customers that configure their user pools to either the Lite or Essentials tier. There is no free tier for the Plus tier.
+2. For users federated through SAML 2.0 or an OpenID Connect (OIDC) identity provider, Amazon Cognito user pools has a free tier of 50 MAUs per month per account or per AWS organization regardless of your user pool pricing tier configuration.
+3. There is no free tier for token requests when Cognito is used for the machine-to-machine use case.
+4. Use of Amazon Cognito identity pools for authenticating users and generating unique identifiers is provided at no charge.
+To learn more about AWS Free Tier, refer to the FAQs ( https://aws.amazon.com/free/free-tier-faqs/ )
+Pricing table for Amazon Cognito tiers
+You pay for Amazon Cognito Essentials based on monthly active users (MAUs) in your user pool configured with pricing tier of Essentials. A user is counted as Essentials MAU if the user is active at least once in a month when the user pool pricing tier is configured as Essentials and was never active when the user pool was configured as Plus.
+Note : Customers are eligible to upgrade their user pools without advanced security features (ASF) in their existing accounts to Essentials and pay the same price as Cognito user pools until November 30, 2025. To be eligible, customers' accounts must have had at least 1 MAU in the last 12 months on or before 10:00am Pacific Time, November 22, 2024. These customers are also eligible to create new user pools with Essentials tier at the same price as Cognito users pools in those accounts until November 30, 2025.
+There is separate pricing for users who sign in directly with their credentials from a user pool (includes social identity providers) and for users who sign in through an enterprise directory with SAML federation. For users who sign in through SAML or OIDC federation, the price for MAUs above the 50 MAU free tier is $0.015. This is the same pricing as previously listed before November 22, 2024. For users who sign in directly with their credentials from a user pool (includes social identity providers), their price per MAU is listed in the table below.
+{regionSelector}
+MAUs Price per MAU
+First 10,000 (Free-tier) {priceOf!cognito/cognito!0t0XCtu1K5oc7qNe4hGefP86r5iFH8cYH-K7icfb7G4}
+Greater than 10,000 {priceOf!cognito/cognito!8NjKZgrBYoou8EPp1jVd256Efk6-Vbn0viBomRlyDY0}
+" data-pricing-endpoint="https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps" data-partition="aws" data-locale="en-US" data-token-component-type="native-react">
+SMS messages for Multi-Factor Authentication (MFA)
+Separate pricing applies for sending SMS messages for Multi-Factor Authentication (MFA), user registration, password recovery, and phone number verification. Amazon Cognito uses Amazon Simple Notification Service (SNS) to send SMS messages, and you can reference Amazon SNS pricing .
+Email messages for user verification
+Separate pricing applies for sending email messages for user registration, password recovery, and email address verification. Amazon Cognito uses Amazon Simple Email Service (SES) to send email messages, and you can reference Amazon SES pricing .
+Example 1: Your user pool is configured with Amazon Cognito Essentials as pricing tier
+If your Cognito user pool has 950,000 MAUs and all MAUs sign-in directly or via social identity providers, then your monthly bill will be computed as follows:
+Total number of MAUs billed above the 10,000 MAU free tier = 950,000 – 10,000 = 940,000
+Price / MAU charged above the free tier = $0.015
+Total monthly bill = $0.015 x 940,000 = $14,100
+Cognito Essentials MAU cost (monthly): $14,100
+Example 2: Your user pool is configured with Amazon Cognito Essentials as pricing tier and you have active users signing in via SAML/OIDC federation.
+If your Cognito user pool has 950,000 MAUs and out of these MAUs, 945,000 MAUs sign-in directly or via social identity providers, and 5,000 MAUs sign-in via SAML/OIDC federation, then your monthly bill will be computed as follows:
+Bill for users signing-in directly or via social identity providers
+Total number of MAUs billed above the 10,000 MAU free tier = 945,000 – 10,000 = 935,000
+Price / MAU charged above the free tier for Essentials tier = $0.015
+Monthly bill = $0.015 x 935,000 = $14,025
+Bill for users signing-in via SAML/OIDC providers
+Total number of MAUs billed above the 50 MAU free tier = 5,000 - 50 = 4,950
+Price / MAU charged above the free tier for login via SAML/OIDC providers = $0.015
+Monthly bill = $0.015 x 4,950 = $74.25
+Total Cognito monthly bill = $14,025 + $74.25 = $14,099.25
+You pay for Amazon Cognito Plus based on monthly active users (MAUs) in your user pool configured with pricing tier of Plus. A user is counted as Plus MAU if the user is active at least once in a month when the user pool pricing tier is configured as Plus.
+Note : Customers with accounts using Amazon Cognito user pools configured with Advanced Security Features (ASF) can save up to 60% on their monthly bill by configuring their user pool with Plus pricing tier.
+Amazon Cognito Plus costs {priceOf!cognito/cognito!as3o6yhefIimukr0KZ3xDLiTtubopMFjvYTQsz2vs0Q} per MAU
+Example: Your user pool is configured with Amazon Cognito Plus as pricing tier
+Total number of MAUs billed above the 0 MAU free tier = 950,000 – 0 = 950,000
+Price / MAU charged above the free tier = $0.020
+Total monthly bill = $0.020 x 950,000 = $19,000
+Cognito Plus MAU cost (monthly): $19,000
+You pay for Amazon Cognito Lite based on monthly active users (MAUs) in your user pool configured with pricing tier of Lite. A user is counted as Lite MAU if the user is active at least once in a month when the user pool pricing tier is configured as Lite and was never active when the user pool was configured as Essentials or Plus.
+Note :
+Customers with existing user pools created on or before 10:00am Pacific Time, November 22, 2024 will continue having a free tier of first 50,000 MAUs. Advanced Security Features (ASF) will continue to be priced separately and will not have a free tier, just like it has been priced previously.
+Additionally, customers are eligible to create new user pools with Lite tier in their existing accounts and count those MAUs against the free tier of first 50,000 MAUs. To be eligible, customers' accounts must have had at least 1 MAU in the last 12 months on or before 10:00am Pacific Time, November 22, 2024.
+There is separate pricing for users who sign in directly with their credentials from a user pool (includes social identity providers) and for users who sign in through an enterprise directory with SAML federation. For users who sign in through SAML or OIDC federation, the price for MAUs above the 50 MAU free tier is $0.015. This is the same pricing as previously listed before November 22, 2024. For users who sign in directly with their credentials from a user pool (includes social identity providers), their price per MAU is listed in the table below. With the exception of free tier MAUs, the price per MAU is the same as previously listed for Cognito user pools before November 22, 2024. Refer to Notes (1) and (2) on scenarios where customers continue to have a free tier of 50,000 MAUs.
+Pricing Tier (MAUs) Price per MAU
+10,001-100,000&nbsp; {priceOf!cognito/cognito!Pro5709eWflkIgrJ1-s5t0FBTZ-3ohtt3GOWJ8RwUJ8}
+100,001 - 1,000,000 {priceOf!cognito/cognito!J0AvZvXmflOCpp85WNoV_Md5l1zuqw2EVCNXMRs4QmI}
+1,000,001 - 10,000,000 {priceOf!cognito/cognito!4y17xf4mANquzhRywURwDHtpwiiefP-K2_lYs-8vVP8}
+Greater than 10,000,000 {priceOf!cognito/cognito!ccfbLwp_I9dLLtfu5bj-LZ-BGseoR6SjHaHZc8M1FAk}
+Enterprise users who sign in through SAML or OIDC federation:
+For users who sign in through SAML or OIDC federation, the price for MAUs above the 50 MAU free tier is {priceOf!cognito/cognito!Enterprise!MAU!per!Requests}.
+If you enable advanced security features for Amazon Cognito, additional prices apply for monthly active users as shown in the table below. This includes audit mode.
+Advanced Security Features
+If you enable advanced security features for Amazon Cognito, additional prices apply for monthly active users as shown in the table below. This includes audit mode. ASF pricing is the same as the pricing was listed before November 22, 2024.
+Advanced security features include compromised credentials detection , adaptive authentication , advanced security metrics , and access token customization . If you enable advanced security features for Amazon Cognito, additional prices apply for monthly active users as shown in the table below. This includes audit mode. **Advanced security features isn't available in the AWS GovCloud (US-West) region**.
+First 50,000 {priceOf!cognito/cognito!ASF!MAU!Frist!50000!per!Requests!decimals=3}
+Next 50,000 {priceOf!cognito/cognito!ASF!MAU!Next!50000!per!Requests!decimals=3}
+Next 900,000 {priceOf!cognito/cognito!ASF!MAU!Next!900000!per!Requests!decimals=3}
+Next 9,000,000 {priceOf!cognito/cognito!ASF!MAU!Next!9000000!per!Requests!decimals=3}
+Greater than 10,000,000 {priceOf!cognito/cognito!ASF!MAU!Greater!than!10000000!per!Requests!decimals=3}
+The prices for the advanced security features for Amazon Cognito are in addition to the base prices for active users. For example, if you enable these advanced security features for a user pool with 100,000 monthly active users, your monthly bill would be $495 for the base price for active users ($0.0055 per MAU past the 10,000 free tier) plus $4,250 for the advanced security features ($0.05 per MAU for the first 50,000 plus $0.035 per MAU for the next 50,000) for a total of $4,745.
+Example 1: Your user pool is configured with Amazon Cognito Lite as pricing tier
+Tiered price for: 940,000 MAUs
+90,000 MAUs x $0.0055 = $495
+850,000 MAUs x $0.0046 = $3,910
+Total monthly bill = $495 + $3,910 = $4,405
+Cognito Lite MAU cost (monthly): $4,405
+Example 2: Your user pool is configured with Amazon Cognito Lite as pricing tier with ASF enabled
+Cognito Lite cost
+ASF cost as add-on
+Tiered price for: 950,000.00 MAUs
+50,000 MAUs x $0.05 = $2,500
+50,000 MAUs x $0.035 = $1,750
+850,000 MAUs x $0.02 = $17,000
+Total ASF cost per month: $2,500 + $1,750+ $17,000 = $21,250 (ASF MAUs)
+Advanced security feature cost (monthly): 21,250 USD
+Cognito MAU cost (monthly): $4,405 + $21,250 = $25,655
+Compare Tiers
+Basic capabilities for password-based authentication targeted for value-oriented use-cases. Additional capabilities requires customization
+Core set of capabilities that enable seamless authentication for end-users such as passwordless login
+Enhanced set of capabilities for applications with elevated security needs
+40 million users or more
+Yes
+Sign-in with social, SAML, or OIDC providers
+Sign-in with username and password
+MFA with authenticator apps and SMS one-time codes
+Custom runtime action with Lambda triggers
+Customize managed login page with CSS
+99.9% service level agreement
+Customize managed login page with visual editor
+MFA with email one-time codes
+Passwordless sign-in with one-time codes
+Passkeys sign-in with biometrics and hardware keys
+Prevent reuse of previous passwords
+Customize access token scopes and claims at runtime
+Support for refresh token rotation
+Protect against malicious sign-in attempts
+Log and analyze threat profiles and user activity
+Risk-based adaptive authentication
+Compromised credentials detection to protect against unsafe passwords
+Export threat profiles and user activity
+Multi-Region replication
+Add-on
+Machine-to-machine authorization
+Higher API RPS quota
+Pricing table for Amazon Cognito add-ons
+API quotas
+M2M authorization
+Cognito Sync
+Amazon Cognito multi-Region replication enables you to create user pools in additional AWS Regions for business continuity and improved resilience. With multi-Region replication, your users can continue to authenticate with your applications during regional failovers, maintaining their active sessions without requiring re-authentication or password resets. Amazon Cognito automatically synchronizes user data, credentials, and configurations across regions.
+Multi-Region replication requires your user pool to use a multi-Region customer managed key (CMK) from AWS Key Management Service (AWS KMS) and a multi-Region OIDC issuer configuration (if applicable). You can configure regional failover based on your operational requirements.
+Multi-Region replication is available as an add-on to your base tier pricing. Amazon Cognito charges you an additional fee per monthly active user (MAU), where each unique user is counted once globally across both primary and secondary Regions, or per successful token request. Add-ons are charged regardless of whether customer's application generates an identity operation for that user or machine identity in the primary or secondary Region.
+User pool featuer tier Multi-Region replication add-on costs (per MAU)
+Essentials tier {priceOf!cognito/cognito!dp5dcC7OMO6NMHmCXbIyszDvoWRqhsPmglShXomwVIA}
+Plus tier {priceOf!cognito/cognito!-YZK3thtWBOQFp1_9vaLVlM4ou3w3Bpt11FR5hwbIe4}
+Example 1: Your user pool is configured with Amazon Cognito Essentials as feature tier with multi-Region replication enabled to one additional secondary Region, and there is no failover event in the month
+If your Cognito user pool has 500,000 MAUs in US East (N. Virginia) with multi-Region replication configured with US West (Oregon) as a secondary Region
+Multi-Region replication add-on cost:
+Total MAUs for add-on billing = 500,000
+Multi-Region replication add-on rate for Essentials tier = $0.0045 per MAU
+Multi-Region replication add-on cost (monthly): $0.0045 x 500,000 = $2,250
+Monthly add-on bill = $2,250
+Example 2: Your user pool is configured with Amazon Cognito Essentials as feature tier with multi-Region replication enabled to one additional secondary Region, and there is a failover event in the month
+If your Cognito user pool has 500,000 MAUs in US East (N. Virginia) with multi-Region replication configured with US West (Oregon) as a secondary Region. In a month, there was a failover event, and 300,000 users of those 500,000 MAUs generated identity operations in US West (Oregon).
+You can request higher requests per second (RPS) rates in Amazon Cognito for the API categories defined in the table below. To request increased RPS rates for one or more API categories, or for more information on the individual APIs in each API category, please refer to the documentation . RPS rate increases are subject to approval by AWS.
+The prices for higher quotas are in addition to the base prices for monthly active users and any other features including Advanced Security Features. Minimum duration for higher quotas is 1 day.
+API Category Monthly rate (continuous usage ≥ 30 days) Monthly rate (usage < 30 days)
+User authentication {priceOf!cognito/cognito!User!Pool!RPS!UserAuthentication!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserAuthentication!Partial}
+User creation {priceOf!cognito/cognito!User!Pool!RPS!UserCreation!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserCreation!Partial}
+User federation {priceOf!cognito/cognito!User!Pool!RPS!UserFederation!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserFederation!Partial}
+User read {priceOf!cognito/cognito!User!Pool!RPS!UserRead!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserRead!Partial}
+User resource read {priceOf!cognito/cognito!User!Pool!RPS!UserResourceRead!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserResourceRead!Partial}
+User token {priceOf!cognito/cognito!User!Pool!RPS!UserToken!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserToken!Partial}
+User resource update {priceOf!cognito/cognito!User!Pool!RPS!UserResourceUpdate!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserResourceUpdate!Partial}
+User update {priceOf!cognito/cognito!User!Pool!RPS!UserUpdate!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserUpdate!Partial}
+User account recovery {priceOf!cognito/cognito!User!Pool!RPS!UserAccountRecovery!Full} {priceOf!cognito/cognito!User!Pool!RPS!UserAccountRecovery!Partial}
+Prices are per 1 RPS of incremental capacity over default quotas per month. Each API Category is charged separately.
+Example: If you need an ongoing increment in quota for the User Authentication of 20 RPS indefinitely.
+Monthly Cost = 20 RPS * (1 Month) * $20 per RPS-Month = $400.
+On the other hand, if you need a partial month quota increase of 20 RPS for 7 days of a 30-day month:
+One-time Cost = 20 RPS * (7/30) Month * $45 per RPS-Month = $210
+Amazon Cognito supports machine-to-machine (M2M) use cases using the OAuth 2.0 specification’s client credentials flow. You can use Amazon Cognito to set up your service (software or an API service represented as an “app client”), establish the app client credentials, and issue access tokens in exchange for these credentials (known as token requests). These access tokens can then be used to communicate with your services. You can configure the validity of the access token for each service. You can also determine token usage per app client.
+Amazon Cognito charges you monthly per successful token response. There is no additional charge for the number of app clients you have registered in your account.
+Number of token requests per month
+Price
+Tier 1 1 250,000 {priceOf!cognito/cognito!User!Pools!M2M!Tokens!Full!0!upto!250000!per!CognitoUserPools!M2MTokens!*!1000!decimals=3} per 1000 token requests
+Tier 2 250,001 5,000,000 {priceOf!cognito/cognito!User!Pools!M2M!Tokens!Full!250000!upto!5000000!per!CognitoUserPools!M2MTokens!*!1000!decimals=3} per 1000 token requests
+Tier 3 5,000,001 And above {priceOf!cognito/cognito!User!Pools!M2M!Tokens!Full!5000000!upto!Inf!per!CognitoUserPools!M2MTokens!*!1000!decimals=3} per 1000 token requests
+* Please contact your account team if you require over 2,500 app clients.
+Example 1: You have 10 app clients and each client makes 500 requests a month. Your account is in US East (N. Virginia) Region
+Total number of token requests in a month
+500 requests x 10 app clients = 5,000 monthly token requests
+Total cost of M2M authorization
+$0.00225 x 5,000 token requests = $11.25 per month for token requests
+Total cost = $11.25 per month
+Example 2: You have 10 app clients in US East (N. Virginia) with multi-Region replication enabled to replicate these 10 app clients to US West (Oregon). Each of your app client makes 400 requests a month in US East (N. Virginia) and 100 requests a month in US West (Oregon).
+Total number of token requests in a month in US East (N. Virginia) from multi-Region-enabled app client
+400 requests x 10 app clients = 4,000 monthly token requests
+Total number of token requests in a month in US West (Oregon) from multi-Region-enabled app client
+100 requests x 10 app clients = 1,000 monthly token requests
+$0.002925 x 5,000 token requests = $14.625 per month for token requests
+Total cost = $14.625 per month
+Example 3: You have 10 app clients in US East (N. Virginia) with multi-Region replication enabled to replicate these 10 app clients to US West (Oregon). There was no failover event in the month, and each of your app client makes 500 requests a month in US East (N. Virginia).
+Sync charges are based on the total amount of data saved in the Amazon Cognito sync store and the number of sync operations performed. A sync operation compares the local data store on a device to the Amazon Cognito sync store in the cloud and synchronizes the two data stores. As part of the AWS Free Tier, eligible AWS customers receive 10 GB of cloud sync store and 1,000,000 sync operations per month for the first 12 months.
+Outside the Free Tier, Amazon Cognito costs {priceOf!cognitosync/cognitosync!Sync!Operation!per!CognitoSyncOp!Mo!*!10000} for each 10,000 sync operations and {priceOf!cognitosync/cognitosync!Sync!Storage!per!GB!Mo} per GB of sync store per month. When push synchronization is enabled, standard rates for Amazon SNS apply.
+If you have questions, please contact us in the forum .
+Monthly active user (MAU) computation
+A user is counted as a MAU if, within a calendar month, customers’ application generates an identity operation for that user, like administrative creation or update, sign-up, sign-in, sign-out, token refresh, password change, a user account attribute update, or an attribute query on a user (AdminGetUser API). Customers are not charged for subsequent sessions or for inactive users within that calendar month, or for the same user performing identity operations across multiple regions when multi-Region replication is enabled. In a calendar month when a customer changes their User Pool pricing tier configuration to either Lite, Essentials, or Plus, the monthly bill will be computed as the sum of monthly active users (MAUs) in each tier with each distinct MAU being attributed to the highest-priced tier that was enabled during the user's activity.
+AWS Pricing Calculator
+Estimate your Amazon Cognito costs with the Pricing Calculator
+Create your custom estimate now »
