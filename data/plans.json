@@ -104,9 +104,9 @@
     "sso_extra_mo": null,
     "scim_included": 1,
     "scim_extra_mo": null,
-    "notes": "25k MAU. 1 Enterprise Connection. Self-Service SSO and inbound SCIM included on Free (new). Paid MAU above Free requires a paid plan; higher MAU tiers are custom.",
-    "source": "https://auth0.com/pricing",
-    "checked": "2026-10-30",
+    "notes": "Up to 25,000 MAU (B2C and B2B identical). 1 Enterprise Connection, Self-Service SSO and inbound SCIM included. Above 25k MAU you need a paid MAU tier (Essentials/Professional) or Enterprise.",
+    "source": "https://auth0.com/pricing.md",
+    "checked": "2026-10-31",
     "status": "verified"
   },
   {
@@ -119,14 +119,68 @@
     "included_users": 500,
     "user_unit": "MAU",
     "overage_per_user": null,
-    "sso_included": null,
+    "sso_included": 0,
     "sso_extra_mo": null,
     "scim_included": 0,
     "scim_extra_mo": null,
-    "notes": "Published at up to 500 MAU. Page states custom tiers for higher MAU. Upgrade to B2B to keep Enterprise Connections / Self-Service SSO / SCIM on paid B2C plans.",
-    "source": "https://auth0.com/pricing",
-    "checked": "2026-10-30",
-    "status": "verified"
+    "notes": "Published MAU tiers 500→50,000: $35 (500), $70 (1k), $175 (2.5k), $350 (5k), $525 (7.5k), $700 (10k), $1,400 (20k), $2,100 (30k), $2,800 (40k), $3,500 (50k)/mo. Billed at the next tier up; yearly = 11× monthly. Above 50k: Enterprise (contact sales). B2C Essentials lists no Enterprise Connections — use B2B for SSO.",
+    "source": "https://auth0.com/pricing.md",
+    "checked": "2026-10-31",
+    "status": "verified",
+    "price_tiers": [
+      {
+        "mau": 500,
+        "mo": 35,
+        "yr": 385
+      },
+      {
+        "mau": 1000,
+        "mo": 70,
+        "yr": 770
+      },
+      {
+        "mau": 2500,
+        "mo": 175,
+        "yr": 1925
+      },
+      {
+        "mau": 5000,
+        "mo": 350,
+        "yr": 3850
+      },
+      {
+        "mau": 7500,
+        "mo": 525,
+        "yr": 5775
+      },
+      {
+        "mau": 10000,
+        "mo": 700,
+        "yr": 7700
+      },
+      {
+        "mau": 20000,
+        "mo": 1400,
+        "yr": 15400
+      },
+      {
+        "mau": 30000,
+        "mo": 2100,
+        "yr": 23100
+      },
+      {
+        "mau": 40000,
+        "mo": 2800,
+        "yr": 30800
+      },
+      {
+        "mau": 50000,
+        "mo": 3500,
+        "yr": 38500
+      }
+    ],
+    "tier_rule": "next-tier-up",
+    "tier_max_mau": 50000
   },
   {
     "id": "auth0-professional",
@@ -138,13 +192,166 @@
     "included_users": 500,
     "user_unit": "MAU",
     "overage_per_user": null,
-    "sso_included": null,
+    "sso_included": 0,
     "sso_extra_mo": null,
     "scim_included": 0,
     "scim_extra_mo": null,
-    "notes": "Published at up to 500 MAU. Custom database connections, enhanced attack protection. Higher MAU custom.",
-    "source": "https://auth0.com/pricing",
-    "checked": "2026-10-30",
+    "notes": "Published MAU tiers 500→20,000: $240 (500 and 1k), $545 (2.5k), $1,000 (5k), $1,200 (7.5k), $1,600 (10k), $3,200 (20k)/mo. 30k: contact us; 40k+ not available. Billed at the next tier up; yearly = 11× monthly. Custom DB connections, enhanced attack protection, 5,000 M2M tokens.",
+    "source": "https://auth0.com/pricing.md",
+    "checked": "2026-10-31",
+    "status": "verified",
+    "price_tiers": [
+      {
+        "mau": 500,
+        "mo": 240,
+        "yr": 2640
+      },
+      {
+        "mau": 1000,
+        "mo": 240,
+        "yr": 2640
+      },
+      {
+        "mau": 2500,
+        "mo": 545,
+        "yr": 5995
+      },
+      {
+        "mau": 5000,
+        "mo": 1000,
+        "yr": 11000
+      },
+      {
+        "mau": 7500,
+        "mo": 1200,
+        "yr": 13200
+      },
+      {
+        "mau": 10000,
+        "mo": 1600,
+        "yr": 17600
+      },
+      {
+        "mau": 20000,
+        "mo": 3200,
+        "yr": 35200
+      }
+    ],
+    "tier_rule": "next-tier-up",
+    "tier_max_mau": 20000,
+    "tier_unavailable_from": 40000
+  },
+  {
+    "id": "auth0-b2b-essentials",
+    "vendor_id": "auth0",
+    "vendor": "Auth0",
+    "tier": "paid",
+    "user_unit": "MAU",
+    "plan": "Essentials (B2B)",
+    "base_mo": 150,
+    "included_users": 500,
+    "overage_per_user": null,
+    "sso_included": 3,
+    "sso_extra_mo": 100,
+    "sso_max": 30,
+    "scim_included": 1,
+    "scim_extra_mo": null,
+    "price_tiers": [
+      {
+        "mau": 500,
+        "mo": 150,
+        "yr": 1650
+      },
+      {
+        "mau": 1000,
+        "mo": 300,
+        "yr": 3300
+      },
+      {
+        "mau": 2500,
+        "mo": 700,
+        "yr": 7700
+      },
+      {
+        "mau": 5000,
+        "mo": 1300,
+        "yr": 14300
+      },
+      {
+        "mau": 7500,
+        "mo": 1725,
+        "yr": 18975
+      },
+      {
+        "mau": 10000,
+        "mo": 2100,
+        "yr": 23100
+      },
+      {
+        "mau": 20000,
+        "mo": 3800,
+        "yr": 41800
+      }
+    ],
+    "tier_rule": "next-tier-up",
+    "tier_max_mau": 20000,
+    "notes": "Published MAU tiers 500→20,000: $150 (500), $300 (1k), $700 (2.5k), $1,300 (5k), $1,725 (7.5k), $2,100 (10k), $3,800 (20k)/mo. 30k+: contact us. 3 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA add-on $100/mo. Unlimited Organizations. Billed at next tier up; yearly = 11× monthly.",
+    "source": "https://auth0.com/pricing.md",
+    "checked": "2026-10-31",
+    "status": "verified"
+  },
+  {
+    "id": "auth0-b2b-professional",
+    "vendor_id": "auth0",
+    "vendor": "Auth0",
+    "tier": "paid",
+    "user_unit": "MAU",
+    "plan": "Professional (B2B)",
+    "base_mo": 800,
+    "included_users": 500,
+    "overage_per_user": null,
+    "sso_included": 5,
+    "sso_extra_mo": 100,
+    "sso_max": 30,
+    "scim_included": 1,
+    "scim_extra_mo": null,
+    "price_tiers": [
+      {
+        "mau": 500,
+        "mo": 800,
+        "yr": 8800
+      },
+      {
+        "mau": 1000,
+        "mo": 800,
+        "yr": 8800
+      },
+      {
+        "mau": 2500,
+        "mo": 1200,
+        "yr": 13200
+      },
+      {
+        "mau": 5000,
+        "mo": 1500,
+        "yr": 16500
+      },
+      {
+        "mau": 7500,
+        "mo": 1800,
+        "yr": 19800
+      },
+      {
+        "mau": 10000,
+        "mo": 2400,
+        "yr": 26400
+      }
+    ],
+    "tier_rule": "next-tier-up",
+    "tier_max_mau": 10000,
+    "notes": "Published MAU tiers 500→10,000: $800 (500 and 1k), $1,200 (2.5k), $1,500 (5k), $1,800 (7.5k), $2,400 (10k)/mo. 20k+: contact us. 5 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA included. Billed at next tier up; yearly = 11× monthly.",
+    "source": "https://auth0.com/pricing.md",
+    "checked": "2026-10-31",
     "status": "verified"
   },
   {
@@ -251,7 +458,7 @@
     ],
     "scim_included": 0,
     "scim_extra_mo": 125,
-    "notes": "AuthKit free to 1M MAU; +$2,500/mo per additional 1M. SSO and Directory Sync each use the connection ladder ($125\u2192$65). Custom domain $99/mo.",
+    "notes": "AuthKit free to 1M MAU; +$2,500/mo per additional 1M. SSO and Directory Sync each use the connection ladder ($125→$65). Custom domain $99/mo.",
     "source": "https://workos.com/pricing",
     "checked": "2026-10-30",
     "status": "verified"
@@ -270,7 +477,7 @@
     "sso_extra_mo": 125,
     "scim_included": 5,
     "scim_extra_mo": 125,
-    "notes": "10k MAU + 5 SSO or SCIM connections included. Extra connections $125 each. MAU overage rate not printed as a fixed USD figure on the checked page \u2014 left blank. Branding add-on $99.",
+    "notes": "10k MAU + 5 SSO or SCIM connections included. Extra connections $125 each. MAU overage rate not printed as a fixed USD figure on the checked page — left blank. Branding add-on $99.",
     "source": "https://stytch.com/pricing",
     "checked": "2026-10-30",
     "status": "verified"
@@ -306,7 +513,7 @@
     "token_overage_per_100": 0.08,
     "sso_included": 0,
     "sso_extra_mo": 48,
-    "notes": "From $24/mo. Unlimited MAU. 50k tokens then $0.08 per 100. Enterprise SSO $48/connector. MFA add-on $48. Organizations add-on $48. Token\u2260MAU; calculator uses base + SSO only unless tokens estimated.",
+    "notes": "From $24/mo. Unlimited MAU. 50k tokens then $0.08 per 100. Enterprise SSO $48/connector. MFA add-on $48. Organizations add-on $48. Token≠MAU; calculator uses base + SSO only unless tokens estimated.",
     "source": "https://logto.io/pricing",
     "checked": "2026-10-30",
     "status": "verified",
@@ -413,7 +620,7 @@
     "sso_included": null,
     "sso_saml_included_mau": 50,
     "sso_saml_per_mau": 0.015,
-    "notes": "Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits \u2014 not auth-only.",
+    "notes": "Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits — not auth-only.",
     "source": "https://supabase.com/pricing",
     "checked": "2026-10-30",
     "status": "verified"

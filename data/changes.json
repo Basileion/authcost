@@ -16,5 +16,14 @@
     "kind": "fee-start",
     "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
     "source": "https://clerk.com/pricing"
+  },
+  {
+    "date": "2026-10-31",
+    "observed": "2026-10-31",
+    "vendor": "Auth0",
+    "vendor_id": "auth0",
+    "kind": "correction",
+    "summary": "Correction: our earlier Auth0 data (2026-10-30) listed paid tiers only at 500 MAU and called higher volumes and B2B “custom”. That was wrong — Auth0 publishes MAU tiers: B2C Essentials $70 (1k) to $3,500 (50k)/mo, B2C Professional to $3,200 (20k), B2B Essentials $150 (500) to $3,800 (20k) with 3 SSO connections, B2B Professional $800 to $2,400 (10k) with 5. Billing rounds up to the next tier; yearly = 11× monthly; extra SSO connections $100/mo. Not an Auth0 price change — our omission, now fixed.",
+    "source": "https://auth0.com/pricing.md"
   }
 ]

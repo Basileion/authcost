@@ -14,12 +14,17 @@ if(tt) tt.addEventListener('click',()=>{
 function estimate(plan, mau, sso=0, opts={}){
   if(plan.status!=='verified') return null;
   const out={base:0,users:0,sso:0,mfa:0,total:null,notes:[]};
-  if(plan.vendor_id==='auth0' && plan.tier==='paid' && mau>plan.included_users) return null;
-  if(plan.vendor_id==='auth0' && plan.tier==='free' && mau>plan.included_users) return null;
+  const tierRow=plan.price_tiers?plan.price_tiers.find(t=>mau<=t.mau):null;
+  if(plan.price_tiers && !tierRow) return null;
+  if(plan.sso_max!=null && (sso|0)>plan.sso_max) return null;
+  if(!plan.price_tiers){
   if(plan.tier==='free' && plan.included_users!=null && mau>plan.included_users && plan.overage_per_user==null && !plan.overage_per_1m_mau) return null;
   if(plan.included_users!=null && mau>plan.included_users && plan.overage_per_user==null && !plan.overage_bands && !plan.overage_per_1m_mau) return null;
-  out.base=plan.base_mo??0;
-  if(plan.overage_per_1m_mau!=null){
+  }
+  out.base=tierRow?tierRow.mo:(plan.base_mo??0);
+  if(tierRow) out.notes.push('Tier up to '+tierRow.mau.toLocaleString('en-US')+' MAU');
+  if(tierRow){}
+  else if(plan.overage_per_1m_mau!=null){
     const extra=Math.max(0, mau - (plan.included_users||0));
     out.users=Math.ceil(extra/1e6)*plan.overage_per_1m_mau;
   } else if(plan.overage_bands && plan.included_users!=null){
@@ -84,7 +89,7 @@ async function renderHome(){
   const plans=await loadPlans();
   const mau=+kMau.value||0, sso=+kSso.value||0;
   const ranked=plans.map(p=>{const e=estimate(p,mau,sso);return e&&e.total!=null?{p,e}:null}).filter(Boolean).sort((a,b)=>a.e.total-b.e.total);
-  if(!ranked.length){ kOut.innerHTML='<p class="note">No verified plan can price this scenario (e.g. Auth0 paid above 500 MAU is custom).</p>'; return; }
+  if(!ranked.length){ kOut.innerHTML='<p class="note">No verified plan can price this scenario (e.g. Auth0 above its top published tier — 50k B2C / 20k B2B — is Enterprise, contact sales).</p>'; return; }
   const top=ranked.slice(0,5);
   kOut.innerHTML=`<p><b>Cheapest:</b> ${top[0].p.vendor} ${top[0].p.plan} at <b>${usd(top[0].e.total)}/mo</b> (${yr(top[0].e.total)}/yr)</p>
   <ol style="margin:8px 0 0;padding-left:18px">${top.map(x=>`<li>${x.p.vendor} ${x.p.plan}: ${usd(x.e.total)}/mo</li>`).join('')}</ol>
@@ -153,7 +158,7 @@ async function renderCalc(){
     .filter(x=>!vo||x.p.status==='verified').sort((a,b)=>a.e.total-b.e.total);
   const cheapest=ranked[0];
   if(cSave) cSave.innerHTML=cheapest?`<b>Lowest estimate:</b> ${cheapest.p.vendor} ${cheapest.p.plan} at ${usd(cheapest.e.total)}/mo (${yr(cheapest.e.total)}/yr) among ${ranked.length} plans.`:'No verifiable plans for this scenario.';
-  rank.innerHTML=ranked.map((x,i)=>`<tr><td class="n">${i+1}</td><td><a href="/vendors/${x.p.vendor_id}.html">${x.p.vendor}</a> · ${x.p.plan}</td>
+  rank.innerHTML=ranked.map((x,i)=>`<tr><td class="n">${i+1}</td><td><a href="/vendors/${x.p.vendor_id}">${x.p.vendor}</a> · ${x.p.plan}</td>
     <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td><td class="n">${usd(x.e.mfa||0)}</td>
     <td class="n"><b>${usd(x.e.total)}</b></td><td class="n">${yr(x.e.total)}</td>
     <td class="src" style="white-space:normal">${(x.e.notes||[]).join(' ')||'—'}</td>
