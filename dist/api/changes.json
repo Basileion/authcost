@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T05:15:47.602Z",
+  "generated": "2026-10-31T07:05:58.318Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "changes": [
@@ -10,6 +10,15 @@
       "vendor_id": "clerk",
       "kind": "fee-start",
       "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
+      "source": "https://clerk.com/pricing"
+    },
+    {
+      "date": "2026-10-31",
+      "observed": "2026-10-31",
+      "vendor": "Clerk",
+      "vendor_id": "clerk",
+      "kind": "new-tier",
+      "summary": "Clerk publishes a new enterprise SSO connection band: connections 101–250 now cost $48/mo each (was \"Contact us\" for 101+). Earlier bands are unchanged: 1 included, $75/mo each for 2–15, $60/mo each for 16–100; 251+ is contact sales.",
       "source": "https://clerk.com/pricing"
     },
     {

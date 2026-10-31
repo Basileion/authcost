@@ -89,7 +89,8 @@ Enterprise single sign-on with SAML, OIDC, or EASIE.
 Not included 1 connection included per app
 2 - 15 $75/mo each
 16 - 100 $60/mo each
-101+ Contact us
+101 - 250 $48/mo each
+251+ Contact us
 1 connection included per app
 Directory Sync connections
 Provision and deprovision users with SCIM or Google Workspace. Counted separately from SSO connections. Billing for Directory Sync connections starts January 1, 2027.

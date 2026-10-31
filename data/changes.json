@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-10-31",
+    "observed": "2026-10-31",
+    "vendor": "Clerk",
+    "vendor_id": "clerk",
+    "kind": "new-tier",
+    "summary": "Clerk publishes a new enterprise SSO connection band: connections 101–250 now cost $48/mo each (was \"Contact us\" for 101+). Earlier bands are unchanged: 1 included, $75/mo each for 2–15, $60/mo each for 16–100; 251+ is contact sales.",
+    "source": "https://clerk.com/pricing"
+  },
+  {
     "date": "2026-10-30",
     "observed": "2026-10-30",
     "vendor": "AuthCost",

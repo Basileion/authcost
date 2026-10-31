@@ -3,10 +3,10 @@
     "id": "clerk",
     "name": "Clerk",
     "source": "https://clerk.com/pricing",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "MRU",
     "billing_unit_note": "Monthly Retained User — counted only if the user returns 24+ hours after signup",
-    "summary": "Hobby free to 50k MRU/app. Pro $25/mo ($20 annual) with 50k MRU + 1 SSO + 1 Directory Sync. Extra SSO $75 (2–15) then $60 (16–100). Directory Sync billed from 2027-01-01."
+    "summary": "Hobby free to 50k MRU/app. Pro $25/mo ($20 annual) with 50k MRU + 1 SSO + 1 Directory Sync. Extra SSO $75 (2–15) then $60 (16–100) and $48 (101–250). Directory Sync billed from 2027-01-01."
   },
   {
     "id": "auth0",
@@ -21,7 +21,7 @@
     "id": "cognito",
     "name": "Amazon Cognito",
     "source": "https://aws.amazon.com/cognito/pricing/",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "MAU",
     "billing_unit_note": "Lite / Essentials / Plus tiers. Direct+social vs SAML/OIDC federated priced separately.",
     "summary": "Essentials (default) free 10k MAU then $0.015/MAU (direct/social). Lite free 10k then $0.0055 / $0.0046 bands. Plus $0.020/MAU no free tier. Federated SAML/OIDC: 50 free then $0.015/MAU."
@@ -30,7 +30,7 @@
     "id": "workos",
     "name": "WorkOS",
     "source": "https://workos.com/pricing",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "MAU + connection",
     "billing_unit_note": "AuthKit free to 1M MAU; SSO and Directory Sync billed per connection with volume bands.",
     "summary": "AuthKit free to 1M MAU then $2,500/mo per additional 1M. SSO and Directory Sync each: $125 (1–15), $100 (16–30), $80 (31–50), $65 (51–100)."
@@ -39,7 +39,7 @@
     "id": "stytch",
     "name": "Stytch",
     "source": "https://stytch.com/pricing",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "MAU + connection",
     "billing_unit_note": "Pay-as-you-go. Free includes 10k MAU and 5 SSO or SCIM connections. Per-MAU overage rate not printed as a fixed dollar amount on the page we checked.",
     "summary": "B2B pay-as-you-go: $0 base, 10k MAU + 5 SSO/SCIM included, then $125 per additional connection. Custom brand $99. MAU overage rate not published as a fixed figure on the checked page."
@@ -48,7 +48,7 @@
     "id": "logto",
     "name": "Logto",
     "source": "https://logto.io/pricing",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "token + add-on",
     "billing_unit_note": "Token-based (access tokens counted). Free to 50k MAU. Pro from $24/mo with token overage and add-ons.",
     "summary": "Free: 50k MAU / 50k tokens. Pro from $24/mo: unlimited MAU, 50k tokens then $0.08 per 100 extra. Enterprise SSO add-on $48/connector. MFA add-on $48. Organizations add-on $48."
@@ -57,7 +57,7 @@
     "id": "kinde",
     "name": "Kinde",
     "source": "https://kinde.com/pricing/",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "MAU",
     "billing_unit_note": "10,500 MAU free on every plan. Users on paid subscriptions billed through Kinde are not counted as MAU.",
     "summary": "Free $0 / Pro $25 / Plus $75 / Scale $250. Each includes 10,500 MAU; Pro overage $0.0175/MAU. Plus and Scale include unlimited enterprise SSO at no per-connection fee. Free/Pro include 1 SSO connection."
@@ -66,7 +66,7 @@
     "id": "supabase",
     "name": "Supabase Auth",
     "source": "https://supabase.com/pricing",
-    "checked": "2026-10-30",
+    "checked": "2026-10-31",
     "billing_unit": "MAU",
     "billing_unit_note": "Auth MAU is part of the Supabase org plan (not a standalone auth SKU). Plan fee also covers database compute credits.",
     "summary": "Free: 50k MAU. Pro from $25/mo: 100k MAU then $0.00325/MAU. SAML SSO: 50 included then $0.015/MAU. Auth-only cost is entangled with the platform plan."

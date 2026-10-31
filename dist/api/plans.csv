@@ -1,7 +1,7 @@
 id,vendor,plan,base_mo,included_users,user_unit,overage_per_user,sso_included,sso_extra_mo,status,source,checked,mau_tiers_mo
-clerk-hobby,Clerk,Hobby,0,50000,MRU,,0,,verified,https://clerk.com/pricing,2026-10-30,
-clerk-pro,Clerk,Pro,25,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-30,
-clerk-business,Clerk,Business,300,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-30,
+clerk-hobby,Clerk,Hobby,0,50000,MRU,,0,,verified,https://clerk.com/pricing,2026-10-31,
+clerk-pro,Clerk,Pro,25,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-31,
+clerk-business,Clerk,Business,300,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-31,
 auth0-free,Auth0,Free,0,25000,MAU,,1,,verified,https://auth0.com/pricing.md,2026-10-31,
 auth0-essentials,Auth0,Essentials (B2C),35,500,MAU,,0,,verified,https://auth0.com/pricing.md,2026-10-31,500:35|1000:70|2500:175|5000:350|7500:525|10000:700|20000:1400|30000:2100|40000:2800|50000:3500
 auth0-professional,Auth0,Professional (B2C),240,500,MAU,,0,,verified,https://auth0.com/pricing.md,2026-10-31,500:240|1000:240|2500:545|5000:1000|7500:1200|10000:1600|20000:3200
