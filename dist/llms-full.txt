@@ -480,6 +480,7 @@ Open-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Bett
 - Auth free tiers compared: https://authcost.pages.dev/guides/auth-free-tiers-compared
 - Self-hosted auth cost: Better Auth / Auth.js vs Clerk and Auth0: https://authcost.pages.dev/guides/self-hosted-auth-cost
 - Enterprise SSO cost: every vendor at 1, 3, 5, 10 and 25 connections: https://authcost.pages.dev/guides/enterprise-sso-cost
+- Auth0 pricing 2026: what you’ll actually pay at 1k–100k MAU: https://authcost.pages.dev/guides/auth0-pricing
 - Clerk vs Auth0 pricing: https://authcost.pages.dev/compare/clerk-vs-auth0
 - Clerk vs Amazon Cognito pricing: https://authcost.pages.dev/compare/clerk-vs-cognito
 - Clerk vs WorkOS pricing: https://authcost.pages.dev/compare/clerk-vs-workos

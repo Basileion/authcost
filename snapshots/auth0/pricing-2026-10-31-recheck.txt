@@ -1,0 +1,3 @@
+Re-check of https://auth0.com/pricing.md at 2026-10-31 15:13 ET (Sat Oct 31 15:13:48 EDT 2026)
+sha256 fa4f71fd41fdbc5f40015d48951e580fbeb73c152e5ede8914fdf9ad43330670 (21,934 bytes)
+Result: byte-identical to snapshots/auth0/pricing-2026-10-31.md; no Auth0 price change. Used by /guides/auth0-pricing.

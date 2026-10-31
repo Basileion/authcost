@@ -19,6 +19,7 @@ Prices from each vendor's own pricing page only. Verified rows were read on the 
 - [Auth pricing by MAU](https://authcost.pages.dev/guides/auth-cost-by-mau)
 - [Self-hosted auth cost: Better Auth / Auth.js vs Clerk, Auth0, Firebase](https://authcost.pages.dev/guides/self-hosted-auth-cost)
 - [Enterprise SSO cost at 1/3/5/10/25 connections](https://authcost.pages.dev/guides/enterprise-sso-cost)
+- [Auth0 pricing 2026 at 1k–100k MAU (all plans, cost cliffs, SSO, Startups month 13)](https://authcost.pages.dev/guides/auth0-pricing)
 
 ## Assumptions
 - SSO results for Amazon Cognito, Supabase Auth and Firebase Auth / Identity Platform (billed per SSO user) assume 200 SSO users per connection; sensitivity at 1000 and 2000: https://authcost.pages.dev/methodology#sso-users
