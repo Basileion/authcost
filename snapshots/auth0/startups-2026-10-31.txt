@@ -1,5 +1,5 @@
 Source: https://auth0.com/startups
-Fetched: 2026-10-31 13:25 ET by curl; excerpts of visible text
+Fetched: 2026-10-31 ~13:20 ET by curl; excerpts of visible text
 
 One year of Auth0, free for your startup You’ve got the next big thing to build, so let us worry about your login box. Get one year of our B2B Professional capabilities so your users and AI agents can more securely access what they need. Apply today Trusted by over 4000 startups The Auth0 for Startups plan has you covered with everything in the B2B Professional plan We've even thrown in 100k MAUs as well. Review Plans 100k Monthly Active Users Enterprise MFA Unlimited* Organizations * Subject to system limitations 
 

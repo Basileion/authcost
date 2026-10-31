@@ -1,5 +1,5 @@
 Source: https://stytch.com/pricing
-Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+Fetched: 2026-10-31 ~13:22 ET by curl; excerpts of visible text
 
  Always free: 10,000 monthly active users and AI agents Unlimited Organizations 5 SSO or SCIM Connections 1,000 M2M Tokens Full suite of authn and authz features -- OAuth, SSO, Sessions, and RBAC Organization-level primary + secondary auth policies Built-in multi-tenancy Find your organizations SCIM provisioning, deprovisioning and automatic role management JIT provisioning controls by email domain & SSO Connection Optional fraud and risk prevention Pre-built UI components for login and admin portal For B2B SaaS Apps B2B For
 

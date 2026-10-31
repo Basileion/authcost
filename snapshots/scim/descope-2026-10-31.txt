@@ -1,5 +1,5 @@
 Source: https://www.descope.com/pricing
-Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+Fetched: 2026-10-31 ~13:22 ET by curl; excerpts of visible text
 
  10,000 Monthly active consents (MACs) Key 10,000 Monthly active tokens (MATKs) Everything in Pro, plus: Check Square Outline Bot protection Check Square Outline 1M Anonymous users Check Square Outline Zero-downtime SSO migration Check Square Outline SCIM provisioning Check Square Outline Admin Portal Check Square Outline Fine-grained authorization Check Square Outline External audit connectors Check Square Outline Multi-region data residency Check Square Outline HIPAA BAA Check Square Outline FedRAMP High add-on Global Reac
 

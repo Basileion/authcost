@@ -1,5 +1,5 @@
 Source: https://auth0.com/pricing.md
-Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+Fetched: 2026-10-31 ~13:22 ET by curl; excerpts of visible text
 
 luded | | Cross APP SSO | Not available | Not available | Included | Included | | Enterprise Connections | 1 | 3 + ADD-ON | 5 + ADD-ON | Custom Tiers | | Inbound SCIM | Included | Included | Included | Included | | Okta Connections | Unlimited** | Unlimited** | Unlimited** | Unlimited** | | Express Configuration | Included | Included | Included | Included | | Organizations | 5 | Unlimited** | Unlimited** | Custom Tiers | | Self-Service SSO | Included | Included | Included | Select Enterprise Plans | | M2M Access for Organiza
 

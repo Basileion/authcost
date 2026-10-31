@@ -1,5 +1,5 @@
 Source: https://www.scalekit.com/pricing/auth-for-saas
-Fetched: 2026-10-31 ~13:45 ET (web fetch); excerpts
+Fetched: 2026-10-31 ~13:22 ET (web fetch); excerpts
 Free $0/month: 25,000 MAUs (auto-upgrades to Growth after), 25 organizations, 1 SSO & 1 SCIM connection.
 Growth $99/month: 100,000 MAUs + $0.05 per additional user; 100 organizations + $1 per additional org.
 SSO beyond 1 connection: 2-15 $60/conn/mo, 16-30 $45, 31-50 $35, 51-100 $30. SCIM: same ladder.

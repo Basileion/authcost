@@ -1,5 +1,5 @@
 Source: https://auth0.com/pricing (HTML) + https://auth0.com/pricing.md
-Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+Fetched: 2026-10-31 ~13:22 ET by curl; excerpts of visible text
 
 , Azure, etc. Separate Production & Development Environments Standard Support ¹ Upgrade to B2B to continue using EC, Self-Service SSO, and SCIM. Professional $ 240 / month Best for teams and projects that need added security. Sign up Up to 500 monthly active users Includes Everything in Essentials, plus...¹ Use your existing User Database for Logins Enterprise Multi-Factor Authentication Custom Token Exchange Enhanced Attack Protection M2M Tokens Add-on ¹ Upgrade to B2B to continue using EC, Self-Service SSO, and SCIM. Enter
 
