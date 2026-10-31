@@ -1,0 +1,6 @@
+Source: https://www.descope.com/pricing
+Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+
+ 10,000 Monthly active consents (MACs) Key 10,000 Monthly active tokens (MATKs) Everything in Pro, plus: Check Square Outline Bot protection Check Square Outline 1M Anonymous users Check Square Outline Zero-downtime SSO migration Check Square Outline SCIM provisioning Check Square Outline Admin Portal Check Square Outline Fine-grained authorization Check Square Outline External audit connectors Check Square Outline Multi-region data residency Check Square Outline HIPAA BAA Check Square Outline FedRAMP High add-on Global Reac
+
+er Management Role-Based Access Control (RBAC) Fine-Grained Authorization (FGA) User Provisioning (SCIM) SSO Setup Suite Widgets Admin Portal Localization Audit Interface Descope UI only Descope UI only Descope UI + external connectors Descope UI + external connectors Audit Retention 1 week 1 month Add-on available 1 month Add-on available Custom Anonymous Users 1M Unlimited SSO Migration Security Secure Session Management Adaptive MFA Step-up Authentication Bot Protection Custom Domain SOC 2 Reports HIPAA BAA Platform Scrip

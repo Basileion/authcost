@@ -1,0 +1,6 @@
+Source: https://clerk.com/pricing
+Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+
+iscounts 1 SSO connection included Additional $75/mo each Show volume discounts 1 Directory Sync connection included Additional $75/mo each from January 1, 2027 Show volume discounts Remove Clerk branding Multi-factor authentication (MFA) Satellite domains Additional $10/mo each Custom session lifetime Application Logs 7 day retention SMS Authentication available Machine Authentication API Keys & M2M Tokens included per month + extra Show pricing details Business Monthly Annual :host{display:inline-block;direction:ltr;white-
+
+p 2 - 15 $75/mo each 16 - 100 $60/mo each 101 - 250 $48/mo each 251+ Contact us Directory Sync connections Provision and deprovision users with SCIM or Google Workspace. Counted separately from SSO connections. Billing for Directory Sync connections starts January 1, 2027. Not included 1 connection included per app 2 - 15 $75/mo each 16 - 100 $60/mo each 101 - 250 $48/mo each 251+ Contact us 1 connection included per app 2 - 15 $75/mo each 16 - 100 $60/mo each 101 - 250 $48/mo each 251+ Contact us Waitlist mode Collect sign-

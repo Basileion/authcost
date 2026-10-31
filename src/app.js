@@ -51,9 +51,22 @@ function orgCost(plan, mau, sso=0, opts={}){
   r.note=plan.org_published===false?'No organization fee printed on the pricing page.':`Unlimited organizations (${pl(orgs,'org')} add $0).`;
   return r;
 }
+// RT-20261031-93: SCIM / Directory Sync. `scim` = SSO customers that also need SCIM (capped at the SSO connection count).
+// Models (plans.json scim_model): separate ladder (WorkOS, Clerk), pooled with SSO (Stytch), included (Auth0 B2B/Free, Descope Growth).
+// Returns null when the plan has no published SCIM price (none / not_published / coming_soon), so it drops out of SCIM scenarios.
+function scimCost(plan, sso=0, scim=0){
+  const need=Math.max(0, sso|0), n=Math.min(Math.max(0, Math.floor(+scim||0)), need);
+  const r={fee:0,n,note:''};
+  if(!n) return r;
+  const m=plan.scim_model, f$=v=>'$'+v.toLocaleString('en-US'), pl=(k,w)=>k+' '+w+(k===1?'':'s');
+  if(m==='included'){ r.note=`SCIM: ${pl(n,'customer')} on included SCIM, no separate fee printed.`; return r; }
+  if(m==='pooled'){ const inc=plan.scim_included||0, before=Math.max(0,need-inc), after=Math.max(0,need+n-inc); r.fee=(after-before)*plan.scim_extra_mo; r.note=`SCIM shares the ${inc} included SSO-or-SCIM connections: ${need} SSO + ${n} SCIM = ${need+n}; SCIM adds ${f$(r.fee)}/mo.`; return r; }
+  if(m==='separate'){ const inc=plan.scim_included||0; let c=0; for(let i=inc+1;i<=n;i++){ const b=(plan.scim_bands||[]).find(x=>i>=x.from&&i<=x.to); if(!b) return null; c+=b.rate; } r.fee=c; r.note=`SCIM / Directory Sync is a separate connection: ${pl(n,'connection')} (${inc} included) = ${f$(c)}/mo${plan.scim_billing_starts?`, billed from ${plan.scim_billing_starts} ($0 before)`:''}.`; return r; }
+  return null;
+}
 function estimate(plan, mau, sso=0, opts={}){
   if(plan.status!=='verified') return null;
-  const out={base:0,users:0,sso:0,mfa:0,org:0,orgs:0,orgLabel:'',total:null,notes:[]};
+  const out={base:0,users:0,sso:0,scim:0,scimN:0,mfa:0,org:0,orgs:0,orgLabel:'',total:null,notes:[]};
   const tierRow=plan.price_tiers?plan.price_tiers.find(t=>mau<=t.mau):null;
   if(plan.price_tiers && !tierRow) return null;
   if(plan.sso_max!=null && (sso|0)>plan.sso_max) return null;
@@ -104,6 +117,9 @@ function estimate(plan, mau, sso=0, opts={}){
   } else if(need>(plan.sso_included||0)){
     return null;
   }
+  const sc=scimCost(plan, need, opts.scim);
+  if(sc==null) return null;
+  out.scim=sc.fee; out.scimN=sc.n; if(sc.n) out.notes.push(sc.note);
   out.mfa=0;
   if(opts.mfa){
     if(plan.mfa_available===false){
@@ -118,7 +134,7 @@ function estimate(plan, mau, sso=0, opts={}){
   const oc=orgCost(plan, mau, need, opts);
   if(oc==null) return null;
   out.org=oc.fee; out.orgs=oc.orgs; out.orgLabel=oc.label; if(oc.orgs) out.notes.push(oc.note);
-  out.total=out.base+out.users+out.sso+out.mfa+out.org;
+  out.total=out.base+out.users+out.sso+out.scim+out.mfa+out.org;
   return out;
 }
 
@@ -162,7 +178,7 @@ function filterTable(){
 if($('#plans')){ [q,vo].forEach(el=>el&&el.addEventListener('input',filterTable)); vo&&vo.addEventListener('change',filterTable); filterTable(); }
 
 // Calculator
-const rank=$('#rank'), cMau=$('#c-mau'), cSso=$('#c-sso'), cFed=$('#c-fpc'), cOrg=$('#c-org'), cMpo=$('#c-mpo'), cMfa=$('#c-mfa'), cVo=$('#c-vo'), cSave=$('#c-save');
+const rank=$('#rank'), cMau=$('#c-mau'), cSso=$('#c-sso'), cFed=$('#c-fpc'), cOrg=$('#c-org'), cScim=$('#c-scim'), cMpo=$('#c-mpo'), cMfa=$('#c-mfa'), cVo=$('#c-vo'), cSave=$('#c-save');
 const cUrl=$('#c-url'), cEmbed=$('#c-embed'), cSh=$('#c-sh'), cBack=$('#c-back');
 let calcTracked=false, calcPlans=null;
 
@@ -171,15 +187,17 @@ function calcParams(){
   const fpc=cFed&&cFed.value!==''?Math.max(0,+cFed.value||0):FED_PER_CONN;
   const mfa=!!cMfa?.checked, vo=cVo?!!cVo.checked:true;
   const org=Math.max(0,Math.floor(+cOrg?.value||0)), mpo=cMpo&&cMpo.value!==''?Math.max(0,+cMpo.value||0):null;
-  return {mau,sso,fpc,fed:sso*fpc,mfa,vo,org,mpo};
+  const scim=Math.max(0,Math.floor(+cScim?.value||0)); // RT-20261031-93; old links without scim= read as 0
+  return {mau,sso,fpc,fed:sso*fpc,mfa,vo,org,mpo,scim};
 }
 
 function shareUrl(opts={}){
-  const {mau,sso,fpc,mfa,vo,org,mpo}=calcParams();
+  const {mau,sso,fpc,mfa,vo,org,mpo,scim}=calcParams();
   const u=new URL(location.origin+'/calculator/');
   u.searchParams.set('mau',String(mau));
   u.searchParams.set('sso',String(sso));
   u.searchParams.set('fpc',String(fpc));
+  if(scim>0) u.searchParams.set('scim',String(scim));
   u.searchParams.set('org',String(org)); // RT-20261031-56; old links without org= read as 0 (B2C; SSO still implies 1 org per connection)
   if(mpo!=null) u.searchParams.set('mpo',String(mpo));
   u.searchParams.set('mfa',mfa?'1':'0');
@@ -207,24 +225,27 @@ async function renderCalc(){
     else if(params.has('fed')){ const s0=+(params.get('sso')||0); if(s0>0) cFed.value=String(Math.round((+params.get('fed')||0)/s0)); } // legacy total federated MAU links
   }
   if(params.has('org')&&cOrg&&!cOrg.dataset.touched) cOrg.value=params.get('org');
+  if(params.has('scim')&&cScim&&!cScim.dataset.touched) cScim.value=params.get('scim');
   if(params.has('mpo')&&cMpo&&!cMpo.dataset.touched) cMpo.value=params.get('mpo');
   if(params.has('mfa')&&cMfa&&!cMfa.dataset.touched) cMfa.checked=params.get('mfa')==='1';
   if(params.has('vo')&&cVo&&!cVo.dataset.touched) cVo.checked=params.get('vo')!=='0';
   if(!calcPlans) calcPlans=await loadPlans();
-  const {mau,sso,fpc,fed,mfa,vo,org,mpo}=calcParams();
+  const {mau,sso,fpc,fed,mfa,vo,org,mpo,scim}=calcParams();
+  const effScim=Math.min(scim,sso);
   const effOrg=Math.max(org,sso);
-  const ranked=calcPlans.map(p=>{const e=estimate(p,mau,sso,{federated_mau:fed,mfa,orgs:org,org_members:mpo});return e&&e.total!=null?{p,e}:null}).filter(Boolean)
+  const ranked=calcPlans.map(p=>{const e=estimate(p,mau,sso,{federated_mau:fed,mfa,orgs:org,org_members:mpo,scim});return e&&e.total!=null?{p,e}:null}).filter(Boolean)
     .filter(x=>!vo||x.p.status==='verified').sort((a,b)=>a.e.total-b.e.total);
   const cheapest=ranked[0];
   const nTie=cheapest?ranked.filter(y=>Math.abs(y.e.total-cheapest.e.total)<1e-9).length:0;
   if(cSave) cSave.innerHTML=cheapest?(nTie>1?`<b>Lowest estimate:</b> ${nTie} plans tie at ${usd(cheapest.e.total)}/mo among ${ranked.length} plans.`:`<b>Lowest estimate:</b> ${cheapest.p.vendor} ${cheapest.p.plan} at ${usd(cheapest.e.total)}/mo (${yr(cheapest.e.total)}/yr) among ${ranked.length} plans.`)+(sso>0&&isFed(cheapest.p)?` Bills SSO per SSO user, at ${fpc.toLocaleString('en-US')} SSO users per connection.`:''):'No verifiable plans for this scenario.';
   if(cSave&&effOrg>0) cSave.innerHTML+=` <span class="note" data-org-calc>B2B: priced for ${effOrg.toLocaleString('en-US')} organization${effOrg>1?'s':''}${org<sso?' (1 per SSO connection)':''} with ${Math.round(Math.min(mpo!=null?mpo:(sso>0?fpc:FED_PER_CONN),mau>0?Math.ceil(mau/effOrg):Infinity)).toLocaleString('en-US')} members each${mpo==null?' (default: SSO users per connection, capped at users ÷ orgs)':''}; plans over a published org cap are left out.</span>`;
+  if(cSave&&scim>0) cSave.innerHTML+=` <span class="note" data-scim-calc>SCIM: priced for ${effScim} customer${effScim===1?'':'s'}${scim>sso?` (capped at your ${sso} SSO connection${sso===1?'':'s'}: every SCIM customer is also an SSO customer)`:''}; plans without a published SCIM price are left out.</span>`;
   const pos=x=>1+ranked.filter(y=>y.e.total<x.e.total-1e-9).length, tie=x=>ranked.filter(y=>Math.abs(y.e.total-x.e.total)<1e-9).length>1;
   rank.innerHTML=ranked.map((x,i)=>`<tr><td class="n">${pos(x)}${tie(x)?'=':''}</td><td><a href="/vendors/${x.p.vendor_id}">${x.p.vendor}</a> · ${x.p.plan}</td>
-    <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td><td class="n">${usd(x.e.mfa||0)}</td><td class="n">${usd(x.e.org||0)}</td>
+    <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td><td class="n">${usd(x.e.scim||0)}</td><td class="n">${usd(x.e.mfa||0)}</td><td class="n">${usd(x.e.org||0)}</td>
     <td class="n"><b>${usd(x.e.total)}</b></td><td class="n">${yr(x.e.total)}</td>
     <td class="src" style="white-space:normal">${(x.e.notes||[]).join(' ')||'—'}</td>
-    <td><a class="btn ghost" style="padding:4px 8px;font-size:12px" href="${x.p.source}" rel="noopener">Source</a></td></tr>`).join('')||'<tr><td colspan="11">No results</td></tr>';
+    <td><a class="btn ghost" style="padding:4px 8px;font-size:12px" href="${x.p.source}" rel="noopener">Source</a></td></tr>`).join('')||'<tr><td colspan="12">No results</td></tr>';
   const u=shareUrl();
   if(params.get('embed')==='1') u.searchParams.set('embed','1');
   history.replaceState(null,'',u.pathname+u.search+(location.hash||''));
@@ -241,7 +262,7 @@ async function copyText(text, okMsg){
 }
 
 if(rank){
-  [cMau,cSso,cFed,cOrg,cMpo].forEach(el=>el&&el.addEventListener('input',()=>{el.dataset.touched='1';renderCalc()}));
+  [cMau,cSso,cFed,cScim,cOrg,cMpo].forEach(el=>el&&el.addEventListener('input',()=>{el.dataset.touched='1';renderCalc()}));
   [cMfa,cVo].forEach(el=>el&&el.addEventListener('change',()=>{el.dataset.touched='1';renderCalc()}));
   $('#c-copy')?.addEventListener('click',()=>{copyText(shareUrl().toString(),'Share link copied'); window.grow?.track('cta_click',{cta:'calculator_share'});});
   $('#c-copy-embed')?.addEventListener('click',()=>{copyText(cEmbed?.value||'','Embed snippet copied'); window.grow?.track('cta_click',{cta:'calculator_embed'});});

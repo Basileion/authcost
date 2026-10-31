@@ -1,0 +1,8 @@
+Source: https://stytch.com/pricing
+Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+
+ Always free: 10,000 monthly active users and AI agents Unlimited Organizations 5 SSO or SCIM Connections 1,000 M2M Tokens Full suite of authn and authz features -- OAuth, SSO, Sessions, and RBAC Organization-level primary + secondary auth policies Built-in multi-tenancy Find your organizations SCIM provisioning, deprovisioning and automatic role management JIT provisioning controls by email domain & SSO Connection Optional fraud and risk prevention Pre-built UI components for login and admin portal For B2B SaaS Apps B2B For
+
+ingerprint cost 10,000 fingerprints $.005/fingerprint Organizational management SSO or SCIM connections Additional connections cost SSO or SCIM connections Additional connections cost 5 included $125/connection Unlimited Member invitations Member invitations Member and organization metadata Member and organization metadata Just-in-time provisioning by approved domains Just-in-time provisioning by approved domains JIT provisioning controls per org for SSO JIT provisioning controls per org for SSO Per organization MFA controls
+
+ncluded for free? Our pricing does not include any hard caps or pricing cliffs. If you surpass the 10,000 MAUs, 5 SSO or SCIM connections, 1000 M2M tokens, or 10,000 fingerprints included in our free tier, you'll pay for only what you use at the rates outlined above. Why should I trust Stytch with my users? What happens if I stop using Stytch? How can I safely export my data? What is Stytch's uptime and status? How does SMS and WhatsApp passthrough pricing work? What is a Monthly Active User (MAU)? What is an SSO Connection?

@@ -1,26 +1,26 @@
-id,vendor,plan,base_mo,included_users,user_unit,overage_per_user,sso_included,sso_extra_mo,status,source,checked,mau_tiers_mo,org_included,org_max,org_extra_mo,org_addon_mo,org_member_limit
-clerk-hobby,Clerk,Hobby,0,50000,MRU,,0,,verified,https://clerk.com/pricing,2026-10-31,,100,,,,20
-clerk-pro,Clerk,Pro,25,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-31,,100,,,100,20
-clerk-business,Clerk,Business,300,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-31,,100,,,100,20
-auth0-free,Auth0,Free,0,25000,MAU,,1,,verified,https://auth0.com/pricing.md,2026-10-31,,,5,,,
-auth0-essentials,Auth0,Essentials (B2C),35,500,MAU,,0,,verified,https://auth0.com/pricing.md,2026-10-31,500:35|1000:70|2500:175|5000:350|7500:525|10000:700|20000:1400|30000:2100|40000:2800|50000:3500,,10,,,
-auth0-professional,Auth0,Professional (B2C),240,500,MAU,,0,,verified,https://auth0.com/pricing.md,2026-10-31,500:240|1000:240|2500:545|5000:1000|7500:1200|10000:1600|20000:3200,,10,,,
-auth0-b2b-essentials,Auth0,Essentials (B2B),150,500,MAU,,3,100,verified,https://auth0.com/pricing.md,2026-10-31,500:150|1000:300|2500:700|5000:1300|7500:1725|10000:2100|20000:3800,,,,,
-auth0-b2b-professional,Auth0,Professional (B2B),800,500,MAU,,5,100,verified,https://auth0.com/pricing.md,2026-10-31,500:800|1000:800|2500:1200|5000:1500|7500:1800|10000:2400,,,,,
-cognito-lite,Amazon Cognito,Lite,0,10000,MAU,0.0055,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30,,,,,,
-cognito-essentials,Amazon Cognito,Essentials,0,10000,MAU,0.015,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30,,,,,,
-cognito-plus,Amazon Cognito,Plus,0,0,MAU,0.02,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30,,,,,,
-workos-authkit,WorkOS,AuthKit,0,1000000,MAU,,0,125,verified,https://workos.com/pricing,2026-10-31,,,,,,
-stytch-payg,Stytch,Pay as you go (B2B),0,10000,MAU,,5,125,verified,https://stytch.com/pricing,2026-10-30,,,,,,
-logto-free,Logto,Free,0,50000,MAU,,0,,verified,https://logto.io/pricing,2026-10-30,,,0,,,
-logto-pro,Logto,Pro,24,,token,,0,48,verified,https://logto.io/pricing,2026-10-30,,,,,48,
-kinde-free,Kinde,Free,0,10500,MAU,,1,,verified,https://kinde.com/pricing/,2026-10-30,,,5,,,
-kinde-pro,Kinde,Pro,25,10500,MAU,0.0175,1,,verified,https://kinde.com/pricing/,2026-10-30,,50,,0.5,,
-kinde-plus,Kinde,Plus,75,10500,MAU,0.0163,,0,verified,https://kinde.com/pricing/,2026-10-30,,50,,0.47,,
-kinde-scale,Kinde,Scale,250,10500,MAU,0.0151,,0,verified,https://kinde.com/pricing/,2026-10-30,,50,,0.43,,
-supabase-free,Supabase Auth,Free (platform),0,50000,MAU,,0,,verified,https://supabase.com/pricing,2026-10-31,,,,,,
-supabase-pro,Supabase Auth,Pro (platform),25,100000,MAU,0.00325,,,verified,https://supabase.com/pricing,2026-10-31,,,,,,
-firebase-identity-platform,Firebase Auth / Identity Platform,Pay as you go,0,50000,MAU,0.0055,,,verified,https://cloud.google.com/identity-platform/pricing,2026-10-31,,,,,,
-descope-free,Descope,Free Forever,0,7500,MAU,,3,,verified,https://www.descope.com/pricing,2026-10-31,,,10,,,
-descope-pro,Descope,Pro,249,10000,MAU,0.05,5,50,verified,https://www.descope.com/pricing,2026-10-31,,35,,1,,
-descope-growth,Descope,Growth,799,25000,MAU,0.05,10,50,verified,https://www.descope.com/pricing,2026-10-31,,100,,1,,
+id,vendor,plan,base_mo,included_users,user_unit,overage_per_user,sso_included,sso_extra_mo,status,source,checked,mau_tiers_mo,org_included,org_max,org_extra_mo,org_addon_mo,org_member_limit,scim_model,scim_included,scim_first_band_mo,scim_billing_starts,scim_source,scim_checked
+clerk-hobby,Clerk,Hobby,0,50000,MRU,,0,,verified,https://clerk.com/pricing,2026-10-31,,100,,,,20,none,0,,,https://clerk.com/pricing,2026-10-31
+clerk-pro,Clerk,Pro,25,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-31,,100,,,100,20,separate,1,75,2027-01-01,https://clerk.com/pricing,2026-10-31
+clerk-business,Clerk,Business,300,50000,MRU,0.02,1,75,verified,https://clerk.com/pricing,2026-10-31,,100,,,100,20,separate,1,75,2027-01-01,https://clerk.com/pricing,2026-10-31
+auth0-free,Auth0,Free,0,25000,MAU,,1,,verified,https://auth0.com/pricing.md,2026-10-31,,,5,,,,included,,,,https://auth0.com/pricing.md,2026-10-31
+auth0-essentials,Auth0,Essentials (B2C),35,500,MAU,,0,,verified,https://auth0.com/pricing.md,2026-10-31,500:35|1000:70|2500:175|5000:350|7500:525|10000:700|20000:1400|30000:2100|40000:2800|50000:3500,,10,,,,none,0,,,https://auth0.com/pricing,2026-10-31
+auth0-professional,Auth0,Professional (B2C),240,500,MAU,,0,,verified,https://auth0.com/pricing.md,2026-10-31,500:240|1000:240|2500:545|5000:1000|7500:1200|10000:1600|20000:3200,,10,,,,none,0,,,https://auth0.com/pricing,2026-10-31
+auth0-b2b-essentials,Auth0,Essentials (B2B),150,500,MAU,,3,100,verified,https://auth0.com/pricing.md,2026-10-31,500:150|1000:300|2500:700|5000:1300|7500:1725|10000:2100|20000:3800,,,,,,included,,,,https://auth0.com/pricing.md,2026-10-31
+auth0-b2b-professional,Auth0,Professional (B2B),800,500,MAU,,5,100,verified,https://auth0.com/pricing.md,2026-10-31,500:800|1000:800|2500:1200|5000:1500|7500:1800|10000:2400,,,,,,included,,,,https://auth0.com/pricing.md,2026-10-31
+cognito-lite,Amazon Cognito,Lite,0,10000,MAU,0.0055,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30,,,,,,,not_published,,,,https://aws.amazon.com/cognito/pricing/,2026-10-31
+cognito-essentials,Amazon Cognito,Essentials,0,10000,MAU,0.015,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30,,,,,,,not_published,,,,https://aws.amazon.com/cognito/pricing/,2026-10-31
+cognito-plus,Amazon Cognito,Plus,0,0,MAU,0.02,,,verified,https://aws.amazon.com/cognito/pricing/,2026-10-30,,,,,,,not_published,,,,https://aws.amazon.com/cognito/pricing/,2026-10-31
+workos-authkit,WorkOS,AuthKit,0,1000000,MAU,,0,125,verified,https://workos.com/pricing,2026-10-31,,,,,,,separate,0,125,,https://workos.com/pricing,2026-10-31
+stytch-payg,Stytch,Pay as you go (B2B),0,10000,MAU,,5,125,verified,https://stytch.com/pricing,2026-10-30,,,,,,,pooled,5,125,,https://stytch.com/pricing,2026-10-31
+logto-free,Logto,Free,0,50000,MAU,,0,,verified,https://logto.io/pricing,2026-10-30,,,0,,,,not_published,,,,https://logto.io/pricing,2026-10-31
+logto-pro,Logto,Pro,24,,token,,0,48,verified,https://logto.io/pricing,2026-10-30,,,,,48,,not_published,,,,https://logto.io/pricing,2026-10-31
+kinde-free,Kinde,Free,0,10500,MAU,,1,,verified,https://kinde.com/pricing/,2026-10-30,,,5,,,,none,0,,,https://kinde.com/pricing/,2026-10-31
+kinde-pro,Kinde,Pro,25,10500,MAU,0.0175,1,,verified,https://kinde.com/pricing/,2026-10-30,,50,,0.5,,,none,0,,,https://kinde.com/pricing/,2026-10-31
+kinde-plus,Kinde,Plus,75,10500,MAU,0.0163,,0,verified,https://kinde.com/pricing/,2026-10-30,,50,,0.47,,,none,0,,,https://kinde.com/pricing/,2026-10-31
+kinde-scale,Kinde,Scale,250,10500,MAU,0.0151,,0,verified,https://kinde.com/pricing/,2026-10-30,,50,,0.43,,,coming_soon,,,,https://kinde.com/pricing/,2026-10-31
+supabase-free,Supabase Auth,Free (platform),0,50000,MAU,,0,,verified,https://supabase.com/pricing,2026-10-31,,,,,,,not_published,,,,https://supabase.com/pricing,2026-10-31
+supabase-pro,Supabase Auth,Pro (platform),25,100000,MAU,0.00325,,,verified,https://supabase.com/pricing,2026-10-31,,,,,,,not_published,,,,https://supabase.com/pricing,2026-10-31
+firebase-identity-platform,Firebase Auth / Identity Platform,Pay as you go,0,50000,MAU,0.0055,,,verified,https://cloud.google.com/identity-platform/pricing,2026-10-31,,,,,,,not_published,,,,https://cloud.google.com/identity-platform/pricing,2026-10-31
+descope-free,Descope,Free Forever,0,7500,MAU,,3,,verified,https://www.descope.com/pricing,2026-10-31,,,10,,,,none,0,,,https://www.descope.com/pricing,2026-10-31
+descope-pro,Descope,Pro,249,10000,MAU,0.05,5,50,verified,https://www.descope.com/pricing,2026-10-31,,35,,1,,,none,0,,,https://www.descope.com/pricing,2026-10-31
+descope-growth,Descope,Growth,799,25000,MAU,0.05,10,50,verified,https://www.descope.com/pricing,2026-10-31,,100,,1,,,included,,,,https://www.descope.com/pricing,2026-10-31

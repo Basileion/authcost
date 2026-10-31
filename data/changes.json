@@ -2,6 +2,15 @@
   {
     "date": "2026-10-31",
     "observed": "2026-10-31",
+    "vendor": "AuthCost",
+    "vendor_id": "authcost",
+    "kind": "correction",
+    "summary": "Addition/correction: SCIM / Directory Sync is now priced, from each vendor's pricing page read 2026-10-31. WorkOS bills Directory Sync as its own connection ($125 each for 1–15, then $100/$80/$65), so a customer on SSO and SCIM is two connections; Clerk includes 1 Directory Sync connection, then $75/mo each (2–15), $60, $48, billed from January 1, 2027; Stytch's 5 included connections are shared between SSO and SCIM, then $125 each; Auth0 includes inbound SCIM on Free and B2B plans; Descope includes SCIM on Growth; Kinde lists SCIM as coming soon on Scale; Cognito, Supabase, Firebase / Identity Platform and Logto publish no SCIM on their pricing pages. Before, SCIM was listed per plan but never added to totals: at 10k users with 3 SSO customers who all need SCIM, WorkOS read $375/mo and is $750/mo; Stytch read $0 and is $125/mo; Clerk Pro read $275/mo and is $425/mo from 2027-01-01. New calculator input scim= (default 0).",
+    "source": "https://workos.com/pricing"
+  },
+  {
+    "date": "2026-10-31",
+    "observed": "2026-10-31",
     "vendor": "Auth0",
     "vendor_id": "auth0",
     "kind": "coverage-added",

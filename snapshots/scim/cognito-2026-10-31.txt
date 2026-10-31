@@ -1,0 +1,4 @@
+Source: https://aws.amazon.com/cognito/pricing/
+Fetched: 2026-10-31 ~13:45 ET (web fetch; curl timed out)
+Mentions of 'SCIM' or 'Directory Sync' on the pricing page: 0 (tiers Lite/Essentials/Plus; SAML/OIDC federation $0.015/MAU after 50 free)
+Recorded as: SCIM not published on the pricing page.

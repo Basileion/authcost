@@ -1,0 +1,4 @@
+Source: https://cloud.google.com/identity-platform/pricing
+Fetched: 2026-10-31 ~13:40 ET by curl (55825 chars of visible text)
+Mentions of 'SCIM' or 'Directory Sync' on the pricing page: 0
+Recorded as: SCIM not published on the pricing page.

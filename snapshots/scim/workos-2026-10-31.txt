@@ -1,0 +1,6 @@
+Source: https://workos.com/pricing
+Fetched: 2026-10-31 ~13:40 ET by curl; excerpts of visible text
+
+1-50 36% off $80 / ea 51-100 48% off $65 / ea Need additional scale? Talk to us Directory Sync User provisioning, de-provisioning, and role mapping Get started 0 0 × $125 $0 / month vs $100 to build it yourself Need a plan that fits your scale? Unlock annual discounts, expert guidance, and migration support. Schedule a call Number of connections 1-15 $125 / ea 16-30 20% off $100 / ea 31-50 36% off $80 / ea 51-100 48% off $65 / ea Need additional scale? Talk to us Audit Logs Capture and export compliance events from your app 
+
+tication Quickly add auth to your command-line tools Frequently asked questions What's a connection? A connection represents the relationship between WorkOS and any group of end users. Each enterprise customer you support with SSO or Directory Sync is counted as one connection. Does the number of end users affect pricing? No, each connection at WorkOS is billed the same, regardless of the identity provider (IdP), directory service used, or the total number of end users. Can I try WorkOS before paying for it? WorkOS is free t

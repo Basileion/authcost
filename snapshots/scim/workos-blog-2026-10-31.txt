@@ -1,0 +1,4 @@
+Source: https://workos.com/blog/auth0-enterprise-connect-vs-workos
+Fetched: 2026-10-31 ~13:45 ET (web fetch); excerpt
+"WorkOS prices SSO and Directory Sync per enterprise connection: $125 each for 1 to 15 connections, $100 for 16 to 30, $80 for 31 to 50, $65 for 51 to 100."
+"Each enterprise customer you support with SSO counts as one connection, and each customer you support with Directory Sync counts as one. A customer on both is two connections, which at the first tier is $250 a month, not $125."
