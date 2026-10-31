@@ -2,7 +2,7 @@
 
 ## Calculator
 Interactive MAU / MFA / SSO cost ranking: https://authcost.pages.dev/calculator/?mau=50000&sso=5&mfa=0
-Share via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.
+Share via query params: mau, sso, mfa (0|1), fpc (SSO users per connection for per-SSO-user vendors, default 200), vo (verified-only 0|1), embed=1 for chrome-free iframe.
 Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso=5" title="AuthCost calculator" width="100%" height="720" loading="lazy"></iframe>
 
 25 plans, 25 verified, 10 vendors. Checked through 2026-10-31.
@@ -224,7 +224,7 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - sso_included: 0
 - sso_extra_mo: 125
 - status: verified
-- source: https://workos.com/pricing (2026-10-30)
+- source: https://workos.com/pricing (2026-10-31)
 - notes: AuthKit free to 1M MAU; +$2,500/mo per additional 1M. SSO and Directory Sync each use the connection ladder ($125→$65). Custom domain $99/mo.
 
 ### Stytch Pay as you go (B2B)
@@ -320,7 +320,7 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - sso_included: 0
 - sso_extra_mo: null
 - status: verified
-- source: https://supabase.com/pricing (2026-10-30)
+- source: https://supabase.com/pricing (2026-10-31)
 - notes: 50k Auth MAU on Free platform plan. No SAML SSO. Project pauses after 1 week inactivity.
 
 ### Supabase Auth Pro (platform)
@@ -332,7 +332,7 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - sso_included: null
 - sso_extra_mo: undefined
 - status: verified
-- source: https://supabase.com/pricing (2026-10-30)
+- source: https://supabase.com/pricing (2026-10-31)
 - notes: Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits — not auth-only.
 
 ### Firebase Auth / Identity Platform Pay as you go
@@ -426,6 +426,7 @@ Open-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Bett
 - Cheapest auth at 100k users: https://authcost.pages.dev/guides/cheapest-auth-100k
 - Auth free tiers compared: https://authcost.pages.dev/guides/auth-free-tiers-compared
 - Self-hosted auth cost: Better Auth / Auth.js vs Clerk and Auth0: https://authcost.pages.dev/guides/self-hosted-auth-cost
+- Enterprise SSO cost: every vendor at 1, 3, 5, 10 and 25 connections: https://authcost.pages.dev/guides/enterprise-sso-cost
 - Clerk vs Auth0 pricing: https://authcost.pages.dev/compare/clerk-vs-auth0
 - Clerk vs Amazon Cognito pricing: https://authcost.pages.dev/compare/clerk-vs-cognito
 - Clerk vs WorkOS pricing: https://authcost.pages.dev/compare/clerk-vs-workos

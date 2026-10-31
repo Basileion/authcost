@@ -466,8 +466,10 @@
     "scim_extra_mo": 125,
     "notes": "AuthKit free to 1M MAU; +$2,500/mo per additional 1M. SSO and Directory Sync each use the connection ladder ($125→$65). Custom domain $99/mo.",
     "source": "https://workos.com/pricing",
-    "checked": "2026-10-30",
-    "status": "verified"
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true,
+    "mfa_source_note": "workos.com/pricing (2026-10-31): \"AuthKit includes email + password, social login, passkeys, MFA, magic auth, and enterprise SSO\""
   },
   {
     "id": "stytch-payg",
@@ -610,8 +612,10 @@
     "sso_extra_mo": null,
     "notes": "50k Auth MAU on Free platform plan. No SAML SSO. Project pauses after 1 week inactivity.",
     "source": "https://supabase.com/pricing",
-    "checked": "2026-10-30",
-    "status": "verified"
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true,
+    "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on"
   },
   {
     "id": "supabase-pro",
@@ -628,8 +632,10 @@
     "sso_saml_per_mau": 0.015,
     "notes": "Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits — not auth-only.",
     "source": "https://supabase.com/pricing",
-    "checked": "2026-10-30",
-    "status": "verified"
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true,
+    "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on"
   },
   {
     "id": "firebase-identity-platform",

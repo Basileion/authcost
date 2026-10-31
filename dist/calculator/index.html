@@ -16,11 +16,12 @@
 <div class="panel" id="calc"><div class="filters" style="margin:0">
 <label>Monthly users (MAU/MRU)<input id="c-mau" type="number" min="0" step="1000" value="50000"></label>
 <label>SSO connections<input id="c-sso" type="number" min="0" step="1" value="5"></label>
-<label>Federated MAU (Cognito/Supabase SAML)<input id="c-fed" type="number" min="0" step="100" value="1000"></label>
+<label>SSO users per connection (Firebase / Identity Platform, Supabase, Cognito bill per SSO user)<input id="c-fpc" type="number" min="0" step="50" value="200"></label>
 <label class="chk"><input id="c-mfa" type="checkbox"> Require MFA</label>
 <label class="chk"><input id="c-vo" type="checkbox" checked> Verified only</label>
 </div>
-<p class="note" style="margin:12px 0 0">MFA adds a fee only when the vendor publishes one (e.g. Logto $48/mo). Plans that publish “no MFA” are omitted when MFA is required — we never invent an MFA price.</p></div>
+<p class="note" style="margin:12px 0 0"><span class="fed-note" data-fed-assumption>SSO users: Amazon Cognito, Supabase Auth and Firebase Auth / Identity Platform bill SAML/OIDC per SSO user, not per connection (first 50 free, then $0.015 per SSO user a month). Their SSO results here assume 200 SSO users per connection (5 connections = 1,000 SSO users). <a href="/methodology#sso-users">See how 1,000 or 2,000 per connection changes the result</a> or <a href="/calculator/">set your own</a>.</span></p>
+<p class="note" style="margin:8px 0 0">MFA adds a fee only when the vendor publishes one (e.g. Logto $48/mo). Plans that publish “no MFA” are omitted when MFA is required — we never invent an MFA price.</p></div>
 <div class="save" id="c-save" aria-live="polite"></div>
 <div class="tbl" style="margin-top:14px"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Base</th><th class="n">Users</th><th class="n">SSO</th><th class="n">MFA</th><th class="n">Monthly</th><th class="n">Annual</th><th>Notes</th><th scope="col"><span class="skip">Link</span></th></tr></thead><tbody id="rank"><tr><td colspan="10">Loading…</td></tr></tbody></table></div>
 <p class="note">Excludes SMS, custom domains, M2M token overages, taxes and negotiated discounts. Plans that cannot price the scenario (e.g. Auth0 above its top published MAU tier — 50k B2C, 20k B2B — which is Enterprise / contact sales) are omitted. <a href="/methodology">How we calculate this</a>.</p>

@@ -17,7 +17,8 @@ const P=Object.fromEntries(vendors.map(v=>[v.id,v]));
 const aff=id=>{const a=AFFILIATES[id];return (a&&a!=='#pending')?a:(P[id]?P[id].source:'#');};
 const nVer=plans.filter(p=>p.status==='verified').length,lastChecked=plans.map(p=>p.checked).sort().at(-1);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const usd=v=>v==null||Number.isNaN(v)?'—':'$'+(Number.isInteger(v)?v.toLocaleString('en-US'):v>=1?v.toFixed(2):v.toFixed(4));
+// RT-20261031-60: sub-$1 rates keep their published precision (e.g. Supabase $0.00325), never rounded to 4 places.
+const usd=v=>v==null||Number.isNaN(v)?'—':'$'+(Number.isInteger(v)?v.toLocaleString('en-US'):v>=1?v.toFixed(2):String(+v.toFixed(5)).replace(/^(\d+\.\d)$/,'$10'));
 const yr=v=>'$'+Math.round(v*12).toLocaleString('en-US');
 const HEADSLOT='<!-- seo-meta-slot -->'+(fs.existsSync(R('seo/head-extra.html'))?fs.readFileSync(R('seo/head-extra.html'),'utf8'):'').replace(/<!--[\s\S]*?-->/g,'').trim();
 const INDEXNOW_KEY=fs.existsSync(R('indexnow.key'))?fs.readFileSync(R('indexnow.key'),'utf8').trim():'';
@@ -50,6 +51,9 @@ ${(['404.html','offline.html'].includes(file)?[]:[...(file==='index.html'?[WEBSI
 <script>window.__GROW__={site:"authcost.pages.dev"/* dormant A/B: ,experiments:[{id:"design-standard-v1",arms:["control","v1"]}] */};</script>
 <script src="/assets/grow.js" defer></script><script type="module" src="/assets/app.js"></script></body></html>`)};
 
+// RT-20261031-57: per-federated-user SSO vendors (Firebase / Identity Platform, Supabase, Cognito) need an SSO-user count.
+// Default = FED_PER_CONN SSO users per connection. Every page that publishes an SSO result must disclose it (build guard below).
+export const FED_PER_CONN=200;
 /** Estimate monthly cost for a plan given MAU and SSO connection count. Returns null if unverifiable. */
 export function estimate(plan, mau, sso=0, opts={}){
   if(plan.status!=='verified') return null;
@@ -96,15 +100,15 @@ export function estimate(plan, mau, sso=0, opts={}){
     // Cognito / Supabase SAML MAU model
     if(plan.federated_per_mau!=null){
       const fedFree=plan.federated_free??0;
-      // Treat all `sso` as "enterprise customers"; assume ~200 users each for federated MAU estimate only when opts.federated_mau set
-      const fedMau=opts.federated_mau??(need*200);
+      // Treat each `sso` connection as one enterprise customer with FED_PER_CONN SSO users unless opts.federated_mau is set
+      const fedMau=opts.federated_mau??(need*FED_PER_CONN);
       out.sso=Math.max(0, fedMau - fedFree)*plan.federated_per_mau;
-      out.notes.push(`Federated cost uses ${fedMau} federated MAU (default 200×connections); adjust in calculator.`);
+      out.notes.push(`SAML/OIDC billed per SSO user: ${fedMau} SSO users assumed (${FED_PER_CONN} per connection by default); change it in the calculator.`);
     } else if(plan.sso_saml_per_mau!=null){
-      const fedMau=opts.federated_mau??(need*200);
+      const fedMau=opts.federated_mau??(need*FED_PER_CONN);
       const incl=plan.sso_saml_included_mau??0;
       out.sso=Math.max(0, fedMau - incl)*plan.sso_saml_per_mau;
-      out.notes.push(`Supabase SAML priced per federated MAU (${fedMau} assumed).`);
+      out.notes.push(`Supabase SAML billed per SSO user: ${fedMau} SSO users assumed (${FED_PER_CONN} per connection by default).`);
     } else {
       out.notes.push('SSO pricing not modeled for this plan.');
     }
@@ -162,9 +166,9 @@ const kfmt=n=>n>=1e6?(n/1e6)+'M':(n/1000)+'k';
 const tag=s=>s==='verified'?'<span class="tag">Verified</span>':'<span class="tag u">Unverified</span>';
 const faq=[
   ['What does AuthCost compare?','Published list prices for auth and identity vendors: base plan fees, MAU/MRU allowances and overages, and enterprise SSO / Directory Sync connection fees. Every row links the vendor’s own pricing page and the date we checked it.'],
-  ['MAU vs MRU — why does it matter?','Most vendors bill Monthly Active Users (any activity that month). Clerk bills Monthly Retained Users — a user who returns at least one day after signup. MRU is often lower than MAU for apps with many one-time signups, so a raw MAU-to-MAU comparison understates Clerk’s relative price.'],
+  ['MAU vs MRU — why does it matter?','Most vendors bill Monthly Active Users (any activity that month). Clerk bills Monthly Retained Users — a user who returns at least one day after signup. MRU is never higher than MAU for the same app, so pricing Clerk on your MAU count overstates Clerk’s bill unless you count only retained users.'],
   ['Why are some rows blank?','We never invent a number. If a rate is “contact sales,” custom, or not printed as a fixed figure on the official page, we leave it blank and mark the gap.'],
-  ['How is the calculator’s cost computed?','Monthly ≈ base + max(0, users − included) × overage + SSO fees from the published ladder + verified MFA add-ons when MFA is required. Cognito/Supabase SAML uses a federated-MAU assumption you can change. Token-based plans (Logto) use base + SSO (+ MFA add-on if required) only unless noted. We never invent an MFA price.'],
+  ['How is the calculator’s cost computed?',`Monthly ≈ base + max(0, users − included) × overage + SSO fees from the published ladder + verified MFA add-ons when MFA is required. Firebase / Identity Platform, Supabase and Cognito bill SAML/OIDC per SSO user, not per connection, so we assume ${FED_PER_CONN} SSO users per connection by default (change it in the calculator; see the sensitivity table in the methodology). Token-based plans (Logto) use base + SSO (+ MFA add-on if required) only unless noted. We never invent an MFA price.`],
   ['Do affiliate links change rankings?','No. Ranking is by computed cost only. Affiliate links are labeled when active.']
 ];
 const faqLd={'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))};
@@ -172,21 +176,51 @@ const asOf=`As of ${lastChecked}, from ${nVer} verified plan rows`;
 const meth=`<a href="/methodology">How we calculate this</a>`;
 const SCENARIOS=[{mau:1000,sso:0,label:'1k users · no SSO'},{mau:10000,sso:1,label:'10k users · 1 SSO'},{mau:50000,sso:5,label:'50k users · 5 SSO'},{mau:100000,sso:10,label:'100k users · 10 SSO'}];
 
-function rankScenario(mau,sso){
-  return plans.map(p=>{const e=estimate(p,mau,sso);return e&&e.total!=null?{p,e}:null}).filter(Boolean).sort((a,b)=>a.e.total-b.e.total);
+function rankScenario(mau,sso,opts={}){
+  return plans.map(p=>{const e=estimate(p,mau,sso,opts);return e&&e.total!=null?{p,e}:null}).filter(Boolean).sort((a,b)=>a.e.total-b.e.total);
 }
+// RT-20261031-60: competition ranking. Equal totals share a rank; a plan is never "#N" or "$0/yr more" against a plan at the same price.
+const EPS=1e-9;
+const rankPos=(r,z)=>1+r.filter(x=>x.e.total<z.e.total-EPS).length;
+const tieCount=(r,z)=>r.filter(x=>Math.abs(x.e.total-z.e.total)<EPS).length;
+// RT-20261031-57: per-SSO-user vendors and the disclosure that must accompany every SSO result
+const isFed=p=>p.federated_per_mau!=null||p.sso_saml_per_mau!=null;
+const FED_PLANS=plans.filter(p=>p.status==='verified'&&isFed(p));
+const FED_VIDS=[...new Set(FED_PLANS.map(p=>p.vendor_id))];
+const FED_NAMES=FED_VIDS.map(id=>P[id].name);
+const FED_RATES=[...new Set(FED_PLANS.map(p=>p.federated_per_mau??p.sso_saml_per_mau))];
+const FED_FREE=[...new Set(FED_PLANS.map(p=>p.federated_free??p.sso_saml_included_mau??0))];
+const FED_SHORT=`assumes ${FED_PER_CONN} SSO users per connection`;
+const FED_SENS=[1000,2000];
+const listJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a.at(-1);
+const FED_NOTE=`<span class="fed-note" data-fed-assumption>SSO users: ${esc(listJoin(FED_NAMES))} bill SAML/OIDC per SSO user, not per connection (first ${FED_FREE.join('/')} free, then ${FED_RATES.map(usd).join('/')} per SSO user a month). Their SSO results here assume ${FED_PER_CONN} SSO users per connection (5 connections = ${(5*FED_PER_CONN).toLocaleString('en-US')} SSO users). <a href="/methodology#sso-users">See how 1,000 or 2,000 per connection changes the result</a> or <a href="/calculator/">set your own</a>.</span>`;
+/** Sensitivity of a vendor's cheapest plan to the SSO-users-per-connection assumption, computed from the ledger. */
+const fedSens=(vid,mau,sso)=>FED_SENS.map(per=>{const r=rankScenario(mau,sso,{federated_mau:sso*per});const z=r.find(x=>x.p.vendor_id===vid);return z?{per,z,pos:rankPos(r,z),n:r.length}:null}).filter(Boolean);
+const fedSensText=(vid,mau,sso)=>fedSens(vid,mau,sso).map(x=>`at ${x.per.toLocaleString('en-US')} per connection ${usd(x.z.e.total)}/mo, #${x.pos} of ${x.n}`).join('; ');
 const heroSc=SCENARIOS[2];
 const heroRank=rankScenario(heroSc.mau,heroSc.sso);
-const heroGap=heroRank.length>=2?heroRank.at(-1).e.total-heroRank[0].e.total:0;
+// Max-minus-min spread across all plans: methodology only (RT-20261031-59). Nobody chooses between the priciest and cheapest plan.
+const spreadGap=heroRank.length>=2?heroRank.at(-1).e.total-heroRank[0].e.total:0;
+// RT-20261031-59: the hero is a capturable number. A named popular plan (Clerk Pro) vs the cheapest verified plan that
+// publishes MFA (mfa_available===true, read on the vendor's page) at the same 100k users, MFA required, no SSO.
+const HERO={pop:'clerk-pro',mau:100000};
+const heroPopPlan=plans.find(p=>p.id===HERO.pop),heroPop=estimate(heroPopPlan,HERO.mau,0,{mfa:true});
+const heroAlts=rankScenario(HERO.mau,0,{mfa:true}).filter(x=>x.p.mfa_available===true&&x.p.vendor_id!==heroPopPlan.vendor_id);
+const heroCheap=heroAlts[0];
+const heroGap=heroPop.total-heroCheap.e.total;
+if(!(heroGap>0)){console.error('Hero guard: popular plan is not dearer than the cheapest MFA plan; rewrite the hero');process.exit(1)}
+const heroCheapCaveat=heroCheap.p.sso_bands?`; SSO is billed separately from ${usd(heroCheap.p.sso_bands[0].rate)} per connection`:'';
+const heroCheapPrice=heroCheap.e.total===0?'$0':`${usd(heroCheap.e.total)}/mo`;
+const heroSentence=`At ${kfmt(HERO.mau)} users, ${heroPopPlan.vendor} ${heroPopPlan.plan} lists ${usd(heroPop.total)}/mo; ${heroCheap.p.vendor} ${heroCheap.p.plan}, the cheapest verified plan that includes MFA at that size, lists ${heroCheapPrice} (${yr(heroGap)}/yr less)`;
 
 const signup=(id='s',hook='Get the weekly auth ledger')=>`<form class="signup" action="${FORM_ACTION}" method="post" data-form="kit"><label for="${id}-e" class="skip">Email</label><input id="${id}-e" type="email" name="email_address" required placeholder="you@company.com" autocomplete="email"><button class="btn" type="submit">${esc(hook)}</button></form><p class="note">Weekly: every auth price change we confirmed, SSO fee moves, and the cheapest verified plan for 10k and 50k users. Free; unsubscribe in one click. Sent via Kit · <a href="/privacy">Privacy</a>.</p>`;
 const mailBox=(id,h,hook)=>`<section class="mail" id="ledger-mail"><div><div class="eyebrow">Free weekly ledger</div><h2 class="h3">${esc(h)}</h2></div><div>${signup(id,hook)}</div></section>`;
 const trust=`<ul class="trust"><li><b>Source-linked</b> every price links the vendor’s own page</li><li><b>Independent</b> no vendor pays for placement</li><li><b>Checked weekly</b> a script diffs every source page</li><li><b>No paid rankings</b> ordered by computed cost only</li></ul>`;
 
 // ---- Home
-page({file:'index.html',title:`${NAME} — auth pricing that scales without the surprise bill`,desc:`Founders say Clerk/Auth0 pricing scales horribly past free tiers. At ${heroSc.label}, verified plans in our ledger differ by up to ${yr(heroGap)} a year once MAU/MRU and SSO fees are counted — every price sourced.`,ld:[ORG_LD,faqLd,{'@context':'https://schema.org','@type':'Dataset',name:`${NAME} auth price ledger`,description:'Auth and identity list prices with source URL, check date and verification status per row.',url:SITE+'/',dateModified:lastChecked,license:'https://creativecommons.org/licenses/by/4.0/',creator:{'@id':SITE+'/#org'},distribution:[{'@type':'DataDownload',encodingFormat:'application/json',contentUrl:SITE+'/api/plans.json'},{'@type':'DataDownload',encodingFormat:'text/csv',contentUrl:SITE+'/api/plans.csv'}]}],body:`
-<section class="hero"><div class="hero-grid"><div><div class="eyebrow">${asOf} · built for the “pricing scales horribly” moment</div><h1>When auth costs more than hosting, verified plans still differ by up to <span class="acc">${yr(heroGap)} a year</span>.</h1>
-<p class="lede">Indie and B2B teams hit this after ~10k–50k users: Clerk/Auth0 bills climb on MAU/MRU, then SSO per-connection fees stack on top. ${NAME} ranks ${vendors.length} vendors on base + overage + SSO from each vendor’s own pricing page — so you see the cheaper stack before the invoice does.</p>
+page({file:'index.html',title:`${NAME} — auth pricing that scales without the surprise bill`,desc:`${heroSentence}. Updated ${lastChecked}: ${vendors.length} vendors, ${nVer} verified plans, MAU/MRU and SSO fees counted, every price sourced.`,ld:[ORG_LD,faqLd,{'@context':'https://schema.org','@type':'Dataset',name:`${NAME} auth price ledger`,description:'Auth and identity list prices with source URL, check date and verification status per row.',url:SITE+'/',dateModified:lastChecked,license:'https://creativecommons.org/licenses/by/4.0/',creator:{'@id':SITE+'/#org'},distribution:[{'@type':'DataDownload',encodingFormat:'application/json',contentUrl:SITE+'/api/plans.json'},{'@type':'DataDownload',encodingFormat:'text/csv',contentUrl:SITE+'/api/plans.csv'}]}],body:`
+<section class="hero"><div class="hero-grid"><div><div class="eyebrow">${asOf} · for the “Clerk seems pricey once you scale” moment</div><h1>${esc(heroPopPlan.vendor)} ${esc(heroPopPlan.plan)} lists ${usd(heroPop.total)}/mo at ${kfmt(HERO.mau)} users. The cheapest verified plan with MFA lists ${heroCheapPrice}: <span class="acc">${yr(heroGap)} a year</span> you could keep.</h1>
+<p class="lede" data-hero-method>That plan is <a href="/vendors/${heroCheap.p.vendor_id}">${esc(heroCheap.p.vendor)} ${esc(heroCheap.p.plan)}</a> (${esc(heroCheap.p.notes.split('.')[0])}${heroCheapCaveat}). Same ${HERO.mau.toLocaleString('en-US')} users, MFA required, no SSO; ${esc(heroPopPlan.vendor)} counts retained users (MRU). Then SSO per-connection fees stack on top: ${NAME} ranks ${vendors.length} vendors on base + overage + SSO from each vendor’s own pricing page, so you see the cheaper stack before the invoice does. <a href="/methodology#hero">How this number is computed</a>.</p>
 <div class="cta-row"><a class="btn" href="/calculator/">Rank plans for my MAU + SSO</a><a class="btn ghost" href="/pro">See Pro</a></div>
 <p class="micro">Free · no signup · no card. List prices only — we never invent a number.</p></div>
 <aside class="check" id="check" aria-labelledby="check-h"><div class="eyebrow">Instant check · live data</div><h2 id="check-h" class="h3">What will auth cost?</h2>
@@ -197,10 +231,10 @@ page({file:'index.html',title:`${NAME} — auth pricing that scales without the 
 <p class="note" style="margin:0">Weekly price changes for your scenario. Unsubscribe in one click · <a href="/privacy">Privacy</a>.</p></aside></div>
 ${trust}</section>
 <section class="proof" aria-label="What backs these numbers"><div><b>${nVer}</b><span>plan rows verified on official pages</span></div><div><b>${vendors.length}</b><span>vendors, every row source-linked</span></div><div><b>${changes.length}</b><span>dated entries in the <a href="/changes">price log</a></span></div><div><b>${lastChecked}</b><span>last full check · <a href="/methodology">method</a></span></div></section>
-<div class="kpis">${SCENARIOS.map(s=>{const r=rankScenario(s.mau,s.sso);const gap=r.length>=2?r.at(-1).e.total-r[0].e.total:0;return `<div><b>${yr(gap)}</b><span>yearly gap · ${esc(s.label)} (${r.length} ranked)</span></div>`}).join('')}</div>
-<p class="note">${asOf}. Gaps use verified rows only; plans that cannot price the scenario are omitted. ${meth}.</p>
+<div class="kpis">${SCENARIOS.map(s=>{const r=rankScenario(s.mau,s.sso);const z=r[0];if(!z)return '';const t=tieCount(r,z);const fed=s.sso&&isFed(z.p);return `<div><b>${z.e.total===0?'$0':usd(z.e.total)+'/mo'}${fed?'†':''}</b><span>cheapest · ${esc(s.label)}: ${t>1?`${z.e.total===0?`${t} plans tie at $0`:`${t} plans tie`}`:`${esc(z.p.vendor)} ${esc(z.p.plan)}`} (${r.length} ranked)</span></div>`}).join('')}</div>
+<p class="note">${asOf}. Verified rows only; plans that cannot price the scenario are omitted. † ${FED_NOTE} ${meth}.</p>
 <section class="essential"><h2>Auth bills hide in the unit.</h2><div class="grid3">
-<div><h3>MAU vs MRU</h3><p>Clerk’s MRU skips one-day users. Comparing it to Auth0 MAU without adjusting understates or overstates the gap.</p></div>
+<div><h3>MAU vs MRU</h3><p>Clerk’s MRU skips one-day users, so it is never higher than your MAU. Pricing Clerk on your MAU count overstates its bill unless you count only retained users.</p></div>
 <div><h3>Per-connection SSO</h3><p>WorkOS and Stytch charge per enterprise connection ($125 entry). Clerk includes one on Pro then $75. Kinde Plus includes unlimited SSO in the base.</p></div>
 <div><h3>Silent fee starts</h3><p>Clerk Directory Sync billing begins 2027-01-01 — logged in our <a href="/changes">price log</a> before it hits invoices.</p></div>
 </div></section>
@@ -221,11 +255,12 @@ page({file:'calculator/index.html',og:'calculator',title:`Auth cost calculator �
 <div class="panel" id="calc"><div class="filters" style="margin:0">
 <label>Monthly users (MAU/MRU)<input id="c-mau" type="number" min="0" step="1000" value="50000"></label>
 <label>SSO connections<input id="c-sso" type="number" min="0" step="1" value="5"></label>
-<label>Federated MAU (Cognito/Supabase SAML)<input id="c-fed" type="number" min="0" step="100" value="1000"></label>
+<label>SSO users per connection (Firebase / Identity Platform, Supabase, Cognito bill per SSO user)<input id="c-fpc" type="number" min="0" step="50" value="${FED_PER_CONN}"></label>
 <label class="chk"><input id="c-mfa" type="checkbox"> Require MFA</label>
 <label class="chk"><input id="c-vo" type="checkbox" checked> Verified only</label>
 </div>
-<p class="note" style="margin:12px 0 0">MFA adds a fee only when the vendor publishes one (e.g. Logto $48/mo). Plans that publish “no MFA” are omitted when MFA is required — we never invent an MFA price.</p></div>
+<p class="note" style="margin:12px 0 0">${FED_NOTE}</p>
+<p class="note" style="margin:8px 0 0">MFA adds a fee only when the vendor publishes one (e.g. Logto $48/mo). Plans that publish “no MFA” are omitted when MFA is required — we never invent an MFA price.</p></div>
 <div class="save" id="c-save" aria-live="polite"></div>
 <div class="tbl" style="margin-top:14px"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Base</th><th class="n">Users</th><th class="n">SSO</th><th class="n">MFA</th><th class="n">Monthly</th><th class="n">Annual</th><th>Notes</th><th scope="col"><span class="skip">Link</span></th></tr></thead><tbody id="rank"><tr><td colspan="10">Loading…</td></tr></tbody></table></div>
 <p class="note">Excludes SMS, custom domains, M2M token overages, taxes and negotiated discounts. Plans that cannot price the scenario (e.g. Auth0 above its top published MAU tier — 50k B2C, 20k B2B — which is Enterprise / contact sales) are omitted. ${meth}.</p>
@@ -258,15 +293,21 @@ const tierTables=ps=>{const tp=ps.filter(p=>p.price_tiers);if(!tp.length)return 
   return `<h2>Published MAU tiers (monthly / yearly)</h2><div class="tbl"><table><thead><tr><th class="n">MAU up to</th>${tp.map(p=>`<th class="n">${esc(p.plan)}</th>`).join('')}</tr></thead><tbody>${ms.map(m=>`<tr><td class="n">${m.toLocaleString('en-US')}</td>${tp.map(p=>{const t=p.price_tiers.find(x=>x.mau===m);return t?`<td class="n">$${t.mo.toLocaleString('en-US')}/mo<br><span class="src">$${t.yr.toLocaleString('en-US')}/yr</span></td>`:`<td class="n" title="Not offered at this tier">${p.tier_unavailable_from&&m>=p.tier_unavailable_from?'Not available':(m>p.tier_max_mau?'Contact sales':'—')}</td>`}).join('')}</tr>`).join('')}</tbody></table></div><p class="note">Usage between tiers is billed at the next tier up. Above the last tier: Enterprise, contact sales. Source: ${[...new Set(tp.map(p=>p.source))].map(u=>`<a href="${u}" rel="noopener">${esc(u.replace(/^https?:\/\//,''))}</a>`).join(', ')}, checked ${tp[0].checked}.</p>`};
 for(const v of vendors){
   const ps=plans.filter(p=>p.vendor_id===v.id);
-  const ranks=SCENARIOS.map(s=>{const r=rankScenario(s.mau,s.sso);const mine=r.filter(x=>x.p.vendor_id===v.id);const best=mine[0];const overall=r[0];
+  const ranks=SCENARIOS.map(s=>{const r=rankScenario(s.mau,s.sso);const best=r.find(x=>x.p.vendor_id===v.id);const overall=r[0];
     if(!best) return `<li>${esc(s.label)}: no verifiable plan for this scenario.</li>`;
-    const i=r.findIndex(x=>x.p.id===best.p.id);
-    return `<li><b>${esc(s.label)}:</b> ${esc(best.p.plan)} at ${usd(best.e.total)}/mo ranks #${i+1} of ${r.length}${overall&&overall.p.id!==best.p.id?` — ${yr(best.e.total-overall.e.total)}/yr more than ${esc(overall.p.vendor)} ${esc(overall.p.plan)}`:''}.</li>`;
+    const pos=rankPos(r,best),t=tieCount(r,best);
+    let txt;
+    if(best.e.total<EPS) txt=t>1?`${esc(best.p.plan)} lists $0/mo: tie at $0 with ${t-1} other plan${t-1>1?'s':''}`:`${esc(best.p.plan)} lists $0/mo, the only free plan of ${r.length}`;
+    else if(pos===1) txt=`${esc(best.p.plan)} at ${usd(best.e.total)}/mo is the cheapest of ${r.length}${t>1?` (tied with ${t-1} other plan${t-1>1?'s':''})`:''}`;
+    else txt=`${esc(best.p.plan)} at ${usd(best.e.total)}/mo ranks #${pos}${t>1?' (tied)':''} of ${r.length}, ${yr(best.e.total-overall.e.total)}/yr more than ${esc(overall.p.vendor)} ${esc(overall.p.plan)}`;
+    if(s.sso&&isFed(best.p)) txt+=` (${FED_SHORT}; ${fedSensText(v.id,s.mau,s.sso)})`;
+    else if(s.sso&&isFed(overall.p)&&pos>1) txt+=` (${esc(overall.p.vendor)}’s SSO ${FED_SHORT})`;
+    return `<li><b>${esc(s.label)}:</b> ${txt}.</li>`;
   }).join('');
   page({file:`vendors/${v.id}.html`,og:'home',title:`${v.name} pricing — auth cost | ${NAME}`,desc:`${v.name} auth pricing with MAU/MRU and SSO fees, ranked against ${vendors.length-1} other vendors. Source checked ${v.checked}.`,body:`
 <section class="hero"><div class="eyebrow">Vendor</div><h1>${esc(v.name)}</h1>
 <p class="lede">Billing unit: <b>${esc(v.billing_unit)}</b> — ${esc(v.billing_unit_note)} Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a>, checked ${v.checked}. <a href="${aff(v.id)}" rel="noopener">Visit ${esc(v.name)}</a></p></section>
-<div class="verdict"><div class="eyebrow">Answer · ${esc(v.name)} cost by MAU (no SSO)</div><p>${MAU_TIERS.map(m=>{const b=bestFor(v.id,m);return b?`<b>${kfmt(m)} users:</b> ${usd(b.e.total)}/mo${star(b.p)} on ${esc(b.p.plan)}`:`<b>${kfmt(m)} users:</b> ${noPrice(v,m)}`}).join(' · ')}.</p><ul>${ranks}</ul><p class="note">${asOf}. ${meth}.</p>${ctaRow()}</div>
+<div class="verdict"><div class="eyebrow">Answer · ${esc(v.name)} cost by MAU (no SSO)</div><p>${MAU_TIERS.map(m=>{const b=bestFor(v.id,m);return b?`<b>${kfmt(m)} users:</b> ${usd(b.e.total)}/mo${star(b.p)} on ${esc(b.p.plan)}`:`<b>${kfmt(m)} users:</b> ${noPrice(v,m)}`}).join(' · ')}.</p><ul>${ranks}</ul><p class="note">${asOf}. ${FED_NOTE} ${meth}.</p>${ctaRow()}</div>
 <p>${esc(v.summary)}</p>
 <h2>${esc(v.name)} cost at 10k, 50k and 100k users</h2>
 <div class="tbl"><table><thead><tr><th>Plan</th>${MAU_TIERS.map(m=>`<th class="n">${kfmt(m)} users</th>`).join('')}</tr></thead><tbody>${ps.map(p=>`<tr><td>${esc(p.plan)}</td>${MAU_TIERS.map(m=>{const e=estimate(p,m,0);return e&&e.total!=null?`<td class="n">${usd(e.total)}${star(p)}</td>`:'<td class="n" title="Not priceable from published figures">—</td>'}).join('')}</tr>`).join('')}</tbody></table></div>
@@ -290,8 +331,15 @@ for(const [a,b] of pairs){
     const r=rankScenario(s.mau,s.sso);
     const x=r.find(z=>z.p.vendor_id===a.id),y=r.find(z=>z.p.vendor_id===b.id);
     if(!x||!y) return null;
-    const [w,l]=x.e.total<=y.e.total?[x,y]:[y,x];
-    return `${w.p.vendor} wins ${s.label} at ${usd(w.e.total)}/mo (${yr(l.e.total-w.e.total)}/yr less than ${l.p.vendor})`;
+    const fz=s.sso?[x,y].find(z=>isFed(z.p)):null;
+    let fedTxt='';
+    if(fz){const per=FED_SENS.at(-1),rh=rankScenario(s.mau,s.sso,{federated_mau:s.sso*per});const xh=rh.find(z=>z.p.vendor_id===a.id),yh=rh.find(z=>z.p.vendor_id===b.id);
+      const fv=[x,y].filter(z=>isFed(z.p)).map(z=>z.p.vendor);
+      if(xh&&yh){const sign=(p,q)=>Math.abs(p-q)<EPS?0:(p<q?-1:1);const flip=sign(x.e.total,y.e.total)!==sign(xh.e.total,yh.e.total);const hw=xh.e.total<yh.e.total?xh:yh;
+        fedTxt=` [${listJoin(fv)} SSO ${FED_SHORT}; at ${per.toLocaleString('en-US')} per connection: ${a.name} ${usd(xh.e.total)}/mo, ${b.name} ${usd(yh.e.total)}/mo${flip?`, so ${Math.abs(xh.e.total-yh.e.total)<EPS?'they tie':hw.p.vendor+' becomes cheaper'}`:''}]`}}
+    if(Math.abs(x.e.total-y.e.total)<EPS) return `${a.name} and ${b.name} tie at ${x.e.total<EPS?'$0':usd(x.e.total)+'/mo'} for ${s.label}${fedTxt}`;
+    const [w,l]=x.e.total<y.e.total?[x,y]:[y,x];
+    return `${w.p.vendor} wins ${s.label} at ${usd(w.e.total)}/mo (${yr(l.e.total-w.e.total)}/yr less than ${l.p.vendor})${fedTxt}`;
   }).filter(Boolean);
   const answer=bits.length?`As of ${lastChecked}: ${bits.join('; ')}.`:`As of ${lastChecked}, one or both lack a verifiable plan for headline scenarios.`;
   const rows=SCENARIOS.map(s=>{
@@ -308,7 +356,7 @@ ${ctaRow()}
 <div class="tbl"><table><thead><tr><th>Monthly users</th><th class="n">${esc(a.name)}</th><th class="n">${esc(b.name)}</th></tr></thead><tbody>${MAU_TIERS.map(m=>`<tr><td>${kfmt(m)} users</td>${cell(bestFor(a.id,m))}${cell(bestFor(b.id,m))}</tr>`).join('')}</tbody></table></div>
 <h2>With enterprise SSO</h2>
 <div class="tbl"><table><thead><tr><th>Scenario</th><th class="n">${esc(a.name)}</th><th class="n">${esc(b.name)}</th></tr></thead><tbody>${rows}</tbody></table></div>
-<p class="note">Cheapest verified plan per vendor, monthly USD list price. ${[a,b].some(x=>x.id==='logto')?tokNote:''} ${meth}.</p>
+<p class="note">Cheapest verified plan per vendor, monthly USD list price. ${FED_NOTE} ${[a,b].some(x=>x.id==='logto')?tokNote:''} ${meth}.</p>
 ${[a,b].map(x=>{const t=tierTables(plans.filter(p=>p.vendor_id===x.id));return t?t.replace('<h2>Published MAU tiers',`<h2>${esc(x.name)} paid plans: published MAU tiers`):''}).join('')}
 <div class="grid2">${[a,b].map(x=>`<div class="panel"><h3><a href="/vendors/${x.id}">${esc(x.name)}</a></h3><p>${esc(x.summary)}</p><p class="src">Source: <a href="${x.source}">${esc(x.source.replace(/^https?:\/\//,''))}</a> · ${x.checked}</p></div>`).join('')}</div>
 <p class="note">Also see: <a href="/alternatives/${a.id}">${esc(a.name)} alternatives</a> · <a href="/alternatives/${b.id}">${esc(b.name)} alternatives</a> · <a href="/guides/auth-cost-by-mau">all vendors by MAU</a> · <a href="${SH}">vs self-hosting (Better Auth / Auth.js)</a></p>
@@ -338,7 +386,7 @@ for(const v of vendors){
 <div class="tbl"><table><thead><tr><th>Vendor (cheapest verified plan)</th>${MAU_TIERS.map(m=>`<th class="n">${kfmt(m)} users</th>`).join('')}<th class="n">50k + 5 SSO</th><th scope="col">Head to head</th></tr></thead><tbody>
 <tr style="background:var(--surface-2,rgba(0,0,0,.03))"><td><b><a href="/vendors/${v.id}">${esc(v.name)}</a></b> <span class="src">(current)</span></td>${me.map(z=>cell(z,true)).join('')}${cell(meS,true)}<td></td></tr>
 ${alts.map(a=>`<tr><td><a href="/vendors/${a.v.id}">${esc(a.v.name)}</a></td>${a.c.map(z=>cell(z)).join('')}${cell(a.s)}<td><a href="/compare/${cmpSlug(v.id,a.v.id)}">${esc(v.name)} vs ${esc(a.v.name)}</a></td></tr>`).join('')}</tbody></table></div>
-<p class="note">Monthly USD list prices, cheapest verified plan per vendor for each scenario, sorted by 50k-user cost. “—” = no fixed published price for that volume (custom / contact sales, or overage not printed). Billing units differ: Clerk counts retained users (MRU), most others MAU. ${tokNote} ${meth}.</p>
+<p class="note">Monthly USD list prices, cheapest verified plan per vendor for each scenario, sorted by 50k-user cost. “—” = no fixed published price for that volume (custom / contact sales, or overage not printed). Billing units differ: Clerk counts retained users (MRU), most others MAU. “50k + 5 SSO”: ${FED_NOTE} ${tokNote} ${meth}.</p>
 <div class="grid2"><div class="panel"><h3>Why teams leave ${esc(v.name)}</h3><p>${esc(v.summary)}</p><p class="src">Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a> · ${v.checked}</p></div>
 <div class="panel"><h3>Check before you switch</h3><p>Unit (${esc(v.billing_unit)}), SSO per-connection fees, and MFA availability change the ranking more than the headline price. Run your exact numbers in the <a href="/calculator/">calculator</a> and read <a href="/guides/mau-vs-mru">MAU vs MRU</a>.</p></div></div>
 <div class="panel"><h3>Or skip the vendor: self-host Better Auth / Auth.js</h3><p>$0 per user, but you pay in database, email, SMS and engineer hours. <a href="${SH}">See what self-hosting costs instead of ${esc(v.name)}</a>, with the break-even math at 10k/50k/100k users.</p></div>
@@ -365,13 +413,13 @@ ${mailBox('gm','Get auth price changes weekly','Send me the weekly ledger')}`});
 { // 100k
   const slug='cheapest-auth-100k';DATA_GUIDES.push({slug,title:'Cheapest auth at 100k users'});
   const r=rankScenario(100000,0),rs=rankScenario(100000,10);
-  const tb=rr=>`<div class="tbl"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Monthly</th><th class="n">Annual</th></tr></thead><tbody>${rr.map((x,i)=>`<tr><td class="n">${i+1}</td><td><a href="/vendors/${x.p.vendor_id}">${esc(x.p.vendor)}</a> ${esc(x.p.plan)}</td><td class="n">${usd(x.e.total)}${star(x.p)}</td><td class="n">${yr(x.e.total)}</td></tr>`).join('')}</tbody></table></div>`;
+  const tb=rr=>`<div class="tbl"><table><thead><tr><th class="n">#</th><th>Plan</th><th class="n">Monthly</th><th class="n">Annual</th></tr></thead><tbody>${rr.map((x,i)=>`<tr><td class="n">${rankPos(rr,x)}${tieCount(rr,x)>1?'=':''}</td><td><a href="/vendors/${x.p.vendor_id}">${esc(x.p.vendor)}</a> ${esc(x.p.plan)}</td><td class="n">${usd(x.e.total)}${star(x.p)}</td><td class="n">${yr(x.e.total)}</td></tr>`).join('')}</tbody></table></div>`;
   const ans=r.length>=2?`At 100k users with no SSO, ${r[0].p.vendor} ${r[0].p.plan} is cheapest at ${usd(r[0].e.total)}/mo${star(r[0].p)}; the most expensive verified plan is ${r.at(-1).p.vendor} ${r.at(-1).p.plan} at ${usd(r.at(-1).e.total)}/mo — a ${yr(r.at(-1).e.total-r[0].e.total)}/yr gap.`:'';
   page({file:`guides/${slug}.html`,title:`Cheapest auth provider at 100k users (${lastChecked.slice(0,4)}) | ${NAME}`,desc:`Every verified auth plan ranked by monthly cost at 100,000 users, with and without 10 SSO connections. Sourced list prices.`,ld:[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:[{'@type':'Question',name:'What is the cheapest auth at 100k users?',acceptedAnswer:{'@type':'Answer',text:ans}}]}],body:`
 <section class="hero"><div class="eyebrow"><a href="/guides/">Guides</a> · ${asOf}</div><h1>Cheapest auth at 100k users</h1><p class="lede"><b>Answer:</b> ${esc(ans)}</p>${ctaRow(100000,0)}</section>
 <h2>100k users, no SSO (${r.length} plans priceable)</h2>${tb(r)}
 <h2>100k users, 10 SSO connections (${rs.length} plans priceable)</h2>${tb(rs)}
-<p class="note">Plans without a published price at this volume are omitted (e.g. Auth0 above 50k MAU, where only Enterprise / contact sales remains; Stytch MAU overage). SSO for Cognito/Supabase assumes 200 federated MAU per connection. ${tokNote} ${meth}.</p>
+<p class="note">Plans without a published price at this volume are omitted (e.g. Auth0 above 50k MAU, where only Enterprise / contact sales remains; Stytch MAU overage). ${FED_NOTE} ${tokNote} ${meth}.</p>
 ${mailBox('g100','Get auth price changes weekly','Send me the weekly ledger')}`});
 }
 { // free tiers
@@ -404,7 +452,7 @@ ${mailBox('gft','Hear when a free tier shrinks','Send me the weekly ledger')}`})
     ['Do teams still build authentication from scratch, or is there a fair indie alternative?',`Few write it from scratch. Open-source libraries run inside your app and database with no per-user fee: Better Auth (MIT license) and Auth.js (ISC license; the Auth.js project is now part of Better Auth). The fair trade: no MAU bill, but you own the email, SMS, database and upkeep costs below.`],
     ['“$0 per user”: what do you pay instead?',`Transactional email (Amazon SES lists $0.10 per 1,000 outbound emails), SMS if you use phone OTP or SMS MFA (Google Identity Platform lists $0.01 per US SMS, as one published reference), database rows and hosting you may already run, and engineer hours for upgrades, security patches and support. Better Auth also sells optional managed infrastructure (Pro $20/mo; email $0.001, SMS $0.09). We don’t estimate engineer time for you; the calculator below makes it an input.`],
     ['Clerk vs Better Auth: when does self-hosting actually save money?',ans],
-    ['Every auth provider raises prices if you require SSO. Does self-hosting avoid the SSO tax?',`Better Auth’s SSO plugin supports OIDC, OAuth2 and SAML 2.0, so there is no per-connection license fee when you self-host; you still carry setup and support for each customer’s IdP. Its optional managed infrastructure lists self-service SSO at 1 connection, then $${RATE.baSso}/month per connection. Hosted per-connection list prices in our ledger: ${sso.map(p=>`${p.vendor} ${p.plan} ${p.sso_bands?usd(p.sso_bands[0].rate):usd(p.sso_extra_mo)}`).join(', ')}.`]
+    ['Every auth provider raises prices if you require SSO. Does self-hosting avoid the SSO tax?',`Better Auth’s SSO plugin supports OIDC, OAuth2 and SAML 2.0, so there is no per-connection license fee when you self-host; you still carry setup and support for each customer’s IdP. Its optional managed infrastructure lists self-service SSO at 1 connection, then $${RATE.baSso}/month per connection (on the $${RATE.baPro}/mo Infrastructure Pro plan). Hosted per-connection list prices in our ledger: ${sso.map(p=>`${p.vendor} ${p.plan} ${p.sso_bands?usd(p.sso_bands[0].rate):usd(p.sso_extra_mo)}`).join(', ')}.`]
   ];
   const ld=[ORG_LD,{'@context':'https://schema.org','@type':'Article',headline:'Self-hosted auth cost: $0 per user, but what you pay instead',description:'Better Auth / Auth.js self-hosting vs Clerk, Auth0 and Firebase at 10k, 50k and 100k users: sourced rates, labelled assumptions and break-even engineer hours.',datePublished:SHC,dateModified:lastChecked,author:{'@id':SITE+'/#org'},publisher:{'@id':SITE+'/#org'},mainEntityOfPage:SITE+'/guides/'+slug,citation:Object.values(SRC)},{'@context':'https://schema.org','@type':'FAQPage',mainEntity:Q.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
   const srcA=(k,t)=>`<a href="${SRC[k]}" rel="noopener">${t}</a>`;
@@ -444,6 +492,68 @@ ${rows.map(r=>`<tr><td>${kfmt(r.m)} users</td><td class="n"><b>${money(r.hard)}<
 ${mailBox('gsh','Hear when hosted auth prices move','Send me the weekly ledger')}`});
 }
 
+{ // Enterprise SSO cost (RT-20261031-58): canonical SSO-tax page, every number from plans.json (+ Better Auth infra read 2026-10-31)
+  const slug='enterprise-sso-cost';DATA_GUIDES.push({slug,title:'Enterprise SSO cost: every vendor at 1, 3, 5, 10 and 25 connections'});
+  const CONN=[1,3,5,10,25],GM=10000;
+  const BA={name:'Better Auth Infrastructure Pro',base:20,incl:1,per:50,src:'https://www.better-auth.com/pricing',checked:'2026-10-31'}; // read 2026-10-31: Pro $20/mo, self-service SSO 1 connection then $50/month per connection
+  const baCost=n=>BA.base+Math.max(0,n-BA.incl)*BA.per;
+  const vp=vid=>plans.filter(p=>p.vendor_id===vid&&p.status==='verified');
+  const model=vid=>{const ps=vp(vid);if(ps.some(isFed))return 'Per SSO user';if(ps.some(p=>p.sso_unlimited))return 'Unlimited in base (paid tiers)';if(ps.some(p=>p.sso_extra_mo!=null||p.sso_bands))return 'Per connection';return 'Included count only'};
+  const ladder=p=>{if(isFed(p))return `${(p.federated_free??p.sso_saml_included_mau??0)} SSO users free, then ${usd(p.federated_per_mau??p.sso_saml_per_mau)} per SSO user / mo`;
+    if(p.sso_unlimited)return 'Unlimited connections, no per-connection fee';
+    const inc=p.sso_included||0;
+    if(p.sso_bands)return `${inc} incl., then ${p.sso_bands.map(b=>`${usd(b.rate)} (${b.from}–${b.to})`).join(', ')}${p.sso_note?'; '+p.sso_note:''}`;
+    if(p.sso_extra_mo!=null)return `${inc} incl., then ${usd(p.sso_extra_mo)} each${p.sso_max?` (max ${p.sso_max})`:''}`;
+    return inc?`${inc} incl., no extra connections on this plan`:'No enterprise SSO'};
+  const scim=p=>{if(p.scim_included==null&&p.scim_extra_mo==null)return '—';return `${p.scim_included??0} incl.${p.scim_extra_mo!=null?`, then ${usd(p.scim_extra_mo)} each`:''}${p.scim_billing_starts?` (billed from ${p.scim_billing_starts})`:''}`};
+  const dag=(z)=>z?`${z.p.vendor} ${z.p.plan} ${z.e.total<EPS?'$0':usd(z.e.total)+'/mo'}${isFed(z.p)?` (${FED_SHORT}; ${fedSensText(z.p.vendor_id,z._m,z._n).split('; ').at(-1)})`:''}`:'';
+  const topList=(m,n)=>{const r=rankScenario(m,n).map(z=>Object.assign(z,{_m:m,_n:n}));const zero=r.filter(z=>z.e.total<EPS);const rest=r.filter(z=>z.e.total>=EPS);
+    const seen=new Set(zero.map(z=>z.p.vendor_id));const nxt=[];for(const z of rest){if(seen.has(z.p.vendor_id))continue;seen.add(z.p.vendor_id);nxt.push(z);if(nxt.length===3)break}
+    return (zero.length?`${listJoin(zero.map(z=>`${z.p.vendor} ${z.p.plan}`))} (tie at $0)`+(nxt.length?', then ':''):'')+nxt.map(dag).join(', ')};
+  const pc=(m,n)=>rankScenario(m,n).find(z=>!isFed(z.p)&&z.e.total>=EPS);
+  const pc10=pc(GM,3);
+  const a0p=plans.find(p=>p.id==='auth0-b2b-professional'),a0e=plans.find(p=>p.id==='auth0-b2b-essentials');
+  const a0pT=a0p&&estimate(a0p,1000,3),a0eT=a0e&&estimate(a0e,1000,3),a0e5=a0e&&estimate(a0e,5000,3);
+  const ans=`For 2–3 enterprise customers (3 SSO connections), as of ${lastChecked}: at 5k users the cheapest verified plans are ${topList(5000,3)}. At 10k users: ${topList(GM,3)}. The cheapest paid plan whose SSO price does not depend on SSO-user counts at 10k users is ${pc10?`${pc10.p.vendor} ${pc10.p.plan} at ${usd(pc10.e.total)}/mo`:'n/a'}.`;
+  const a0ans=a0pT&&a0eT?`Auth0 B2B Professional lists ${usd(a0pT.total)}/mo at its 1,000-MAU tier with ${a0p.sso_included} enterprise connections included; B2B Essentials lists ${usd(a0eT.total)}/mo at 1,000 MAU (${usd(a0e5.total)}/mo at 5,000) with ${a0e.sso_included} included. Extra connections are ${usd(a0e.sso_extra_mo)}/mo each, up to ${a0e.sso_max}. Auth0 Free includes 1 enterprise connection up to 25,000 MAU.`:'';
+  const fedV=FED_VIDS.map(id=>P[id].name);
+  const mPer=vendors.filter(v=>model(v.id)==='Per connection').map(v=>v.name),mUnl=vendors.filter(v=>model(v.id).startsWith('Unlimited')).map(v=>v.name);
+  const modelsTxt=`1) Per connection: ${listJoin(mPer)} charge a monthly fee per enterprise SSO connection, often after a few included (e.g. WorkOS ${usd(plans.find(p=>p.id==='workos-authkit').sso_bands[0].rate)} each from the first, Clerk Pro 1 included then ${usd(plans.find(p=>p.id==='clerk-pro').sso_bands[0].rate)}). 2) Unlimited in the base fee: ${listJoin(mUnl)} include unlimited SSO on paid tiers, so cost tracks users, not customers. 3) Per SSO user: ${listJoin(fedV)} bill each SAML/OIDC user a month (first 50 free, then ${FED_RATES.map(usd).join('/')}), so a big enterprise customer costs more than a small one.`;
+  const sensRows=FED_VIDS.map(vid=>{const cells=[3,10,25].map(n=>{const base=bestFor(vid,GM,n);const s2=fedSens(vid,GM,n);return base?`${usd(base.e.total)} · ${s2.map(x=>usd(x.z.e.total)).join(' · ')}`:'—'});return `<tr><td>${esc(P[vid].name)}</td>${cells.map(c=>`<td class="n">${c}</td>`).join('')}</tr>`}).join('');
+  const fedQ=`Because ${listJoin(fedV)} bill SAML/OIDC per SSO user, their SSO cost depends on how many people each enterprise customer signs in. We assume ${FED_PER_CONN} SSO users per connection unless you change it. At ${kfmt(GM)} users with 3 connections: ${FED_VIDS.map(vid=>{const b=bestFor(vid,GM,3);return b?`${P[vid].name} ${usd(b.e.total)}/mo (${fedSensText(vid,GM,3)})`:null}).filter(Boolean).join('; ')}.`;
+  const shQ=`Self-hosting an open-source library such as Better Auth (SSO plugin: SAML 2.0 and OIDC) has no per-connection license fee; you carry setup and support. Better Auth’s optional managed infrastructure lists self-service SSO at 1 connection, then $${BA.per}/month per connection (on the $${BA.base}/mo Infrastructure Pro plan, ${BA.src.replace('https://www.','')}, read ${BA.checked}).`;
+  const Q=[['What is the cheapest auth for 2–3 enterprise SSO customers?',ans],['“Auth0 wants $800/month for SSO”: is that right?',a0ans],['What are the 3 ways auth vendors charge for enterprise SSO?',modelsTxt],['Why do Firebase, Supabase and Cognito SSO prices depend on user counts?',fedQ],['Does self-hosting avoid the SSO tax?',shQ]];
+  const ld=[ORG_LD,{'@context':'https://schema.org','@type':'FAQPage',mainEntity:Q.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
+  const cellN=(vid,n)=>{const z=bestFor(vid,GM,n);return z?`<td class="n">${usd(z.e.total)}${isFed(z.p)?'†':''}${star(z.p)}<br><span class="src">${esc(z.p.plan)}</span></td>`:'<td class="n" title="No verified plan can price this many connections at this size">—</td>'};
+  page({file:`guides/${slug}.html`,og:'compare',title:`Enterprise SSO cost (${lastChecked.slice(0,4)}): ${vendors.length} auth vendors at 1, 3, 5, 10, 25 connections | ${NAME}`,desc:`What enterprise SSO really costs for your first 2–3 enterprise customers: ${vendors.length} auth vendors priced at 1, 3, 5, 10 and 25 SAML/OIDC connections, the 3 SSO pricing models, SCIM, and the Auth0 $800/month question. Sourced, checked ${lastChecked}.`,ld,body:`
+<section class="hero"><div class="eyebrow"><a href="/guides/">Guides</a> · ${asOf}</div><h1>Enterprise SSO cost: what your first enterprise customers will really cost</h1>
+<p class="lede"><b>Answer:</b> ${esc(ans)}</p>${ctaRow(GM,3)}</section>
+<blockquote class="panel"><p>“Lost 3 enterprise deals because we didn't have SSO. Auth0 wants $800/month — too expensive for my 2–3 small enterprise customers”</p><p class="src">— founder on <a href="https://www.reddit.com/r/SaaS/comments/1nxo74u/" rel="noopener nofollow">r/SaaS</a>. “Every auth provider like Auth0, Clerk, WorkOS etc. increases their prices tremendously if you require SSO” — <a href="https://news.ycombinator.com/item?id=44955457" rel="noopener nofollow">Hacker News</a>.</p></blockquote>
+<h2>Monthly cost at ${kfmt(GM)} users by number of SSO connections</h2>
+<div class="tbl"><table><thead><tr><th>Vendor</th><th>SSO pricing model</th>${CONN.map(n=>`<th class="n">${n} connection${n>1?'s':''}</th>`).join('')}</tr></thead><tbody>
+${vendors.map(v=>`<tr><td><a href="/vendors/${v.id}">${esc(v.name)}</a></td><td>${esc(model(v.id))}</td>${CONN.map(n=>cellN(v.id,n)).join('')}</tr>`).join('')}
+<tr><td><a href="${BA.src}" rel="noopener">Better Auth</a> (self-hosted library)</td><td>Per connection (managed infra)</td>${CONN.map(n=>`<td class="n">${usd(baCost(n))}<br><span class="src">Infra Pro + SSO, excl. hosting</span></td>`).join('')}</tr>
+</tbody></table></div>
+<p class="note">Cheapest verified plan per vendor, total monthly USD list price (base + ${kfmt(GM)} users + SSO), no MFA/SMS add-ons. “—” = no verified plan can price that many connections at ${kfmt(GM)} users (e.g. a free tier caps below it, or the plan has no SSO). † ${FED_NOTE} Better Auth row: Infrastructure Pro $${BA.base}/mo plus $${BA.per} per connection after the first (<a href="${BA.src}" rel="noopener">better-auth.com/pricing</a>, read ${BA.checked}); hosting your app and database is extra. ${tokNote} ${meth}.</p>
+<h2>“Auth0 wants $800/month”: the Auth0 SSO math</h2><p>${esc(a0ans)} Compare <a href="/vendors/auth0">Auth0 pricing tiers</a> and <a href="/compare/clerk-vs-auth0">Clerk vs Auth0</a>.</p>
+<h2>The 3 ways vendors charge for enterprise SSO</h2>
+<div class="grid3"><div class="panel"><h3>Per connection</h3><p>${esc(listJoin(mPer))}. Each enterprise customer’s IdP (Okta, Entra ID, Google Workspace) is one connection with a monthly fee, usually after a few included. Cheap for 1–3 customers, expensive at 25.</p></div>
+<div class="panel"><h3>Unlimited in the base fee</h3><p>${esc(listJoin(mUnl))}. Paid tiers include unlimited SSO, so the bill tracks users, not customers. Best when you expect many small enterprise customers.</p></div>
+<div class="panel"><h3>Per SSO user</h3><p>${esc(listJoin(fedV))}. Each SAML/OIDC user is billed per month (first ${FED_FREE.join('/')} free, then ${FED_RATES.map(usd).join('/')}). Cheapest for small customers; grows with every seat they bring.</p></div></div>
+<h2>How the per-SSO-user vendors move with customer size</h2>
+<div class="tbl"><table><thead><tr><th>Vendor (cheapest plan, ${kfmt(GM)} users)</th><th class="n">3 connections</th><th class="n">10 connections</th><th class="n">25 connections</th></tr></thead><tbody>${sensRows}</tbody></table></div>
+<p class="note">Each cell: monthly cost at ${FED_PER_CONN} · ${FED_SENS.map(x=>x.toLocaleString('en-US')).join(' · ')} SSO users per connection, computed from the same ledger rows. Per-connection vendors don’t change with customer size.</p>
+<h2>SSO and SCIM / Directory Sync list prices, plan by plan</h2>
+<div class="tbl"><table><thead><tr><th>Plan</th><th class="n">Base / mo</th><th>Enterprise SSO</th><th>SCIM / Directory Sync</th><th>Source · checked</th></tr></thead><tbody>
+${plans.filter(p=>p.status==='verified'&&(p.sso_included||p.sso_extra_mo!=null||p.sso_bands||p.sso_unlimited||isFed(p))).map(p=>`<tr><td><a href="/vendors/${p.vendor_id}">${esc(p.vendor)}</a> ${esc(p.plan)}</td><td class="n">${p.price_tiers?`from ${usd(p.price_tiers[0].mo)}`:usd(p.base_mo)}</td><td style="white-space:normal">${esc(ladder(p))}</td><td style="white-space:normal">${esc(scim(p))}</td><td class="src"><a href="${p.source}" rel="noopener">source</a> · ${p.checked}</td></tr>`).join('')}
+</tbody></table></div>
+<p class="note">“—” in SCIM = no fixed SCIM price printed for that plan (it may be unavailable or bundled; check the plan notes on the vendor page). Stytch’s included connections are shared between SSO and SCIM. Descope Free also caps at 10 monthly active tenants. B2B organization/tenant fees are not modeled yet.</p>
+<h2>“Migrating SSO/SCIM sounds like it might be a bit of a pain”</h2><p>It is per customer: each connection means re-configuring that customer’s IdP. If you expect more than a handful of enterprise customers, compare the 10- and 25-connection columns before you pick, not just the free tier. Self-hosting? ${esc(shQ)} See <a href="${SH}">self-hosted auth cost</a>.</p>
+<p class="note">Not in the ledger yet: SSO-only vendors such as Scalekit and SSOJet. We add a vendor only after reading its pricing page; until then we don’t quote it.</p>
+<h2>Questions</h2>${Q.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
+${mailBox('gsso','Hear when an SSO price moves','Send me the weekly ledger')}`});
+}
+
 // ---- Changes + RSS
 page({file:'changes.html',og:'changes',title:`Auth price-change log | ${NAME}`,desc:'Dated, sourced auth and identity price changes.',body:`<section class="hero"><div class="eyebrow">Price log · <a href="/rss.xml">RSS</a></div><h1>Every change, dated and sourced.</h1></section>
 <div class="tbl"><table><thead><tr><th>Effective</th><th>Vendor</th><th>Kind</th><th>Detail</th><th>Source · observed</th></tr></thead>
@@ -478,7 +588,11 @@ page({file:'methodology.html',title:`Methodology | ${NAME}`,desc:'How AuthCost r
 <ol class="lede">
 <li>Prices come only from each vendor’s own pricing page. Each row stores the source URL and check date.</li>
 <li>A row is <b>verified</b> when the figure was read on that date. We never estimate a missing price.</li>
-<li>Estimated monthly cost = base + user overage (MAU/MRU bands) + SSO connection fees from the published ladder. Cognito/Supabase SAML uses a federated-MAU input. Logto token overage is noted but not assumed from MAU.</li>
+<li>Estimated monthly cost = base + user overage (MAU/MRU bands) + SSO connection fees from the published ladder. Logto token overage is noted but not assumed from MAU.</li>
+<li id="sso-users"><b>SSO users per connection (assumption).</b> ${esc(listJoin(FED_NAMES))} bill SAML/OIDC per SSO user, not per connection (first ${FED_FREE.join('/')} free, then ${FED_RATES.map(usd).join('/')} per SSO user a month). To compare them with per-connection vendors we assume <b>${FED_PER_CONN} SSO users per connection</b> by default; you can change it in the <a href="/calculator/">calculator</a>. We also count those users inside your total MAU, which can slightly overstate these vendors above their free direct-user allowance; we keep the higher figure. Sensitivity, computed from the same ledger rows (cheapest plan, monthly, rank among all priceable plans):
+<div class="tbl"><table><thead><tr><th>Scenario</th><th>Vendor</th>${[FED_PER_CONN,...FED_SENS].map(x=>`<th class="n">${x.toLocaleString('en-US')} per connection</th>`).join('')}</tr></thead><tbody>${SCENARIOS.filter(s=>s.sso).flatMap(s=>FED_VIDS.map(vid=>{const cs=[FED_PER_CONN,...FED_SENS].map(per=>{const r=rankScenario(s.mau,s.sso,{federated_mau:s.sso*per});const z=r.find(x=>x.p.vendor_id===vid);return z?`${usd(z.e.total)}/mo · #${rankPos(r,z)} of ${r.length}`:'—'});return `<tr><td>${esc(s.label)}</td><td>${esc(P[vid].name)}</td>${cs.map(c=>`<td class="n">${c}</td>`).join('')}</tr>`})).join('')}</tbody></table></div></li>
+<li id="hero"><b>Headline number.</b> ${esc(heroSentence)}. We compare a named, popular plan with the cheapest verified plan that includes MFA at the same user count (no SSO), because that is a saving a team can actually capture. The max-minus-min spread across all ${heroRank.length} plans priced at ${esc(heroSc.label)} is ${yr(spreadGap)}/yr (${esc(heroRank.at(-1).p.vendor)} ${esc(heroRank.at(-1).p.plan)} vs ${esc(heroRank[0].p.vendor)} ${esc(heroRank[0].p.plan)}, the latter ${FED_SHORT}); we keep it here only, since nobody chooses between those two.</li>
+<li><b>Ties and precision.</b> Plans at the same price are shown as ties (for example “tie at $0”), never as wins or ordinal ranks. Rates show the precision the vendor publishes (for example Supabase ${usd(plans.find(p=>p.id==='supabase-pro').overage_per_user)} per MAU).</li>
 <li>Auth0 sells paid plans in published MAU tiers (B2C to 50k, B2B to 20k, from <a href="https://auth0.com/pricing.md">auth0.com/pricing.md</a>); usage between tiers is priced at the next tier up, as Auth0 bills it. Above the top tier only Enterprise (contact sales) remains, so we omit Auth0 there rather than invent a number. Correction 2026-10-31: before that date we wrongly treated tiers above 500 MAU as custom.</li>
 <li>Stytch MAU overage rate was not printed as a fixed USD figure on the checked page — left blank.</li>
 <li>A weekly script diffs every source page; confirmed changes enter the price log.</li>
@@ -502,8 +616,7 @@ const guides=[
   {slug:'kinde-unlimited-sso',title:'Kinde Plus unlimited SSO',body:'How $75/mo with unlimited SSO compares to per-connection vendors.'},
   {slug:'supabase-auth-cost',title:'Supabase Auth cost (with platform plan)',body:'Auth MAU inside the $25 Pro plan and SAML at $0.015/MAU.'},
   {slug:'logto-token-pricing',title:'Logto token-based pricing',body:'Why token billing differs from MAU and what $24 Pro includes.'},
-  {slug:'auth0-free-tier',title:'Auth0 free tier limits',body:'Free covers 25k MAU and 1 Enterprise Connection; past that, B2C Essentials runs $35 (500 MAU) to $3,500 (50k) a month and B2B Essentials $150 to $3,800 (20k).'},
-  {slug:'enterprise-sso-cost',title:'What enterprise SSO really costs',body:`Per-connection vs included-unlimited vs federated-MAU models across ${vendors.length} vendors.`}
+  {slug:'auth0-free-tier',title:'Auth0 free tier limits',body:'Free covers 25k MAU and 1 Enterprise Connection; past that, B2C Essentials runs $35 (500 MAU) to $3,500 (50k) a month and B2B Essentials $150 to $3,800 (20k).'}
 ];
 page({file:'guides/index.html',title:`Auth pricing guides | ${NAME}`,desc:`${guides.length+DATA_GUIDES.length} guides, ${vendors.length} vendor pricing pages, alternatives and ${pairs.length} head-to-heads on auth cost, MAU vs MRU and SSO fees.`,body:`<section class="hero"><div class="eyebrow">Guides</div><h1>Auth cost, explained.</h1></section>
 <h2>Data tables</h2><ul class="pairs" style="display:grid;gap:8px">${DATA_GUIDES.map(g=>`<li><a href="/guides/${g.slug}">${esc(g.title)}</a></li>`).join('')}</ul>
@@ -520,7 +633,7 @@ for(const g of guides){
 <div class="panel"><div class="eyebrow">Live ledger snapshot</div>
 <p><b>10k users · 1 SSO:</b> ${r10.slice(0,3).map(x=>`${esc(x.p.vendor)} ${esc(x.p.plan)} ${usd(x.e.total)}/mo`).join(' · ')||'—'}</p>
 <p><b>50k users · 5 SSO:</b> ${r50.slice(0,3).map(x=>`${esc(x.p.vendor)} ${esc(x.p.plan)} ${usd(x.e.total)}/mo`).join(' · ')||'—'}</p>
-<p class="note">${asOf}. ${meth}.</p></div>
+<p class="note">${asOf}. ${FED_NOTE} ${meth}.</p></div>
 <p><a class="btn" href="/calculator/">Run your own scenario</a></p>
 ${mailBox('g'+g.slug,'Get auth price changes weekly','Send me the weekly ledger')}`});
 }
@@ -534,8 +647,8 @@ W('api/plans.csv',['id,vendor,plan,base_mo,included_users,user_unit,overage_per_
   ...plans.map(p=>[p.id,p.vendor,p.plan,p.base_mo,p.included_users,p.user_unit,p.overage_per_user,p.sso_included,p.sso_extra_mo,p.status,p.source,p.checked,p.price_tiers?p.price_tiers.map(t=>t.mau+':'+t.mo).join('|'):''].map(csvEscape).join(','))].join('\n'));
 W('api/changes.csv',['date,vendor,kind,summary,source,observed',...changes.map(c=>[c.date,c.vendor,c.kind,c.summary,c.source,c.observed].map(csvEscape).join(','))].join('\n'));
 
-W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator/)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Alternatives](${SITE}/alternatives/)\n- [Auth pricing by MAU](${SITE}/guides/auth-cost-by-mau)\n- [Self-hosted auth cost: Better Auth / Auth.js vs Clerk, Auth0, Firebase](${SITE}/guides/self-hosted-auth-cost)\n- [Methodology](${SITE}/methodology)\n- [About](${SITE}/about)\n- [Privacy](${SITE}/privacy)\n- [Terms](${SITE}/terms)\n`);
-W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator/?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator/?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n${p.price_tiers?`- mau_tiers (billed at next tier up; monthly / yearly USD): ${p.price_tiers.map(t=>`${t.mau.toLocaleString('en-US')} MAU $${t.mo.toLocaleString('en-US')}/$${t.yr.toLocaleString('en-US')}`).join('; ')}; above ${p.tier_max_mau.toLocaleString('en-US')} MAU: contact sales\n`:''}- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Cost by MAU (cheapest verified plan per vendor, USD/month, no SSO)\n| Vendor | ${T1M.map(kfmt).join(' | ')} |\n|---|${T1M.map(()=>'---').join('|')}|\n${vendors.map(v=>`| ${v.name} | ${T1M.map(m=>{const b=bestFor(v.id,m);return b?usd(b.e.total)+star(b.p)+' ('+b.p.plan+')':'n/a'}).join(' | ')} |`).join('\n')}\n${tokNote}\n\n## Self-hosting (Better Auth / Auth.js)\nOpen-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Better Auth) have no per-user fee. Costs instead: transactional email (Amazon SES $0.10/1,000 outbound), SMS (Identity Platform US $0.01/SMS reference), database/hosting and engineer hours (user-supplied assumptions). Optional Better Auth managed infrastructure: Pro $20/mo, SSO 1 connection then $50/mo each, email $0.001, SMS $0.09 (better-auth.com/pricing, checked 2026-10-31). Break-even math vs Clerk/Auth0/Firebase at 10k/50k/100k: ${SITE}/guides/self-hosted-auth-cost\n\n## Search pages\n${vendors.map(v=>`- ${v.name} pricing: ${SITE}/vendors/${v.id}\n- ${v.name} alternatives: ${SITE}/alternatives/${v.id}`).join('\n')}\n${DATA_GUIDES.map(g=>`- ${g.title}: ${SITE}/guides/${g.slug}`).join('\n')}\n${pairs.map(([a,b])=>`- ${a.name} vs ${b.name} pricing: ${SITE}/compare/${a.id}-vs-${b.id}`).join('\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
+W('llms.txt',`# ${NAME}\n\n> Auth and identity list prices (base + MAU/MRU + SSO), ${plans.length} plan rows, ${nVer} verified, ${vendors.length} vendors, checked ${lastChecked}.\n\n## Methodology\nPrices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: ${SITE}/methodology\n\n## Data (CC BY 4.0 — attribute \"AuthCost\" + link ${SITE}/)\n- [Plans JSON](${SITE}/api/plans.json)\n- [Plans CSV](${SITE}/api/plans.csv)\n- [Changes JSON](${SITE}/api/changes.json)\n- [Full dump](${SITE}/llms-full.txt)\n\n## Key pages\n- [Calculator (MAU / MFA / SSO)](${SITE}/calculator/)\n- [Compare hub](${SITE}/compare/)\n- [Guides](${SITE}/guides/)\n- [Alternatives](${SITE}/alternatives/)\n- [Auth pricing by MAU](${SITE}/guides/auth-cost-by-mau)\n- [Self-hosted auth cost: Better Auth / Auth.js vs Clerk, Auth0, Firebase](${SITE}/guides/self-hosted-auth-cost)\n- [Enterprise SSO cost at 1/3/5/10/25 connections](${SITE}/guides/enterprise-sso-cost)\n\n## Assumptions\n- SSO results for ${listJoin(FED_NAMES)} (billed per SSO user) assume ${FED_PER_CONN} SSO users per connection; sensitivity at ${FED_SENS.join(' and ')}: ${SITE}/methodology#sso-users\n- Headline: ${heroSentence}.\n- [Methodology](${SITE}/methodology)\n- [About](${SITE}/about)\n- [Privacy](${SITE}/privacy)\n- [Terms](${SITE}/terms)\n`);
+W('llms-full.txt',`# ${NAME} — full ledger\n\n## Calculator\nInteractive MAU / MFA / SSO cost ranking: ${SITE}/calculator/?mau=50000&sso=5&mfa=0\nShare via query params: mau, sso, mfa (0|1), fpc (SSO users per connection for per-SSO-user vendors, default ${FED_PER_CONN}), vo (verified-only 0|1), embed=1 for chrome-free iframe.\nEmbed: <iframe src=\"${SITE}/calculator/?embed=1&mau=50000&sso=5\" title=\"AuthCost calculator\" width=\"100%\" height=\"720\" loading=\"lazy\"></iframe>\n\n${plans.length} plans, ${nVer} verified, ${vendors.length} vendors. Checked through ${lastChecked}.\n\n## Vendors\n${vendors.map(v=>`### ${v.name}\n- id: ${v.id}\n- source: ${v.source}\n- checked: ${v.checked}\n- unit: ${v.billing_unit}\n- summary: ${v.summary}`).join('\n\n')}\n\n## Plans\n${plans.map(p=>`### ${p.vendor} ${p.plan}\n- id: ${p.id}\n- base_mo: ${p.base_mo}\n- included_users: ${p.included_users}\n- unit: ${p.user_unit}\n- overage: ${p.overage_per_user}\n- sso_included: ${p.sso_included}\n- sso_extra_mo: ${p.sso_extra_mo}\n${p.price_tiers?`- mau_tiers (billed at next tier up; monthly / yearly USD): ${p.price_tiers.map(t=>`${t.mau.toLocaleString('en-US')} MAU $${t.mo.toLocaleString('en-US')}/$${t.yr.toLocaleString('en-US')}`).join('; ')}; above ${p.tier_max_mau.toLocaleString('en-US')} MAU: contact sales\n`:''}- status: ${p.status}\n- source: ${p.source} (${p.checked})\n- notes: ${p.notes||''}`).join('\n\n')}\n\n## Cost by MAU (cheapest verified plan per vendor, USD/month, no SSO)\n| Vendor | ${T1M.map(kfmt).join(' | ')} |\n|---|${T1M.map(()=>'---').join('|')}|\n${vendors.map(v=>`| ${v.name} | ${T1M.map(m=>{const b=bestFor(v.id,m);return b?usd(b.e.total)+star(b.p)+' ('+b.p.plan+')':'n/a'}).join(' | ')} |`).join('\n')}\n${tokNote}\n\n## Self-hosting (Better Auth / Auth.js)\nOpen-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Better Auth) have no per-user fee. Costs instead: transactional email (Amazon SES $0.10/1,000 outbound), SMS (Identity Platform US $0.01/SMS reference), database/hosting and engineer hours (user-supplied assumptions). Optional Better Auth managed infrastructure: Pro $20/mo, SSO 1 connection then $50/mo each, email $0.001, SMS $0.09 (better-auth.com/pricing, checked 2026-10-31). Break-even math vs Clerk/Auth0/Firebase at 10k/50k/100k: ${SITE}/guides/self-hosted-auth-cost\n\n## Search pages\n${vendors.map(v=>`- ${v.name} pricing: ${SITE}/vendors/${v.id}\n- ${v.name} alternatives: ${SITE}/alternatives/${v.id}`).join('\n')}\n${DATA_GUIDES.map(g=>`- ${g.title}: ${SITE}/guides/${g.slug}`).join('\n')}\n${pairs.map(([a,b])=>`- ${a.name} vs ${b.name} pricing: ${SITE}/compare/${a.id}-vs-${b.id}`).join('\n')}\n\n## Changes\n${changes.map(c=>`- ${c.date} ${c.vendor} (${c.kind}): ${c.summary} [${c.source}]`).join('\n')}\n`);
 
 W('manifest.webmanifest',JSON.stringify({name:`${NAME} — Auth cost of ownership`,short_name:NAME,start_url:'/?source=pwa',scope:'/',display:'standalone',background_color:'#f7f5f0',theme_color:'#141821',icons:[{src:'/assets/icon-192.png',sizes:'192x192',type:'image/png'},{src:'/assets/icon-512.png',sizes:'512x512',type:'image/png'}]}));
 const V='ac-'+Date.now().toString(36),pre=['/','/calculator/','/compare/','/changes','/pro','/assets/style.css','/assets/app.js','/api/plans.json','/offline'];
@@ -581,4 +694,25 @@ if(fs.existsSync(R('assets')))fs.cpSync(R('assets'),path.join(D,'assets'),{recur
 W('_redirects','/calculator.html /calculator/ 301\n');
 // Guard (RT-20261031-02): internal links must use clean URLs (Cloudflare Pages 308s /x.html -> /x and /dir -> /dir/).
 {const bad=[];const walk=d=>{for(const f of fs.readdirSync(d)){const p=path.join(d,f);if(fs.statSync(p).isDirectory())walk(p);else if(/\.(html|txt|xml|js|json|webmanifest)$/.test(f)){const s=fs.readFileSync(p,'utf8');const re=/(?:href=["']|src=["']|\(|["'`]|https?:\/\/authcost\.pages\.dev|localhost:4190)\/[^"'`\s)<>]*\.html\b/g;let x;while((x=re.exec(s)))bad.push(path.relative(D,p)+': '+x[0]);for(const dir of ['calculator','compare','guides','vendors','alternatives']){const r2=new RegExp('(?:href="|'+SITE.replace(/[.\/]/g,'\\$&')+')/'+dir+'(?=["\\s)#?])','g');let y;while((y=r2.exec(s)))bad.push(path.relative(D,p)+': '+y[0]+' (missing trailing slash)')}}}};walk(D);if(bad.length){console.error('Internal .html / redirecting links found ('+bad.length+'):\n'+bad.slice(0,30).join('\n'));process.exit(1)}}
+// Guards RT-20261031-57/59/60. Never disable: fix the cause.
+{const files=[];const walk=d=>{for(const f of fs.readdirSync(d)){const p=path.join(d,f);if(fs.statSync(p).isDirectory())walk(p);else if(/\.(html|txt)$/.test(f))files.push(p)}};walk(D);
+ const bad=[];const ASSUME=`${FED_PER_CONN} SSO users per connection`;
+ const SSO_RESULT=/· [1-9]\d* SSO\b|\+ [1-9]\d* SSO<|\b[1-9]\d* SSO connections \(\d+ plans|\b[1-9]\d* connections?<\/th>|id="c-fpc"/; // scenario-result markers, not plan descriptions
+ const FEDRE=new RegExp(FED_NAMES.map(n=>n.split(/[ /]/)[0]).join('|'));
+ for(const p of files){const rel=path.relative(D,p);const s=fs.readFileSync(p,'utf8');
+  // RT-57: any page publishing an SSO scenario result must carry the SSO-users-per-connection disclosure
+  if(rel.endsWith('.html')&&!['404.html','offline.html'].includes(rel)&&SSO_RESULT.test(s)&&!s.includes(ASSUME))bad.push(`RT-57 ${rel}: SSO scenario result without "${ASSUME}" disclosure`);
+  // RT-57 inline: every answer clause that prices an SSO scenario for a per-SSO-user vendor states the assumption
+  for(const m of s.matchAll(/"text":"([^"]*)"/g))for(const seg of m[1].split(/; |\. /))if(/· [1-9]\d* SSO\b/.test(seg)&&FEDRE.test(seg)&&!seg.includes(ASSUME)&&/(wins|tie)/.test(seg))bad.push(`RT-57 ${rel}: JSON-LD answer clause prices a per-SSO-user vendor without the assumption: ${seg.slice(0,120)}`);
+  // RT-60 lint: ties are ties, never "$0/yr less|more" or a ranked $0
+  const t=s.match(/\$0\/yr (?:less|more)|\$0(?:\.00)?\/mo ranks #|\$0(?:\.00)?\/mo \(\$0\/yr/g);if(t)bad.push(`RT-60 ${rel}: tie rendered as a win/rank (${t[0]})`);
+  if(/understates Clerk/.test(s))bad.push(`RT-60 ${rel}: backwards MAU/MRU sentence`);
+  // RT-59: the inflated max-min headline must not come back on the home page
+  if(rel==='index.html'&&/differ by up to/.test(s))bad.push('RT-59 index.html: max-minus-min "differ by up to" headline');
+ }
+ // RT-60 precision: every published per-user rate renders at its published precision
+ for(const p of plans)for(const v of [p.overage_per_user,...(p.overage_bands||[]).map(b=>b.rate)].filter(x=>x!=null))if(Math.abs(parseFloat(usd(v).replace(/[$,]/g,''))-v)>1e-12)bad.push(`RT-60 precision: ${p.id} rate ${v} renders as ${usd(v)}`);
+ const home=fs.readFileSync(path.join(D,'index.html'),'utf8');for(const p of plans)if(p.overage_per_user!=null&&!home.includes(usd(p.overage_per_user)))bad.push(`RT-60 precision: ledger lacks ${p.id} overage ${usd(p.overage_per_user)}`);
+ if(bad.length){console.error('Build guards failed ('+bad.length+'):\n'+bad.slice(0,40).join('\n'));process.exit(1)}
+ console.log('guards ok: RT-57 SSO-assumption disclosure, RT-59 hero, RT-60 ties/precision/MAU-MRU');}
 console.log(`built ${urls.length} pages (${sm.length} in sitemap) → dist/ (${plans.length} plans, ${nVer} verified, ${vendors.length} vendors)`);
