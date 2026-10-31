@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T12:21:24.499Z",
+  "generated": "2026-10-31T17:18:56.138Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "changes": [
@@ -11,6 +11,15 @@
       "kind": "fee-start",
       "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
       "source": "https://clerk.com/pricing"
+    },
+    {
+      "date": "2026-10-31",
+      "observed": "2026-10-31",
+      "vendor": "Auth0",
+      "vendor_id": "auth0",
+      "kind": "coverage-added",
+      "summary": "Added Auth0 for Startups (auth0.com/startups, read 2026-10-31): eligible startups (venture-backed with less than $5M in funding, less than $1M ARR, less than two years from incorporation; not existing paid Auth0/Okta customers or past members) get one year of the B2B Professional plan free, up to 100,000 MAU with 5 Enterprise Connections and inbound SCIM. Shown as a note on the SSO guide, Auth0 vendor page and every Auth0 comparison with the month-13 list price (B2B Professional with 3 SSO connections: $800/mo at 1,000 MAU, $1,500 at 5,000, $2,400 at 10,000; above 10,000 MAU contact sales). Rankings still use list prices.",
+      "source": "https://auth0.com/startups"
     },
     {
       "date": "2026-10-31",
