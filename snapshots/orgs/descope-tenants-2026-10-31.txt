@@ -1,0 +1,8 @@
+Source: https://www.descope.com/pricing
+Fetched: 2026-10-31 (ET) by curl; excerpts of visible text
+
+charge for one year. Apply In-depth comparison Free Pro Growth Enterprise Pricing Base monthly price $0 $249 $799 Speak with us MAUs included Additional MAU fee 7,500 10,000 $0.05 25,000 $0.05 Custom Tenants included Additional tenant fee 10 35 $1 100 $1 Custom SSO connections included Additional SSO conn. fee 3 5 $50 10 $50 Custom Federated apps included 1 (OIDC) 2 (SAML / OIDC) Unlimited (SAML / OIDC) Unlimited M2M exchanges included Additional M2M exchange fee 10,000 50,000 $2 per 1000 exchanges 100,000 $2 per 1000 exchanges Custom Test users included 5 100 500 Unlimited MACs included Additional MAC fee 2,000 5,000 $0.05 10,000
+
+---
+
+t can have one or more users. For example, if your B2B app has three customers, namely Customer1 (with 10 users), Customer2 (with 3 users), and Customer3 (with 50 users), then you have three tenants. What is an active tenant? A tenant is active if two or more users are associated with the tenant and at least one user logs in within a month. Descope only charges for active tenants. What is an SSO connection? An SSO connection is any connection between a tenant and an identity provider using SAML / OIDC SSO to access your B2B application. Since Descope supports multiple SSO configurations per tenant, one tenant can hav

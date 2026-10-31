@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T11:20:44.482Z",
+  "generated": "2026-10-31T12:21:24.499Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "changes": [
@@ -10,6 +10,15 @@
       "vendor_id": "clerk",
       "kind": "fee-start",
       "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
+      "source": "https://clerk.com/pricing"
+    },
+    {
+      "date": "2026-10-31",
+      "observed": "2026-10-31",
+      "vendor": "AuthCost",
+      "vendor_id": "authcost",
+      "kind": "correction",
+      "summary": "Correction: SSO and B2B answers now include organization/tenant fees and caps read from vendor pages on 2026-10-31. Clerk: 100 monthly retained orgs and 20 members per org free; above either, the B2B Authentication add-on is $100/mo ($85 annual), then $1/mo per org (101–1,000), $0.90 (1,001–10,000), $0.75 (10,001–100,000), $0.60 (100,001+). Auth0: Free 5 and B2C plans 10 organizations; B2B unlimited. Descope: 10/35/100 active tenants, then $1 per tenant on Pro and Growth. Kinde: Free 5 orgs, paid 50 then $0.50/$0.47/$0.43. Logto: Organizations add-on $48/mo. Each SSO connection now counts as 1 customer organization. Before, Clerk vs Auth0 at 10k users with 1 SSO connection read '$300/yr less than Clerk'; it is $1,500/yr (Clerk Pro $125/mo incl. the $100/mo add-on for 200-member orgs).",
       "source": "https://clerk.com/pricing"
     },
     {

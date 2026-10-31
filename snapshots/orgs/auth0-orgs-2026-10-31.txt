@@ -1,0 +1,10 @@
+Source: https://auth0.com/pricing.md (fetched 2026-10-31); grep of Organization lines. Columns: Free | Essentials | Professional | Enterprise (first table B2C, second B2B). ** = Subject to system limitations
+26:- **Organizations:** Represent their business customers and partners in Auth0 and manage their membership.
+55:- 5 Organizations
+73:- Role-based Access Control Per Organization
+74:- 10 Organizations (How we model your customers)
+221:- Unlimited** Organizations
+396:| Organizations | 5 | 10 | 10 | Custom Tiers |
+398:| M2M Access for Organizations | Not available | Not available | Not available | Select Enterprise Plans |
+500:| Organizations | 5 | Unlimited** | Unlimited** | Custom Tiers |
+502:| M2M Access for Organizations | Not available | Not available | Included | Select Enterprise Plans |

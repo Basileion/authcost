@@ -14,9 +14,46 @@ if(tt) tt.addEventListener('click',()=>{
 // RT-20261031-57: per-SSO-user vendors (Firebase / Identity Platform, Supabase, Cognito) need SSO users; default 200 per connection.
 const FED_PER_CONN=200;
 const isFed=p=>p.federated_per_mau!=null||p.sso_saml_per_mau!=null;
+// RT-20261031-56: B2B organizations / tenants. SSO implies at least 1 customer organization per SSO connection.
+// Members per org default to the SSO-users-per-connection figure (FED_PER_CONN), capped at users ÷ orgs.
+// Returns null when the plan cannot hold that many orgs (published cap, or a required add-on we cannot price on it).
+function orgCost(plan, mau, sso=0, opts={}){
+  const need=Math.max(0, sso|0);
+  const orgs=Math.max(Math.max(0, Math.floor(+opts.orgs||0)), need);
+  const r={fee:0,orgs,label:'',note:''};
+  if(!orgs) return r;
+  const m$=v=>'$'+(Number.isInteger(v)?v.toLocaleString('en-US'):v.toFixed(2));
+  const pl=(n,w)=>n+' '+w+(n===1?'':'s');
+  let mem=(opts.org_members!=null&&opts.org_members!=='')?Math.max(0,+opts.org_members||0):(need>0&&opts.federated_mau!=null?opts.federated_mau/need:FED_PER_CONN);
+  if(mau>0) mem=Math.min(mem, Math.ceil(mau/orgs));
+  const counted=(plan.org_counts&&mem<2)?0:orgs; // Clerk MROs, Kinde MAOs and Descope active tenants skip orgs with fewer than 2 members
+  const unit=plan.org_counts||'organization';
+  if(!plan.org_model&&plan.org_max==null&&plan.org_included==null&&!plan.org_unlimited&&plan.org_addon_mo==null) plan={...plan,org_model:'none'};
+  if(plan.org_model==='none'){ r.note=`No per-organization fee published (${pl(orgs,'org')} add $0).`; return r; }
+  if(plan.org_max!=null && counted>plan.org_max) return null;
+  if(plan.org_max!=null && plan.org_extra_mo==null && plan.org_addon_mo==null){ r.note=`${pl(orgs,'org')} within the ${plan.org_max}-${unit} cap.`; return r; }
+  if(plan.org_member_limit!=null){
+    const incl=plan.org_included??0;
+    if(counted<=incl && mem<=plan.org_member_limit){ r.note=`${pl(orgs,'org')} within the free ${incl} ${unit}s and ${plan.org_member_limit} members per org.`; return r; }
+    if(plan.org_addon_mo==null || plan.org_addon_available===false) return null;
+    let extra=0; for(const b of plan.org_bands||[]){ const hi=b.to==null?Infinity:b.to; extra+=Math.max(0, Math.min(counted,hi)-b.from+1)*b.rate; }
+    r.fee=plan.org_addon_mo+extra; r.label=plan.org_addon_name+(extra>0?` + ${pl(counted-incl,'extra '+unit)}`:'');
+    r.note=`${plan.org_addon_name} ${m$(plan.org_addon_mo)}/mo required (${counted>incl?`${counted} ${unit}s > ${incl} free`:`${Math.round(mem)} members per org > ${plan.org_member_limit}`})${extra>0?` + ${m$(extra)}/mo for ${pl(counted-incl,'extra '+unit)}`:''}.`;
+    return r;
+  }
+  if(plan.org_extra_mo!=null){
+    const x=Math.max(0, counted-(plan.org_included||0)); r.fee=x*plan.org_extra_mo;
+    if(r.fee>0){ r.label=`${pl(x,'extra '+unit)} × ${m$(plan.org_extra_mo)}`; r.note=`${counted} ${unit}s: ${plan.org_included} included, ${x} × ${m$(plan.org_extra_mo)} = ${m$(r.fee)}/mo.`; }
+    else r.note=`${pl(counted,unit)} within the ${plan.org_included} included.`;
+    return r;
+  }
+  if(plan.org_addon_mo!=null){ r.fee=plan.org_addon_mo; r.label=plan.org_addon_name; r.note=`${plan.org_addon_name} ${m$(plan.org_addon_mo)}/mo.`; return r; }
+  r.note=plan.org_published===false?'No organization fee printed on the pricing page.':`Unlimited organizations (${pl(orgs,'org')} add $0).`;
+  return r;
+}
 function estimate(plan, mau, sso=0, opts={}){
   if(plan.status!=='verified') return null;
-  const out={base:0,users:0,sso:0,mfa:0,total:null,notes:[]};
+  const out={base:0,users:0,sso:0,mfa:0,org:0,orgs:0,orgLabel:'',total:null,notes:[]};
   const tierRow=plan.price_tiers?plan.price_tiers.find(t=>mau<=t.mau):null;
   if(plan.price_tiers && !tierRow) return null;
   if(plan.sso_max!=null && (sso|0)>plan.sso_max) return null;
@@ -78,7 +115,10 @@ function estimate(plan, mau, sso=0, opts={}){
       out.notes.push('MFA add-on $'+plan.mfa_extra_mo+'/mo (verified).');
     }
   }
-  out.total=out.base+out.users+out.sso+out.mfa;
+  const oc=orgCost(plan, mau, need, opts);
+  if(oc==null) return null;
+  out.org=oc.fee; out.orgs=oc.orgs; out.orgLabel=oc.label; if(oc.orgs) out.notes.push(oc.note);
+  out.total=out.base+out.users+out.sso+out.mfa+out.org;
   return out;
 }
 
@@ -99,8 +139,9 @@ async function renderHome(){
   const ties=ranked.filter(x=>Math.abs(x.e.total-top[0].e.total)<1e-9).length;
   const fedShown=sso>0&&top.some(x=>isFed(x.p));
   kOut.innerHTML=`<p><b>Cheapest:</b> ${ties>1?`${ties} plans tie at <b>${usd(top[0].e.total)}/mo</b>, e.g. ${top[0].p.vendor} ${top[0].p.plan}`:`${top[0].p.vendor} ${top[0].p.plan} at <b>${usd(top[0].e.total)}/mo</b> (${yr(top[0].e.total)}/yr)`}</p>
-  <ol style="margin:8px 0 0;padding-left:18px">${top.map(x=>`<li>${x.p.vendor} ${x.p.plan}: ${usd(x.e.total)}/mo${sso>0&&isFed(x.p)?'†':''}</li>`).join('')}</ol>
+  <ol style="margin:8px 0 0;padding-left:18px">${top.map(x=>`<li>${x.p.vendor} ${x.p.plan}: ${usd(x.e.total)}/mo${sso>0&&isFed(x.p)?'†':''}${x.e.org>0?'‡':''}</li>`).join('')}</ol>
   ${fedShown?`<p class="note">† Bills SSO per SSO user: assumes ${FED_PER_CONN} SSO users per connection. <a href="/calculator/?mau=${mau}&sso=${sso}&fpc=${FED_PER_CONN}">Change it</a>.</p>`:''}
+  ${top.some(x=>x.e.org>0)?`<p class="note">‡ Includes B2B organization fees: assumes 1 customer organization per SSO connection (e.g. Clerk’s $100/mo B2B Authentication add-on above 20 members per org). <a href="/calculator/?mau=${mau}&sso=${sso}&org=${sso}">Set your org count</a>.</p>`:''}
   <p class="note">${ranked.length} plans ranked · <a href="/calculator/?mau=${mau}&sso=${sso}&mfa=0">Open full calculator</a></p>`;
 }
 if(kOut){ [kMau,kSso].forEach(el=>el&&el.addEventListener('input',renderHome)); renderHome(); }
@@ -121,7 +162,7 @@ function filterTable(){
 if($('#plans')){ [q,vo].forEach(el=>el&&el.addEventListener('input',filterTable)); vo&&vo.addEventListener('change',filterTable); filterTable(); }
 
 // Calculator
-const rank=$('#rank'), cMau=$('#c-mau'), cSso=$('#c-sso'), cFed=$('#c-fpc'), cMfa=$('#c-mfa'), cVo=$('#c-vo'), cSave=$('#c-save');
+const rank=$('#rank'), cMau=$('#c-mau'), cSso=$('#c-sso'), cFed=$('#c-fpc'), cOrg=$('#c-org'), cMpo=$('#c-mpo'), cMfa=$('#c-mfa'), cVo=$('#c-vo'), cSave=$('#c-save');
 const cUrl=$('#c-url'), cEmbed=$('#c-embed'), cSh=$('#c-sh'), cBack=$('#c-back');
 let calcTracked=false, calcPlans=null;
 
@@ -129,15 +170,18 @@ function calcParams(){
   const mau=+cMau?.value||0, sso=+cSso?.value||0;
   const fpc=cFed&&cFed.value!==''?Math.max(0,+cFed.value||0):FED_PER_CONN;
   const mfa=!!cMfa?.checked, vo=cVo?!!cVo.checked:true;
-  return {mau,sso,fpc,fed:sso*fpc,mfa,vo};
+  const org=Math.max(0,Math.floor(+cOrg?.value||0)), mpo=cMpo&&cMpo.value!==''?Math.max(0,+cMpo.value||0):null;
+  return {mau,sso,fpc,fed:sso*fpc,mfa,vo,org,mpo};
 }
 
 function shareUrl(opts={}){
-  const {mau,sso,fpc,mfa,vo}=calcParams();
+  const {mau,sso,fpc,mfa,vo,org,mpo}=calcParams();
   const u=new URL(location.origin+'/calculator/');
   u.searchParams.set('mau',String(mau));
   u.searchParams.set('sso',String(sso));
   u.searchParams.set('fpc',String(fpc));
+  u.searchParams.set('org',String(org)); // RT-20261031-56; old links without org= read as 0 (B2C; SSO still implies 1 org per connection)
+  if(mpo!=null) u.searchParams.set('mpo',String(mpo));
   u.searchParams.set('mfa',mfa?'1':'0');
   u.searchParams.set('vo',vo?'1':'0');
   if(opts.embed) u.searchParams.set('embed','1');
@@ -162,21 +206,25 @@ async function renderCalc(){
     if(params.has('fpc')) cFed.value=params.get('fpc');
     else if(params.has('fed')){ const s0=+(params.get('sso')||0); if(s0>0) cFed.value=String(Math.round((+params.get('fed')||0)/s0)); } // legacy total federated MAU links
   }
+  if(params.has('org')&&cOrg&&!cOrg.dataset.touched) cOrg.value=params.get('org');
+  if(params.has('mpo')&&cMpo&&!cMpo.dataset.touched) cMpo.value=params.get('mpo');
   if(params.has('mfa')&&cMfa&&!cMfa.dataset.touched) cMfa.checked=params.get('mfa')==='1';
   if(params.has('vo')&&cVo&&!cVo.dataset.touched) cVo.checked=params.get('vo')!=='0';
   if(!calcPlans) calcPlans=await loadPlans();
-  const {mau,sso,fpc,fed,mfa,vo}=calcParams();
-  const ranked=calcPlans.map(p=>{const e=estimate(p,mau,sso,{federated_mau:fed,mfa});return e&&e.total!=null?{p,e}:null}).filter(Boolean)
+  const {mau,sso,fpc,fed,mfa,vo,org,mpo}=calcParams();
+  const effOrg=Math.max(org,sso);
+  const ranked=calcPlans.map(p=>{const e=estimate(p,mau,sso,{federated_mau:fed,mfa,orgs:org,org_members:mpo});return e&&e.total!=null?{p,e}:null}).filter(Boolean)
     .filter(x=>!vo||x.p.status==='verified').sort((a,b)=>a.e.total-b.e.total);
   const cheapest=ranked[0];
   const nTie=cheapest?ranked.filter(y=>Math.abs(y.e.total-cheapest.e.total)<1e-9).length:0;
   if(cSave) cSave.innerHTML=cheapest?(nTie>1?`<b>Lowest estimate:</b> ${nTie} plans tie at ${usd(cheapest.e.total)}/mo among ${ranked.length} plans.`:`<b>Lowest estimate:</b> ${cheapest.p.vendor} ${cheapest.p.plan} at ${usd(cheapest.e.total)}/mo (${yr(cheapest.e.total)}/yr) among ${ranked.length} plans.`)+(sso>0&&isFed(cheapest.p)?` Bills SSO per SSO user, at ${fpc.toLocaleString('en-US')} SSO users per connection.`:''):'No verifiable plans for this scenario.';
+  if(cSave&&effOrg>0) cSave.innerHTML+=` <span class="note" data-org-calc>B2B: priced for ${effOrg.toLocaleString('en-US')} organization${effOrg>1?'s':''}${org<sso?' (1 per SSO connection)':''} with ${Math.round(Math.min(mpo!=null?mpo:(sso>0?fpc:FED_PER_CONN),mau>0?Math.ceil(mau/effOrg):Infinity)).toLocaleString('en-US')} members each${mpo==null?' (default: SSO users per connection, capped at users ÷ orgs)':''}; plans over a published org cap are left out.</span>`;
   const pos=x=>1+ranked.filter(y=>y.e.total<x.e.total-1e-9).length, tie=x=>ranked.filter(y=>Math.abs(y.e.total-x.e.total)<1e-9).length>1;
   rank.innerHTML=ranked.map((x,i)=>`<tr><td class="n">${pos(x)}${tie(x)?'=':''}</td><td><a href="/vendors/${x.p.vendor_id}">${x.p.vendor}</a> · ${x.p.plan}</td>
-    <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td><td class="n">${usd(x.e.mfa||0)}</td>
+    <td class="n">${usd(x.e.base)}</td><td class="n">${usd(x.e.users)}</td><td class="n">${usd(x.e.sso)}</td><td class="n">${usd(x.e.mfa||0)}</td><td class="n">${usd(x.e.org||0)}</td>
     <td class="n"><b>${usd(x.e.total)}</b></td><td class="n">${yr(x.e.total)}</td>
     <td class="src" style="white-space:normal">${(x.e.notes||[]).join(' ')||'—'}</td>
-    <td><a class="btn ghost" style="padding:4px 8px;font-size:12px" href="${x.p.source}" rel="noopener">Source</a></td></tr>`).join('')||'<tr><td colspan="10">No results</td></tr>';
+    <td><a class="btn ghost" style="padding:4px 8px;font-size:12px" href="${x.p.source}" rel="noopener">Source</a></td></tr>`).join('')||'<tr><td colspan="11">No results</td></tr>';
   const u=shareUrl();
   if(params.get('embed')==='1') u.searchParams.set('embed','1');
   history.replaceState(null,'',u.pathname+u.search+(location.hash||''));
@@ -193,7 +241,7 @@ async function copyText(text, okMsg){
 }
 
 if(rank){
-  [cMau,cSso,cFed].forEach(el=>el&&el.addEventListener('input',()=>{el.dataset.touched='1';renderCalc()}));
+  [cMau,cSso,cFed,cOrg,cMpo].forEach(el=>el&&el.addEventListener('input',()=>{el.dataset.touched='1';renderCalc()}));
   [cMfa,cVo].forEach(el=>el&&el.addEventListener('change',()=>{el.dataset.touched='1';renderCalc()}));
   $('#c-copy')?.addEventListener('click',()=>{copyText(shareUrl().toString(),'Share link copied'); window.grow?.track('cta_click',{cta:'calculator_share'});});
   $('#c-copy-embed')?.addEventListener('click',()=>{copyText(cEmbed?.value||'','Embed snippet copied'); window.grow?.track('cta_click',{cta:'calculator_embed'});});

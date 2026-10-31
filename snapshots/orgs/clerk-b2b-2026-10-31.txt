@@ -1,0 +1,15 @@
+Source: https://clerk.com/pricing
+Fetched: 2026-10-31 (ET) by curl; excerpts of visible text
+
+ion support Custom security questionnaires Add-ons More than authentication B2B Authentication, Protect, Billing, and Administration. Included in all plans. Add-ons apply to all of your applications. B2B Authentication The easy solution to multi-tenancy with a full suite of B2B SaaS features. Start now Included Free in all plans 100 MRO included per app Up to 20 members per Organization Includes Admin & Member roles Custom permissions Invitations Enhanced add-on $100 /mo or $85 /mo billed annually 100 MRO included per app Additional $1/mo each Show volume discounts Unlimited members per Organization Link Enterprise connections w
+
+---
+
+ clearest for B2B/SSO-heavy apps: Clerk includes one Enterprise connection on Pro with published pricing for additional connections, while larger Auth0 SSO needs move into custom or Enterprise tiers. What happens when I exceed the first 50,000 monthly retained users or 100 monthly retained organizations? Once you exceed 50,000 monthly retained users you will be required to upgrade to the Pro plan. Once you exceed 100 monthly retained organizations, you will be required to upgrade to the B2B Authentication add-on. Each user or organization beyond the free tier allowance will be added to your monthly bill. You'll be given a one-month gra
+
+---
+
+ation feature details B2B Authentication features Without add-ons Without add-ons With B2B Authentication add-ons Start building Without add-ons Start building With B2B Authentication add-ons Upgrade Organization membership limit Users who have access to a given organization. 20 members Unlimited members Monthly retained organizations (MROs) An organization is retained when it has at least 2 members and at least one of those members is a monthly retained user for that month. 100 included per app 100 MROs included per app 101 - 1,000 $1/mo each 1,001 - 10,000 $0.90/mo each 10,001 - 100,000 $0.75/mo each 100,001+ $0.60/mo e
+
+---
+MRO volume table (Pro column, from page HTML): 100 MROs included per app; 101 - 1,000 $1/mo each; 1,001 - 10,000 $0.90/mo each; 10,001 - 100,000 $0.75/mo each; 100,001+ $0.60/mo each

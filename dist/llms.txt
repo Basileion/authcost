@@ -22,6 +22,7 @@ Prices from each vendor's own pricing page only. Verified rows were read on the 
 
 ## Assumptions
 - SSO results for Amazon Cognito, Supabase Auth and Firebase Auth / Identity Platform (billed per SSO user) assume 200 SSO users per connection; sensitivity at 1000 and 2000: https://authcost.pages.dev/methodology#sso-users
+- B2B: SSO results assumes 1 customer organization per SSO connection; org fees/caps applied (Clerk B2B add-on, Auth0 org caps, Descope/Kinde per-tenant fees): https://authcost.pages.dev/methodology#b2b-orgs
 - Headline: At 100k users, Clerk Pro lists $1,025/mo; WorkOS AuthKit, the cheapest verified plan that includes MFA at that size, lists $0 ($12,300/yr less).
 - [Methodology](https://authcost.pages.dev/methodology)
 - [About](https://authcost.pages.dev/about)

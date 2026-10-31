@@ -7,4 +7,4 @@ Finance-grade auth / identity vendor pricing tracker (Clerk, Auth0, Cognito, Wor
 - Check sources: `npm run check` / `npm run baseline`
 - Every price row cites an official source URL + checked date. Never invent numbers.
 
-- Build guards (fail the build, never disable): clean internal URLs; RT-20261031-57 every SSO scenario result discloses the SSO-users-per-connection assumption (page + JSON-LD answer clauses); RT-59 no max-minus-min home headline; RT-60 ties render as ties (no "$0/yr less|more"), rates at published precision, MAU/MRU direction.
+- Build guards (fail the build, never disable): clean internal URLs; RT-20261031-56 every SSO/B2B answer states "assumes 1 customer organization per SSO connection" and prints the org fee for any vendor plan whose total includes one (negative tests: `NEGTEST_ORG=1 node scripts/build.mjs` and `NEGTEST_ORG=fee node scripts/build.mjs` must exit 1); RT-20261031-57 every SSO scenario result discloses the SSO-users-per-connection assumption (page + JSON-LD answer clauses); RT-59 no max-minus-min home headline; RT-60 ties render as ties (no "$0/yr less|more"), rates at published precision, MAU/MRU direction.

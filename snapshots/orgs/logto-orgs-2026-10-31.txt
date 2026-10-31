@@ -1,0 +1,4 @@
+Source: https://logto.io/pricing
+Fetched: 2026-10-31 (ET) by curl; excerpts of visible text
+
+ User roles Define user roles and manage access to your system - Unlimited* Contact Machine-to-machine roles Define machine-to-machine type roles and manage access to your system - Unlimited* Contact Organizations Add-on A bundled add-on that includes all the organization features - $48 Contact Organization count An organization is a group of users. Usually used in multi-tenancy apps - Unlimited* Contact Users per organization The amount of users under each organization - Unlimited* Contact Invitation (Management API) Invite members to join the organization themselves - Organization roles Define customized roles 

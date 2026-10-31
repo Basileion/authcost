@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T11:20:44.482Z",
+  "generated": "2026-10-31T12:21:24.499Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "affiliates": {},
@@ -114,7 +114,14 @@
       "source": "https://clerk.com/pricing",
       "checked": "2026-10-31",
       "status": "verified",
-      "mfa_available": false
+      "mfa_available": false,
+      "org_included": 100,
+      "org_member_limit": 20,
+      "org_counts": "MRO",
+      "org_addon_available": false,
+      "org_note": "B2B Authentication included free: 100 monthly retained organizations (MROs) per app, up to 20 members per organization. Beyond 100 MROs or 20 members Clerk requires the B2B Authentication add-on ($100/mo); we price that add-on on Pro.",
+      "org_source": "https://clerk.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "clerk-pro",
@@ -171,7 +178,38 @@
       "source": "https://clerk.com/pricing",
       "checked": "2026-10-31",
       "status": "verified",
-      "sso_note": "251+ connections: contact sales"
+      "sso_note": "251+ connections: contact sales",
+      "org_included": 100,
+      "org_member_limit": 20,
+      "org_counts": "MRO",
+      "org_addon_mo": 100,
+      "org_addon_mo_annual": 85,
+      "org_addon_name": "B2B Authentication add-on",
+      "org_bands": [
+        {
+          "from": 101,
+          "to": 1000,
+          "rate": 1
+        },
+        {
+          "from": 1001,
+          "to": 10000,
+          "rate": 0.9
+        },
+        {
+          "from": 10001,
+          "to": 100000,
+          "rate": 0.75
+        },
+        {
+          "from": 100001,
+          "to": null,
+          "rate": 0.6
+        }
+      ],
+      "org_note": "Free B2B Authentication: 100 MROs, up to 20 members per organization. B2B Authentication add-on $100/mo ($85/mo billed annually): unlimited members, link enterprise connections with Organizations, custom roles; 100 MROs included, then $1/mo each (101–1,000), $0.90 (1,001–10,000), $0.75 (10,001–100,000), $0.60 (100,001+). Required above 100 MROs or 20 members per organization. An MRO is an organization with at least 2 members, one of them a retained user that month.",
+      "org_source": "https://clerk.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "clerk-business",
@@ -191,7 +229,38 @@
       "notes": "SOC2, priority support, advanced Protect. Same MRU/SSO add-on ladder as Pro.",
       "source": "https://clerk.com/pricing",
       "checked": "2026-10-31",
-      "status": "verified"
+      "status": "verified",
+      "org_included": 100,
+      "org_member_limit": 20,
+      "org_counts": "MRO",
+      "org_addon_mo": 100,
+      "org_addon_mo_annual": 85,
+      "org_addon_name": "B2B Authentication add-on",
+      "org_bands": [
+        {
+          "from": 101,
+          "to": 1000,
+          "rate": 1
+        },
+        {
+          "from": 1001,
+          "to": 10000,
+          "rate": 0.9
+        },
+        {
+          "from": 10001,
+          "to": 100000,
+          "rate": 0.75
+        },
+        {
+          "from": 100001,
+          "to": null,
+          "rate": 0.6
+        }
+      ],
+      "org_note": "Same B2B Authentication terms as Pro (add-ons apply to all applications).",
+      "org_source": "https://clerk.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "auth0-free",
@@ -210,7 +279,11 @@
       "notes": "Up to 25,000 MAU (B2C and B2B identical). 1 Enterprise Connection, Self-Service SSO and inbound SCIM included. Above 25k MAU you need a paid MAU tier (Essentials/Professional) or Enterprise.",
       "source": "https://auth0.com/pricing.md",
       "checked": "2026-10-31",
-      "status": "verified"
+      "status": "verified",
+      "org_max": 5,
+      "org_note": "5 Organizations (auth0.com/pricing.md).",
+      "org_source": "https://auth0.com/pricing.md",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "auth0-essentials",
@@ -283,7 +356,11 @@
         }
       ],
       "tier_rule": "next-tier-up",
-      "tier_max_mau": 50000
+      "tier_max_mau": 50000,
+      "org_max": 10,
+      "org_note": "B2C Essentials: 10 Organizations; Enterprise Connections not available on B2C paid plans.",
+      "org_source": "https://auth0.com/pricing.md",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "auth0-professional",
@@ -342,7 +419,11 @@
       ],
       "tier_rule": "next-tier-up",
       "tier_max_mau": 20000,
-      "tier_unavailable_from": 40000
+      "tier_unavailable_from": 40000,
+      "org_max": 10,
+      "org_note": "B2C Professional: 10 Organizations; Enterprise Connections not available on B2C paid plans.",
+      "org_source": "https://auth0.com/pricing.md",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "auth0-b2b-essentials",
@@ -401,7 +482,11 @@
       "notes": "Published MAU tiers 500→20,000: $150 (500), $300 (1k), $700 (2.5k), $1,300 (5k), $1,725 (7.5k), $2,100 (10k), $3,800 (20k)/mo. 30k+: contact us. 3 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA add-on $100/mo. Unlimited Organizations. Billed at next tier up; yearly = 11× monthly.",
       "source": "https://auth0.com/pricing.md",
       "checked": "2026-10-31",
-      "status": "verified"
+      "status": "verified",
+      "org_unlimited": true,
+      "org_note": "B2B Essentials: Unlimited Organizations (“subject to system limitations”).",
+      "org_source": "https://auth0.com/pricing.md",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "auth0-b2b-professional",
@@ -455,7 +540,11 @@
       "notes": "Published MAU tiers 500→10,000: $800 (500 and 1k), $1,200 (2.5k), $1,500 (5k), $1,800 (7.5k), $2,400 (10k)/mo. 20k+: contact us. 5 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA included. Billed at next tier up; yearly = 11× monthly.",
       "source": "https://auth0.com/pricing.md",
       "checked": "2026-10-31",
-      "status": "verified"
+      "status": "verified",
+      "org_unlimited": true,
+      "org_note": "B2B Professional: Unlimited Organizations (“subject to system limitations”).",
+      "org_source": "https://auth0.com/pricing.md",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "cognito-lite",
@@ -484,7 +573,8 @@
       "notes": "Direct/social: 10k free, then $0.0055/MAU through 100k total, then $0.0046 (from official examples). Federated SAML/OIDC: 50 free then $0.015/MAU.",
       "source": "https://aws.amazon.com/cognito/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_model": "none"
     },
     {
       "id": "cognito-essentials",
@@ -503,7 +593,8 @@
       "notes": "Default for new pools. Direct/social: 10k free then $0.015/MAU (official example). Federated SAML/OIDC: 50 free then $0.015/MAU. Passwordless/passkeys included.",
       "source": "https://aws.amazon.com/cognito/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_model": "none"
     },
     {
       "id": "cognito-plus",
@@ -522,7 +613,8 @@
       "notes": "No free tier for Plus. $0.020/MAU direct/social (official example). Includes threat protection / adaptive auth.",
       "source": "https://aws.amazon.com/cognito/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_model": "none"
     },
     {
       "id": "workos-authkit",
@@ -566,7 +658,12 @@
       "checked": "2026-10-31",
       "status": "verified",
       "mfa_available": true,
-      "mfa_source_note": "workos.com/pricing (2026-10-31): \"AuthKit includes email + password, social login, passkeys, MFA, magic auth, and enterprise SSO\""
+      "mfa_source_note": "workos.com/pricing (2026-10-31): \"AuthKit includes email + password, social login, passkeys, MFA, magic auth, and enterprise SSO\"",
+      "org_unlimited": true,
+      "org_published": false,
+      "org_note": "No organization fee or limit printed on workos.com/pricing.",
+      "org_source": "https://workos.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "stytch-payg",
@@ -585,7 +682,11 @@
       "notes": "10k MAU + 5 SSO or SCIM connections included. Extra connections $125 each. MAU overage rate not printed as a fixed USD figure on the checked page — left blank. Branding add-on $99.",
       "source": "https://stytch.com/pricing",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_unlimited": true,
+      "org_note": "Unlimited organizations on Pay as you go.",
+      "org_source": "https://stytch.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "logto-free",
@@ -602,7 +703,11 @@
       "notes": "50k MAU / 50k tokens. No Enterprise SSO on Free.",
       "source": "https://logto.io/pricing",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_max": 0,
+      "org_note": "Organizations (multi-tenancy) is a paid add-on; not listed on Free.",
+      "org_source": "https://logto.io/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "logto-pro",
@@ -623,7 +728,13 @@
       "checked": "2026-10-30",
       "status": "verified",
       "mfa_available": true,
-      "mfa_extra_mo": 48
+      "mfa_extra_mo": 48,
+      "org_unlimited": true,
+      "org_addon_mo": 48,
+      "org_addon_name": "Organizations add-on",
+      "org_note": "Organizations add-on $48/mo, unlimited organizations.",
+      "org_source": "https://logto.io/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "kinde-free",
@@ -640,7 +751,12 @@
       "notes": "10,500 MAU. 1 enterprise SSO connection.",
       "source": "https://kinde.com/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_max": 5,
+      "org_counts": "MAO",
+      "org_note": "5 monthly active organizations (MAO) included free; no extra-MAO price on Free. Organizations with a single active user are not counted.",
+      "org_source": "https://kinde.com/pricing/",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "kinde-pro",
@@ -657,7 +773,13 @@
       "notes": "$25/mo + $0.0175 per MAU above 10,500. 1 SSO included. MAU free when you bill users through Kinde Billing.",
       "source": "https://kinde.com/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_included": 50,
+      "org_extra_mo": 0.5,
+      "org_counts": "MAO",
+      "org_note": "50 MAO included, then $0.50 per extra MAO.",
+      "org_source": "https://kinde.com/pricing/",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "kinde-plus",
@@ -675,7 +797,13 @@
       "notes": "$75/mo. Unlimited enterprise SSO at no per-connection fee. $0.0163/MAU above 10,500.",
       "source": "https://kinde.com/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_included": 50,
+      "org_extra_mo": 0.47,
+      "org_counts": "MAO",
+      "org_note": "50 MAO included, then $0.47 per extra MAO.",
+      "org_source": "https://kinde.com/pricing/",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "kinde-scale",
@@ -693,7 +821,13 @@
       "notes": "$250/mo. Unlimited SSO. $0.0151/MAU above 10,500. SCIM coming soon per page.",
       "source": "https://kinde.com/pricing/",
       "checked": "2026-10-30",
-      "status": "verified"
+      "status": "verified",
+      "org_included": 50,
+      "org_extra_mo": 0.43,
+      "org_counts": "MAO",
+      "org_note": "50 MAO included, then $0.43 per extra MAO.",
+      "org_source": "https://kinde.com/pricing/",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "supabase-free",
@@ -712,7 +846,8 @@
       "checked": "2026-10-31",
       "status": "verified",
       "mfa_available": true,
-      "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on"
+      "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on",
+      "org_model": "none"
     },
     {
       "id": "supabase-pro",
@@ -732,7 +867,8 @@
       "checked": "2026-10-31",
       "status": "verified",
       "mfa_available": true,
-      "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on"
+      "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on",
+      "org_model": "none"
     },
     {
       "id": "firebase-identity-platform",
@@ -771,7 +907,8 @@
       "source": "https://cloud.google.com/identity-platform/pricing",
       "checked": "2026-10-31",
       "status": "verified",
-      "mfa_available": true
+      "mfa_available": true,
+      "org_model": "none"
     },
     {
       "id": "descope-free",
@@ -791,7 +928,12 @@
       "source": "https://www.descope.com/pricing",
       "checked": "2026-10-31",
       "status": "verified",
-      "mfa_available": true
+      "mfa_available": true,
+      "org_max": 10,
+      "org_counts": "active tenant",
+      "org_note": "10 monthly active tenants, no overages (upgrade required). A tenant is active when it has 2+ users and at least one logs in that month.",
+      "org_source": "https://www.descope.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "descope-pro",
@@ -811,7 +953,13 @@
       "source": "https://www.descope.com/pricing",
       "checked": "2026-10-31",
       "status": "verified",
-      "mfa_available": true
+      "mfa_available": true,
+      "org_included": 35,
+      "org_extra_mo": 1,
+      "org_counts": "active tenant",
+      "org_note": "35 monthly active tenants included, then $1 per additional tenant.",
+      "org_source": "https://www.descope.com/pricing",
+      "org_checked": "2026-10-31"
     },
     {
       "id": "descope-growth",
@@ -831,7 +979,13 @@
       "source": "https://www.descope.com/pricing",
       "checked": "2026-10-31",
       "status": "verified",
-      "mfa_available": true
+      "mfa_available": true,
+      "org_included": 100,
+      "org_extra_mo": 1,
+      "org_counts": "active tenant",
+      "org_note": "100 monthly active tenants included, then $1 per additional tenant.",
+      "org_source": "https://www.descope.com/pricing",
+      "org_checked": "2026-10-31"
     }
   ]
 }
