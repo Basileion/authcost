@@ -290,7 +290,7 @@ const heroSentence=`At ${kfmt(HERO.mau)} users, ${heroPopPlan.vendor} ${heroPopP
 
 const signup=(id='s',hook='Get the weekly auth ledger')=>`<form class="signup" action="${FORM_ACTION}" method="post" data-form="kit"><label for="${id}-e" class="skip">Email</label><input id="${id}-e" type="email" name="email_address" required placeholder="you@company.com" autocomplete="email"><button class="btn" type="submit">${esc(hook)}</button></form><p class="note">Weekly: every auth price change we confirmed, SSO fee moves, and the cheapest verified plan for 10k and 50k users. Free; unsubscribe in one click. Sent via Kit · <a href="/privacy">Privacy</a>.</p>`;
 const mailBox=(id,h,hook)=>`<section class="mail" id="ledger-mail"><div><div class="eyebrow">Free weekly ledger</div><h2 class="h3">${esc(h)}</h2></div><div>${signup(id,hook)}</div></section>`;
-const trust=`<ul class="trust"><li><b>Source-linked</b> every price links the vendor’s own page</li><li><b>Independent</b> no vendor pays for placement</li><li><b>Checked weekly</b> a script diffs every source page</li><li><b>No paid rankings</b> ordered by computed cost only</li></ul>`;
+const trust=`<ul class="trust"><li><b>Source-linked</b> every price links the vendor’s own page</li><li><b>Independent</b> no vendor pays for placement</li><li><b>Dated checks</b> every row shows the day we last read the vendor’s page</li><li><b>No paid rankings</b> ordered by computed cost only</li></ul>`;
 
 // ---- Home
 page({file:'index.html',title:`${NAME} — auth pricing that scales without the surprise bill`,desc:`${heroSentence}. Updated ${lastChecked}: ${vendors.length} vendors, ${nVer} verified plans, MAU/MRU and SSO fees counted, every price sourced.`,ld:[ORG_LD,faqLd,{'@context':'https://schema.org','@type':'Dataset',name:`${NAME} auth price ledger`,description:'Auth and identity list prices with source URL, check date and verification status per row.',url:SITE+'/',dateModified:lastChecked,license:'https://creativecommons.org/licenses/by/4.0/',creator:{'@id':SITE+'/#org'},distribution:[{'@type':'DataDownload',encodingFormat:'application/json',contentUrl:SITE+'/api/plans.json'},{'@type':'DataDownload',encodingFormat:'text/csv',contentUrl:SITE+'/api/plans.csv'}]}],body:`
@@ -350,7 +350,7 @@ page({file:'calculator/index.html',og:'calculator',title:`Auth cost calculator �
 <label>Embed iframe<textarea id="c-embed" readonly rows="3" aria-label="Embeddable iframe snippet"></textarea></label>
 <p class="note"><a id="c-back" href="/calculator/">Open full calculator</a> · <a href="/">Back to the AuthCost ledger</a></p>
 </div>
-<div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro watches the plans in this result and emails you when one moves, plus CSV export. <a href="/pro">See Pro</a>.</p></div>
+<div class="panel"><h2 class="h3">Keep this estimate</h2><p>Pro keeps this scenario on file and emails you the before/after $/mo when a confirmed vendor price change moves it. (The full ledger CSV/JSON is free for everyone on <a href="/data">/data</a>.) <a href="/pro">See Pro</a>.</p></div>
 <script>try{if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embed')}catch(e){}</script>`});
 
 // ---- Shared MAU-tier helpers (search/GEO pages)
@@ -801,19 +801,64 @@ page({file:'changes.html',og:'changes',title:`Auth price-change log | ${NAME}`,d
 W('rss.xml',`<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${NAME} — auth price log</title><link>${SITE}/changes</link><description>Dated, sourced auth price changes.</description>${changes.map(c=>`<item><title>${esc(c.vendor+': '+c.kind+' ('+c.date+')')}</title><link>${esc(c.source)}</link><guid isPermaLink="false">${esc(c.vendor+c.date+c.kind)}</guid><pubDate>${new Date(c.observed+'T12:00:00Z').toUTCString()}</pubDate><description>${esc(c.summary)}</description></item>`).join('')}</channel></rss>`);
 
 // ---- Pro / sponsor / methodology / data
-const proFaq=[['What triggers an alert?','A confirmed change on a source page for a plan or vendor you watch: base fee, overage, or SSO ladder.'],['Is Pro available now?','Yes — checkout via Kit. Free ledger stays free.'],['Cancel?','Yes, anytime. Access lasts through the paid period.'],['Monthly or annual?','Both: $9/mo or $90/yr. You pick the plan on the Kit checkout page.']];
-page({file:'pro.html',og:'pro',title:`${NAME} Pro — auth price alerts ($9/mo)`,desc:`$90/yr for alerts on the auth plans you watch plus CSV export. Founding price — cancel anytime via Kit.`,ld:[{'@context':'https://schema.org','@type':'Product',name:`${NAME} Pro`,offers:[{'@type':'Offer',price:'9.00',priceCurrency:'USD'},{'@type':'Offer',price:'90.00',priceCurrency:'USD'}]}],body:`
-<section class="hero"><div class="eyebrow">${NAME} Pro</div><h1>$90 a year for alerts before the auth invoice moves.</h1>
-<p class="lede">Watch the vendors and plans you run. Pro emails you when published prices change.</p></section>
-<div class="pricing"><div class="plan"><h2 class="h3">Free</h2><div class="price">$0</div><ul><li>Ledger, calculator, comparisons</li><li>Weekly email of price changes</li></ul>${signup('pf','Get the free weekly ledger')}</div>
-<div class="plan feat"><div class="ribbon">Recommended</div><h2 class="h3">Pro</h2><div class="price">$90<small> / year</small></div><p class="mut">or $9/mo billed monthly — pick either on Kit checkout</p>
-<ul><li><b>Alerts</b> for vendors you watch</li><li><b>CSV export</b> of scenarios and history</li><li>Everything in Free</li></ul>
-<a class="btn" href="${CHECKOUT_PRO_ANNUAL}" rel="noopener">Get Pro — $9/mo or $90/yr</a>
-<p class="micro">Founding price $9/mo or $90/yr — cancel anytime via Kit</p></div></div>
-<h2>Questions</h2>${proFaq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}`});
+// RT-20261031-04 / -08 / -61: /pro proof = real logged changes (data/changes.json) + cost cliffs recomputed by estimate() from plans.json.
+// Nothing here is typed by hand: every $ figure is computed below and re-checked by the Pro proof guard at the end of the build.
+const CLERK_DS=changes.find(c=>c.vendor_id==='clerk'&&c.kind==='fee-start'),CLERK_BAND=changes.find(c=>c.vendor_id==='clerk'&&c.kind==='new-tier');
+const VENDOR_CHANGES=changes.filter(c=>c.vendor_id!=='authcost'&&!['launch-seed','correction','coverage-added'].includes(c.kind));
+const pv=(id,m,s=0,o={})=>{const e=estimate(pid(id),m,s,o);return e&&e.total!=null?e:null};
+// Sample alert scenario: Clerk Pro, 10k MAU, 3 SSO customers who all need SCIM (each SSO connection = 1 org of FED_PER_CONN members)
+const SA={id:'clerk-pro',mau:10000,sso:3,scim:3};const saE=pv(SA.id,SA.mau,SA.sso,{scim:SA.scim}),saBefore=saE.total-saE.scim,saAfter=saE.total,saD=saE.scim;
+const saAlt=pv('auth0-b2b-essentials',SA.mau,SA.sso,{scim:SA.scim}),saWos=pv('workos-authkit',SA.mau,SA.sso,{scim:SA.scim});
+// Cost cliffs: the same scenario one step further, priced twice by the calculator engine
+const CLIFFS=[
+ {k:'a0-b2be-mau',id:'auth0-b2b-essentials',what:'1 more MAU past the 10,000 tier',a:[10000,0],b:[10001,0]},
+ {k:'a0-free-mau',id:null,what:'1 more MAU past Auth0 Free (25,000) → cheapest paid Auth0 plan (B2C Essentials)',a:['auth0-free',25000,0],b:['auth0-essentials',25001,0]},
+ {k:'a0-b2be-sso',id:'auth0-b2b-essentials',what:'4th enterprise SSO connection at 5,000 MAU (3 included)',a:[5000,3],b:[5000,4]},
+ {k:'clerk-sso',id:'clerk-pro',what:'2nd enterprise SSO customer at 10,000 MAU (1 included)',a:[10000,1],b:[10000,2]},
+ {k:'wos-scim',id:'workos-authkit',what:'3 SSO customers at 10,000 MAU start asking for SCIM (Directory Sync is a separate connection)',a:[10000,3,0],b:[10000,3,3]},
+].map(c=>{const A=c.id?pv(c.id,c.a[0],c.a[1],{scim:c.a[2]||0}):pv(c.a[0],c.a[1],c.a[2]),B=c.id?pv(c.id,c.b[0],c.b[1],{scim:c.b[2]||0}):pv(c.b[0],c.b[1],c.b[2]);const P=pid(c.id||c.b[0]);return {...c,A,B,d:B.total-A.total,label:c.id?`${P.vendor} ${P.plan}`:'Auth0 Free → B2C Essentials'}});
+const BIG=CLIFFS[0];const cardTd=(l,inner,cls='',at='')=>`<td${cls?` class="${cls}"`:''} data-label="${l}"${at}><span>${inner}</span></td>`;
+const cliffTable=`<div class="tbl cards"><table><thead><tr><th>Plan</th><th>What changed</th><th class="n">Before</th><th class="n">After</th><th class="n">Jump</th></tr></thead><tbody>${CLIFFS.map(c=>`<tr>${cardTd('Plan',esc(c.label))}${cardTd('What changed',esc(c.what))}${cardTd('Before',`${c.A.total===0?'$0':usd(c.A.total)+'/mo'}`,'n')}${cardTd('After',`${usd(c.B.total)}/mo`,'n')}${cardTd('Jump',`<b>+${usd(c.d)}/mo</b><br><span class="src">+${usd(c.d*12)}/yr · ${c.d*12>=90?(c.d*12/90).toFixed(0)+'× the $90/yr Pro price':''}</span>`,'n',` data-cliff="${c.k}:${c.A.total}:${c.B.total}"`)}</tr>`).join('')}</tbody></table></div>`;
+const chgTable=`<div class="tbl cards"><table><thead><tr><th>Effective</th><th>Vendor change (as logged)</th><th>Logged</th></tr></thead><tbody>${VENDOR_CHANGES.map(c=>`<tr>${cardTd('Effective',esc(c.date))}${cardTd('Change',`<b>${esc(c.vendor)}</b> · ${esc(c.summary)} <a class="src" href="${esc(c.source)}" rel="noopener">source</a>`)}${cardTd('Logged',esc(c.observed))}</tr>`).join('')}</tbody></table></div>`;
+const LAST_READ=vendors.map(v=>v.checked).sort();const CHECK_TXT=`Every vendor pricing page was last read on ${LAST_READ.at(-1)===LAST_READ[0]?LAST_READ[0]:LAST_READ[0]+'–'+LAST_READ.at(-1)} (${vendors.length} of ${vendors.length}); the date sits on every ledger row. Checks run by hand (our check script plus a read of the page), not on a fixed automatic schedule yet, and so far the ledger has been re-read on 2026-10-30 and 2026-10-31. Pro alerts go out by hand after we confirm a change, so they arrive after our next check, not in real time.`;
+const proFaq=[
+ ['Is the CSV a Pro feature?',`No. The full ledger (<a href="/api/plans.csv">plans.csv</a>, <a href="/api/plans.json">plans.json</a>) and the price log (<a href="/api/changes.json">changes.json</a>) are free for everyone under CC BY 4.0 on <a href="/data">/data</a>. Pro is the watching and the per-scenario alert, not the data.`],
+ ['How often do you check prices?',CHECK_TXT],
+ ['What triggers an alert?','A confirmed change on a vendor’s own pricing page that moves the monthly cost of your scenario: a base fee, MAU tier, SSO or SCIM connection fee, org add-on, or a fee that starts on a future date (like Clerk Directory Sync on 2027-01-01).'],
+ ['How do I set my scenario?','After checkout, reply to the Kit receipt with your vendor and plan, monthly users, SSO connections, SCIM customers and org count (or paste your calculator link). We price it with the same engine as the calculator.'],
+ ['Cancel?','Yes, anytime via Kit. Access lasts through the paid period.'],
+ ['Monthly or annual?','Both: $9/mo or $90/yr. You pick on the Kit checkout page.']];
+const proLd={'@context':'https://schema.org','@type':'Product',name:`${NAME} Pro`,description:`Per-scenario auth price-change alerts: when a vendor changes a price, the before/after monthly cost for your MAU + SSO + SCIM scenario. Ledger CSV/JSON stays free (CC BY 4.0).`,url:SITE+'/pro',image:SITE+'/assets/og/pro.png',brand:{'@type':'Brand',name:NAME},offers:[{'@type':'Offer',name:'Monthly',price:'9.00',priceCurrency:'USD',url:CHECKOUT_PRO_MONTHLY},{'@type':'Offer',name:'Annual',price:'90.00',priceCurrency:'USD',url:CHECKOUT_PRO_ANNUAL}]};
+const proFaqLd={'@context':'https://schema.org','@type':'FAQPage',mainEntity:proFaq.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a.replace(/<[^>]+>/g,'')}}))};
+const saAlert=`<section class="panel" id="sample-alert"><div class="eyebrow">Sample alert · built from a real logged change (observed ${CLERK_DS.observed})</div>
+<p style="margin:8px 0 4px"><b>Subject: Clerk Directory Sync billing starts ${CLERK_DS.date}: your scenario +${usd(saD)}/mo</b></p>
+<ul class="ticks"><li>Your scenario: Clerk ${esc(pid(SA.id).plan)}, ${SA.mau.toLocaleString('en-US')} monthly users, ${SA.sso} enterprise SSO customers, all ${SA.scim} on SCIM / Directory Sync (${ORG_SHORT}, ${FED_PER_CONN} SSO users per connection).</li>
+<li>Today: <b>${usd(saBefore)}/mo</b>${saE.org>EPS?` (incl. ${usd(saE.org)}/mo ${esc(saE.orgLabel)})`:''}. From ${CLERK_DS.date}: <b>${usd(saAfter)}/mo</b> (+${usd(saD)}/mo, +${usd(saD*12)}/yr) because Directory Sync counts separately from SSO: 1 included, then ${usd(pid(SA.id).scim_bands[0].rate)}/mo each.</li>
+<li>Clerk’s own words (clerk.com/pricing, read ${pid(SA.id).scim_checked}): “Counted separately from SSO connections. Billing for Directory Sync connections starts January 1, 2027.” · <a class="src" href="${esc(CLERK_DS.source)}" rel="noopener">source</a></li>
+<li>Same scenario elsewhere (list price): Auth0 B2B Essentials ${usd(saAlt.total)}/mo (inbound SCIM included), WorkOS ${usd(saWos.total)}/mo. <a href="/calculator/?mau=${SA.mau}&amp;sso=${SA.sso}&amp;scim=${SA.scim}">Re-price it in the calculator</a>.</li></ul>
+<p class="note">The change, quote and figures are real (from our <a href="/changes">price log</a> and plans.json, computed by the calculator engine); the email layout is an example.</p></section>`;
+page({file:'pro.html',og:'pro',title:`${NAME} Pro — the SSO and SCIM price change for your scenario, by email ($9/mo)`,desc:`Clerk starts billing Directory Sync on ${CLERK_DS.date}: a Clerk Pro app with ${SA.sso} SSO+SCIM customers goes ${usd(saBefore)} → ${usd(saAfter)}/mo. Pro emails that delta for your MAU + SSO + SCIM. $90/yr. CSV stays free.`,ld:[ORG_LD,proLd,proFaqLd],body:`
+<section class="hero"><div class="eyebrow">${NAME} Pro · $9/mo or $90/yr</div><h1>Hear about the next SSO tax before it’s on your invoice.</h1>
+<p class="lede">One logged change, one real scenario: Clerk starts billing Directory Sync on ${CLERK_DS.date}. A Clerk Pro app at ${SA.mau.toLocaleString('en-US')} users with ${SA.sso} enterprise customers on SSO + SCIM goes from <b>${usd(saBefore)}</b> to <b>${usd(saAfter)}/mo</b>: +${usd(saD*12)}/yr. Pro is $90/yr and emails you that delta for <i>your</i> users, SSO and SCIM.</p>
+<div class="cta-row"><a class="btn" href="${CHECKOUT_PRO_ANNUAL}" rel="noopener" data-grow="pro_main_cta">Get Pro — $90/yr or $9/mo</a></div>
+<p class="micro">Checkout on Kit · cancel anytime · ledger, calculator and CSV stay free</p></section>
+${saAlert}
+<h2 id="cliffs">Surprise bills hide at cost cliffs</h2>
+<p>Priced by our <a href="/calculator/">calculator</a> engine from the <a href="/api/plans.json">ledger</a> (list prices read ${lastChecked}). The biggest: ${esc(BIG.label)} goes from ${usd(BIG.A.total)} to ${usd(BIG.B.total)}/mo for one more user.</p>
+${cliffTable}
+<p class="note">Monthly USD list price. Auth0 bills between published MAU tiers at the next tier up. SSO rows ${ORG_SHORT}; ${FED_PER_CONN} SSO users per connection where a vendor bills per SSO user. ${meth}.</p>
+<h2 id="log">Every vendor price change we have logged</h2>
+<p>${VENDOR_CHANGES.length} vendor changes so far (the log is ${changes.length} entries including our own corrections). Small, but each one is dated and sourced:</p>
+${chgTable}
+<h2>What Pro includes today vs roadmap</h2><div class="grid3"><div class="panel"><h3 class="h3">Free, for everyone</h3><ul class="ticks"><li>Ledger, calculator, comparisons, guides</li><li>Dated <a href="/changes">price log</a> + <a href="/rss.xml">RSS</a></li><li>Ledger + price-log CSV/JSON, CC BY 4.0, on <a href="/data">/data</a></li><li>Weekly ledger email</li></ul></div>
+<div class="panel"><h3 class="h3">Pro today ($90/yr)</h3><ul class="ticks"><li>We keep your scenario on file (vendor, plan, MAU, SSO, SCIM, orgs)</li><li>When a check confirms a change that moves it, we email you the before/after $/mo with the vendor’s source line — sent by hand</li><li>Each alert also lists the same scenario at other vendors</li><li>Cancel anytime</li></ul></div>
+<div class="panel"><h3 class="h3">Roadmap (not shipped, not promised)</h3><ul class="ticks"><li>Scheduled automatic check of every source page</li><li>Self-serve scenario watch list on the site</li><li>Heads-up before your own MAU crosses a tier cliff</li></ul></div></div>
+<p class="note">How often we check: ${esc(CHECK_TXT)}</p>
+<h2>Questions</h2>${proFaq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}
+<p class="note">Not ready to pay? <a href="/#ledger-mail">Get the free weekly ledger</a> or <a href="/calculator/">price your scenario</a>.</p>`});
 page({file:'checkout.html',og:'pro',title:`Review your order — ${NAME} Pro`,desc:'Summary before secure checkout.',body:`
 <section class="hero narrow"><div class="eyebrow">Review</div><h1>Review AuthCost Pro</h1><p class="lede">Payment is handled by Kit on the next page. Pick $9/mo or $90/yr there.</p></section>
-<div class="panel"><dl class="sum"><dt>Plan</dt><dd>Pro · $90/yr or $9/mo</dd><dt>What you get</dt><dd>Watched-vendor alerts + CSV export + Free</dd><dt>Cancel</dt><dd>Anytime</dd></dl>
+<div class="panel"><dl class="sum"><dt>Plan</dt><dd>Pro · $90/yr or $9/mo</dd><dt>What you get</dt><dd>Your MAU + SSO + SCIM scenario on file; an email with the before/after $/mo when a confirmed vendor price change moves it (sent by hand after our check). Ledger, calculator and CSV/JSON stay free for everyone.</dd><dt>Cancel</dt><dd>Anytime</dd></dl>
 <a class="btn wide" href="${CHECKOUT_PRO_ANNUAL}" rel="noopener">Continue to secure checkout</a>
 <p class="micro">You choose monthly or annual on Kit’s checkout page.</p></div>`});
 page({file:'sponsor.html',og:'sponsor',title:`Sponsor ${NAME}`,desc:'Reach founders choosing an auth stack. Founding rates.',body:`
@@ -837,7 +882,7 @@ page({file:'methodology.html',title:`Methodology | ${NAME}`,desc:'How AuthCost r
 <li><b>Ties and precision.</b> Plans at the same price are shown as ties (for example “tie at $0”), never as wins or ordinal ranks. Rates show the precision the vendor publishes (for example Supabase ${usd(plans.find(p=>p.id==='supabase-pro').overage_per_user)} per MAU).</li>
 <li>Auth0 sells paid plans in published MAU tiers (B2C to 50k, B2B to 20k, from <a href="https://auth0.com/pricing.md">auth0.com/pricing.md</a>); usage between tiers is priced at the next tier up, as Auth0 bills it. Above the top tier only Enterprise (contact sales) remains, so we omit Auth0 there rather than invent a number. Correction 2026-10-31: before that date we wrongly treated tiers above 500 MAU as custom.</li>
 <li>Stytch MAU overage rate was not printed as a fixed USD figure on the checked page — left blank.</li>
-<li>A weekly script diffs every source page; confirmed changes enter the price log.</li>
+<li id="checks">${esc(CHECK_TXT)} Last read per vendor: ${vendors.map(v=>`${esc(v.name)} ${v.checked}`).join(' · ')}. Confirmed changes enter the <a href="/changes">price log</a>.</li>
 </ol>`});
 page({file:'data.html',title:`${NAME} data — JSON & CSV`,desc:'Free JSON and CSV of auth plan prices with sources. CC BY 4.0.',ld:[ORG_LD,{'@context':'https://schema.org','@type':'Dataset',name:`${NAME} auth price ledger`,url:SITE+'/data',license:'https://creativecommons.org/licenses/by/4.0/',dateModified:lastChecked,distribution:[{'@type':'DataDownload',encodingFormat:'application/json',contentUrl:SITE+'/api/plans.json'},{'@type':'DataDownload',encodingFormat:'text/csv',contentUrl:SITE+'/api/plans.csv'}]}],body:`
 <section class="hero"><div class="eyebrow">Data · CC BY 4.0</div><h1>Machine-readable ledger.</h1></section>
@@ -973,4 +1018,27 @@ W('_redirects','/calculator.html /calculator/ 301\n');
  let scimSeen=0;for(const p of files){const s=fs.readFileSync(p,'utf8').replace(/&amp;/g,'&');for(const m of s.matchAll(/\$[\d,.]+\/mo incl\. \$[\d,.]+\/mo SCIM/g)){scimSeen++;const end=m.index+m[0].length;if(![...scimExpect].some(w=>s.slice(end-w.length,end)===w))bad.push(`RT-93 ${path.relative(D,p)}: SCIM figure not matching the ledger: "${s.slice(Math.max(0,m.index-70),end)}"`)}}
  if(bad.length){console.error('Build guards failed ('+bad.length+'):\n'+bad.slice(0,40).join('\n'));process.exit(1)}
  console.log(`guards ok: RT-93 SCIM figures in ${SCIM_AUDIT.length} answers (${scimSeen} printed), RT-56 org fees in ${ORG_AUDIT.length} SSO answers, RT-57 SSO-assumption disclosure, RT-59 hero, RT-60 ties/precision/MAU-MRU`);}
+// Pro proof guard (RT-20261031-04 / -08 / -61, same idea as VPSLedger 4c9a66c). Never disable: fix the cause.
+// AC_NEGTEST_PRO=1 injects a Pro-only 'CSV export' claim + a wrong cliff figure + a 'checked weekly' claim; the build must exit 1.
+{const bad=[];const NEG=process.env.AC_NEGTEST_PRO==='1';const rdD=f=>fs.readFileSync(path.join(D,f),'utf8');
+ const files=[];const walk=d=>{for(const f of fs.readdirSync(d)){const q=path.join(d,f);if(fs.statSync(q).isDirectory())walk(q);else if(/\.(html|txt|xml|json)$/.test(f)&&!/^api\//.test(path.relative(D,q)))files.push(q)}};walk(D);
+ for(const q of files){const rel=path.relative(D,q);let t=fs.readFileSync(q,'utf8');if(NEG&&rel==='pro.html')t+='<li><b>CSV export</b> of scenarios</li> Checked weekly';
+  if(/CSV export/i.test(t))bad.push(`${rel}: 'CSV export' sold as a feature (CSV is free under CC BY 4.0)`);
+  if(/Checked weekly|weekly script diffs|same-day alert|real-time alert/i.test(t))bad.push(`${rel}: unprovable check-cadence claim`)}
+ let h=rdD('pro.html');if(NEG)h=h.replace(/data-cliff="a0-b2be-mau:[^"]+"/,'data-cliff="a0-b2be-mau:1:2"');
+ for(const c of CLIFFS){const A=c.id?estimate(pid(c.id),c.a[0],c.a[1],{scim:c.a[2]||0}):estimate(pid(c.a[0]),c.a[1],c.a[2]),B=c.id?estimate(pid(c.id),c.b[0],c.b[1],{scim:c.b[2]||0}):estimate(pid(c.b[0]),c.b[1],c.b[2]);
+  if(!A||!B||A.total==null||B.total==null){bad.push(`cliff ${c.k}: estimate() cannot price it`);continue}
+  if(!h.includes(`data-cliff="${c.k}:${A.total}:${B.total}"`))bad.push(`cliff ${c.k}: /pro figure differs from estimate() (${A.total} -> ${B.total})`);if(!(B.total>A.total))bad.push(`cliff ${c.k}: not a cliff`)}
+ if(!CLERK_DS||!CLERK_DS.source)bad.push('sample alert: Clerk Directory Sync fee-start entry missing from changes.json');
+ const e=estimate(pid(SA.id),SA.mau,SA.sso,{scim:SA.scim});if(!e||!(e.scim>0))bad.push('sample alert: SCIM fee no longer computed');
+ else for(const want of [`${usd(e.total-e.scim)}/mo`,`${usd(e.total)}/mo`,`+${usd(e.scim)}/mo`,`+${usd(e.scim*12)}/yr`])if(!h.includes(want))bad.push(`sample alert: /pro lacks ${want}`);
+ if(!/Counted separately from SSO connections\. Billing for Directory Sync connections starts January 1, 2027\./.test(fs.readFileSync(R('snapshots/scim/clerk-2026-10-31.txt'),'utf8')))bad.push('sample alert: quoted Clerk sentence not in snapshots/scim/clerk-2026-10-31.txt');
+ if(!h.includes('Is the CSV a Pro feature?'))bad.push('/pro: CSV FAQ missing');
+ // OG images: AuthCost brand, no Pro-only CSV, pro.txt figures == estimate() (rendered by scripts/visuals.mjs)
+ {const vis=fs.readFileSync(R('scripts/visuals.mjs'),'utf8');if(/CSV export|VPSLedger|promo-expiry/i.test(vis))bad.push('visuals.mjs: CSV export / VPSLedger text in OG images');
+  const ot=fs.readFileSync(R('assets/og/pro.txt'),'utf8');if(e&&!ot.includes(`+${usd(e.scim)}/mo`))bad.push('og/pro.txt: Clerk Directory Sync delta differs from estimate(); re-run node scripts/visuals.mjs');if(!ot.includes(`+${usd(BIG.d)}/mo`))bad.push('og/pro.txt: Auth0 cliff differs from estimate(); re-run node scripts/visuals.mjs')}
+ if(!/Roadmap \(not shipped, not promised\)/.test(h)||!/Pro today/.test(h))bad.push('/pro: today vs roadmap split missing');
+ for(const v of vendors)if(!rdD('methodology.html').includes(`${esc(v.name)} ${v.checked}`))bad.push(`methodology: no last-read date for ${v.name}`);
+ if(bad.length){console.error(`Pro proof guard: ${bad.length} problem(s):\n`+bad.join('\n'));process.exit(1)}
+ console.log(`Pro proof guard: ${CLIFFS.length} cliffs + sample alert match estimate(); no Pro-only CSV or unprovable cadence claim in ${files.length} files`)}
 console.log(`built ${urls.length} pages (${sm.length} in sitemap) → dist/ (${plans.length} plans, ${nVer} verified, ${vendors.length} vendors)`);

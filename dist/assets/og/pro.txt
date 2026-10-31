@@ -1,0 +1,1 @@
+Clerk Directory Sync billing starts 2027-01-01: +$150/mo for 3 SSO+SCIM customers. Auth0 B2B Essentials 10,000 -> 10,001 MAU: +$1,700/mo.
