@@ -185,3 +185,23 @@ if(rank){
   $('#c-copy-embed')?.addEventListener('click',()=>{copyText(cEmbed?.value||'','Embed snippet copied'); window.grow?.track('cta_click',{cta:'calculator_embed'});});
   renderCalc();
 }
+
+// Self-hosted auth cost widget (/guides/self-hosted-auth-cost)
+const shOut=$('#sh-out');
+if(shOut){
+  const ids=['sh-mau','sh-em','sh-emr','sh-sms','sh-smr','sh-inf','sh-h','sh-r'];
+  let shPlans=null;
+  const renderSH=async()=>{
+    if(!shPlans) shPlans=await loadPlans();
+    const [mau,em,emr,sms,smr,inf,h,r]=ids.map(i=>Math.max(0,+$('#'+i).value||0));
+    const cash=mau*em/1000*emr+sms*smr+inf, labor=h*r, total=cash+labor;
+    const ranked=shPlans.map(p=>{const e=estimate(p,mau,0);return e&&e.total!=null?{p,e}:null}).filter(Boolean).sort((a,b)=>a.e.total-b.e.total);
+    const pick=vid=>ranked.find(x=>x.p.vendor_id===vid);
+    const rows=[['Cheapest hosted',ranked[0]],['Clerk',pick('clerk')],['Auth0',pick('auth0')],['Firebase / Identity Platform',pick('firebase')],['Descope',pick('descope')]];
+    const verdict=x=>{if(!x)return 'no published self-serve price at this volume';const d=x.e.total-total;const be=r>0?Math.max(0,(x.e.total-cash)/r):null;
+      return `${usd(x.e.total)}/mo (${x.p.vendor} ${x.p.plan}): self-host is ${d>=0?'<b>'+usd(Math.round(d))+'/mo cheaper</b>':'<b>'+usd(Math.round(-d))+'/mo dearer</b>'}${be!=null?` · break-even at ${be.toFixed(1)} upkeep h/mo`:''}`};
+    shOut.innerHTML=`<p><b>Self-host:</b> ${usd(Math.round(cash*100)/100)}/mo cash + ${usd(Math.round(labor))}/mo engineer time = <b>${usd(Math.round(total))}/mo</b> (${yr(total)}/yr)</p><ul style="margin:8px 0 0;padding-left:18px">${rows.map(([l,x])=>`<li>${l}: ${verdict(x)}</li>`).join('')}</ul><p class="note">${ranked.length} hosted plans priced at ${mau.toLocaleString('en-US')} users, no SSO/MFA · <a href="/calculator/?mau=${mau}&sso=0">open calculator</a></p>`;
+  };
+  ids.forEach(i=>$('#'+i)?.addEventListener('input',renderSH));
+  renderSH();
+}

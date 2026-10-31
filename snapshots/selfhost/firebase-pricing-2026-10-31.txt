@@ -1,0 +1,288 @@
+Firebase
+Pricing
+Send feedback
+Stay organized with collections
+Save and categorize content based on your preferences.
+Products
+No-cost
+(Spark plan)
+check
+Generous no-cost usage limits
+No payment method needed
+Get started
+Pay as you go
+(Blaze plan)
+Access more services and higher usage levels
+If eligible, get $300 in free credit
+No-cost usage from Spark plan included*
+Calculate pricing for apps at scale
+A/B Testing
+Analytics
+App Check
+No-cost, subject to quotas and limits that vary based on attestation provider.
+App Distribution
+App Hosting
+Outgoing bandwidth
+Uncached
+Cached
+Not applicable
+Starting August 1, 2025
+No-cost up to 10 GiB/month, then
+$0.20/GiB
+$0.15/GiB
+Storage
+No-cost up to 5 GB
+Then $0.10/GB
+Google Cloud Products
+Cloud Run
+Cloud Run pricing
+Cloud Build
+Cloud Build pricing
+Artifact Registry
+Artifact Registry pricing
+Cloud Logging
+Cloud Logging pricing
+Cloud Secrets Manager
+Cloud Secrets Manager pricing
+Use the
+Google Cloud calculator
+to estimate project costs.
+Authentication
+Phone Auth - All regions
+Billed per SMS sent
+See
+current rates
+Other Authentication services
+With Identity Platform
+Monthly active users
+50K MAUs
+No-cost up to 50K MAUs
+Then
+Google Cloud pricing
+Monthly active users - SAML/OIDC
+50 MAUs
+No-cost up to 50 MAUs
+Cloud Firestore
+Standard edition
+Stored data
+1 GiB total
+No-cost up to 1 GiB total
+Network egress
+10 GiB/month
+No-cost up to 10 GiB/month
+Document writes
+20K writes/day
+No-cost up to 20K writes/day
+Document reads
+50K reads/day
+No-cost up to 50K reads/day
+Document deletes
+20K deletes/day
+No-cost up to 20K deletes/day
+Google Cloud standard edition pricing
+Enterprise edition
+Google Cloud enterprise edition pricing
+Write units
+40K write units/day
+No-cost up to 40K write units/day
+Read units
+50K read units/day
+No-cost up to 50K read units/day
+Real-time update units
+50K realtime update units/day
+No-cost up to 50K update units/day
+Cloud Functions
+Invocations
+No-cost up to 2M/month
+Then $0.40/million
+GB-seconds
+No-cost up to 400K/month
+CPU-seconds
+No-cost up to 200K/month
+Outbound networking
+No-cost up to 5 GB/month
+Then $0.12/GB
+Cloud Build minutes
+No-cost up to 120 min/day
+Then $0.003/min
+Container storage in
+No-cost up to 500MB of storage
+*Pricing varies based on
+location
+Cloud Messaging (FCM)
+Cloud Storage
+help
+No-cost limits are enforced daily and refreshed at midnight. On the Blaze plan, fees are based on usage volume:
+• For the default *.appspot.com bucket, fees are processed as Google App Engine usage fees .
+• For the default *.firebasestorage.app bucket and any additional buckets, fees are processed as Google Cloud Storage usage fees .
+*.appspot.com
+legacy buckets
+GB stored
+Then $0.026/GB
+GB downloaded
+No-cost up to 1 GB/day
+Upload operations
+No-cost up to 20K/day
+Then $0.05/10K
+Download operations
+No-cost up to 50K/day
+Then $0.004/10K
+*.firebasestorage.app
+and any additional buckets
+Note: No-cost quotas are only available for buckets in the following regions: us-central1 , us-west1 , us-east1 .
+No-cost up to 5 GB-months
+Cloud Storage pricing
+No-cost up to 100 GB/month
+No-cost up to 5K/month
+No-cost up to 50K/month
+Multiple buckets per project
+Crashlytics
+SQL Connect
+330 MiB/day
+during 3-month trial
+Google Cloud Internet Data Transfer Rate Premium Tier pricing
+Operation count
+8,300K/day
+No-cost up to 250K operations per month
+Then $0.90 per million operations
+Cloud SQL for PostgreSQL
+3 month
+no-cost trial.
+Limit 1 per project.
+If you have not upgraded your project to a paid plan (Blaze) by the end of your trial, your instance will be archived. After an additional 90 days, it will be deleted.
+no-cost trial
+for the first default Cloud SQL instance created using Firebase SQL Connect.
+starting as low as $9.37 / month
+- pricing varies based on regions and configurations, see
+Google Cloud pricing.
+Hosting
+10 GB
+No-cost up to 10 GB
+Data transfer
+360 MB/day
+No-cost up to 360 MB/day
+Then $0.15/GB
+Custom domain & SSL
+Multiple sites per project
+In-App Messaging
+Performance Monitoring
+Phone Number Verification
+Phone number verification
+Firebase PNV pricing
+for current pay-as-you-go pricing, and custom enterprise discounts.
+Realtime Database
+Simultaneous connections
+You can create multiple database instances to go beyond the 200K concurrent limit. See
+Pricing FAQ
+for more information.
+100
+200K per database
+1 GB
+No-cost up to 1 GB
+Then $5/GB
+10 GB/month
+(equivalent to ~10 GB/month)*
+Then $1/GB
+Multiple databases per project
+close
+Remote Config
+Fetch Requests
+Up to 100,000 per day per project
+This pricing takes effect starting September 1, 2026.
+No-cost up to 100,000 per day per project.
+Then, $0.000006 per request
+($0.06 / 10K requests)
+for usage between
+100,001 and 10,000,000
+per day per project
+$0.000001 per request
+($0.01 / 10K requests)
+for usage above 10,000,000
+All Features
+Includes A/B Testing, Rollouts and Personalization.
+Quotas and Limits
+Remote Config Quotas and Limits
+Test Lab
+On the Blaze plan, you are charged for testing time only, rounded up to the nearest minute. See
+Quotas and Pricing for Test Lab
+Virtual Device Tests
+10 tests/day
+No-cost up to 60 min/day
+Then $1/device/hour
+Physical Device Tests
+5 tests/day
+No-cost up to 30 min/day
+Then $5/device/hour
+Android Device Streaming
+30 no-cost minutes per project, per month
+15 cents for each additional minute
+Firebase AI Logic
+Billed according to current
+Google Cloud or Gemini Developer API pricing
+Google Cloud
+BigQuery
+On the Spark plan, the BigQuery sandbox gives you no-cost access to the sandbox's
+limits
+For more information, see
+Export project data to BigQuery
+Other IaaS
+Firebase is deeply integrated with Google Cloud, allowing you to use Google's Infrastructure-as-a-Service directly within your Firebase project. See
+Gemini in Firebase
+AI assistance in the Firebase console
+See the
+Firebase docs
+AI assistance in Crashlytics
+AI assistance in Messaging
+AI assistance in Firebase SQL Connect
+Firebase Studio
+No-cost for three workspaces
+Google Developer Program members can create:
+Standard (no-cost ): 10 workspaces
+Premium : 30 workspaces and an increased Gemini quota
+for the App Prototyping agent
+Note: Some integrations (like Firebase App Hosting) require a billing account. Learn more.
+Choose a plan
+No-cost Products
+gmp_experiments
+gmp_analytics
+gmp_app_check
+gmp_app_distro
+gmp_cloud_messaging
+gmp_crashlytics
+gmp_inapp_messaging
+gmp_performance
+A/B Testing, Analytics, App Check, App Distribution, Cloud Messaging (FCM), Crashlytics, In-App Messaging, and Performance Monitoring.
+keyboard_arrow_down
+keyboard_arrow_up
+Project-Id-Version: PROJECT VERSION
+Report-Msgid-Bugs-To: EMAIL@ADDRESS
+POT-Creation-Date: 2026-10-14 16:16+0000
+PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE
+Last-Translator: FULL NAME
+Language: en
+Language-Team: en
+Plural-Forms: nplurals=2; plural=(n != 1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Generated-By: Babel 2.8.0
+No-cost usage on Blaze plan is calculated daily. Details differ slightly for Cloud Functions, Phone Auth, and Test Lab.
+For more info,
+see the FAQs
+or view our
+documentation
+on understanding billing.
+No-cost usage quotas apply at the project-level, not at the app-level or for individual resources.
+Have pricing-related questions?
+Visit our support page for FAQ.
+Go to FAQ
+Try Firebase today
+Integrating it into your app is easy.
+All Firebase products
+Build
+Extensions
+Firestore
+Generative AI
+Run
+Cloud Messaging
+Google Analytics

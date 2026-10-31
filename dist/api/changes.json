@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T07:05:58.318Z",
+  "generated": "2026-10-31T09:14:01.487Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "changes": [
@@ -11,6 +11,15 @@
       "kind": "fee-start",
       "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
       "source": "https://clerk.com/pricing"
+    },
+    {
+      "date": "2026-10-31",
+      "observed": "2026-10-31",
+      "vendor": "AuthCost",
+      "vendor_id": "authcost",
+      "kind": "coverage-added",
+      "summary": "Added Firebase Auth / Identity Platform (no cost to 50k MAU, then $0.0055→$0.0025/MAU bands; SAML/OIDC $0.015/MAU after 50) and Descope (Free 7.5k MAU; Pro from $249/mo with 10k MAU + $0.05/MAU; Growth from $799/mo with 25k MAU), read from their official pricing pages. New guide: what self-hosting Better Auth / Auth.js costs instead.",
+      "source": "https://cloud.google.com/identity-platform/pricing"
     },
     {
       "date": "2026-10-31",

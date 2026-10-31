@@ -70,5 +70,23 @@
     "billing_unit": "MAU",
     "billing_unit_note": "Auth MAU is part of the Supabase org plan (not a standalone auth SKU). Plan fee also covers database compute credits.",
     "summary": "Free: 50k MAU. Pro from $25/mo: 100k MAU then $0.00325/MAU. SAML SSO: 50 included then $0.015/MAU. Auth-only cost is entangled with the platform plan."
+  },
+  {
+    "id": "firebase",
+    "name": "Firebase Auth / Identity Platform",
+    "source": "https://cloud.google.com/identity-platform/pricing",
+    "checked": "2026-10-31",
+    "billing_unit": "MAU",
+    "billing_unit_note": "Firebase Authentication with Identity Platform bills Google Cloud Identity Platform rates: Tier 1 (email, phone, anonymous, social) per MAU in volume bands; Tier 2 (SAML/OIDC) per federated MAU; phone/MFA per SMS sent. firebase.google.com/pricing lists no cost up to 50K MAUs and 50 SAML/OIDC MAUs, then Google Cloud pricing.",
+    "summary": "No cost up to 50k MAU (email, phone, anonymous, social), then $0.0055/MAU to 100k, $0.0046 to 1M, $0.0032 to 10M, $0.0025 above. SAML/OIDC: 50 MAU free then $0.015/MAU. SMS (phone sign-in and MFA) billed per message by region (US $0.01); first 10 SMS a day not billed. Sources: cloud.google.com/identity-platform/pricing and firebase.google.com/pricing."
+  },
+  {
+    "id": "descope",
+    "name": "Descope",
+    "source": "https://www.descope.com/pricing",
+    "checked": "2026-10-31",
+    "billing_unit": "MAU + tenant",
+    "billing_unit_note": "Plans include MAUs, monthly active tenants and SSO connections; Pro and Growth bill overages. Free has hard limits (no overages; upgrade required).",
+    "summary": "Free Forever $0: 7,500 MAU, 10 tenants, 3 SSO connections, no overages. Pro starts at $249/mo billed annually: 10,000 MAU then $0.05/MAU, 35 tenants then $1, 5 SSO then $50/connection. Growth starts at $799/mo: 25,000 MAU then $0.05/MAU, 100 tenants, 10 SSO then $50, SCIM. Enterprise: contact sales."
   }
 ]

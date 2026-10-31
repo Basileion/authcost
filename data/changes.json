@@ -2,6 +2,15 @@
   {
     "date": "2026-10-31",
     "observed": "2026-10-31",
+    "vendor": "AuthCost",
+    "vendor_id": "authcost",
+    "kind": "coverage-added",
+    "summary": "Added Firebase Auth / Identity Platform (no cost to 50k MAU, then $0.0055→$0.0025/MAU bands; SAML/OIDC $0.015/MAU after 50) and Descope (Free 7.5k MAU; Pro from $249/mo with 10k MAU + $0.05/MAU; Growth from $799/mo with 25k MAU), read from their official pricing pages. New guide: what self-hosting Better Auth / Auth.js costs instead.",
+    "source": "https://cloud.google.com/identity-platform/pricing"
+  },
+  {
+    "date": "2026-10-31",
+    "observed": "2026-10-31",
     "vendor": "Clerk",
     "vendor_id": "clerk",
     "kind": "new-tier",

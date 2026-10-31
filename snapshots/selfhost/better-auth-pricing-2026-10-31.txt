@@ -1,0 +1,84 @@
+Pricing — Better Auth | Better Auth
+Toggle theme
+readme
+docs
+products
+enterprise
+resources
+sign-in
+© 2026 Better Auth Inc. Toggle theme
+Infrastructure
+Connect to our infrastructure and power your self-hosted Better Auth with a dashboard, audit logs, security, and more.
+Starter Free
+Pro $20/month
+Enterprise Custom
+The Better Auth framework is free and open source . Pricing below is for our managed infrastructure.
+Docs
+Starter
+For evaluation and side projects.
+$0 / month
+1 dashboard seat
+10,000 audit logs / month
+1 day retention
+1,000 security detections / month
+Community support
+Get Started
+Pro
+For production teams running auth in the critical path.
+$20 / month
+Unlimited seats
+20,000 audit logs / month
+then $0.0001 per event
+10,000 security detections / month
+then $0.001 per event
+Self-service SSO
+1 connection, then $50/month per connection
+Directory Sync
+Transactional email & SMS
+$0.001 per email, $0.09 per SMS
+Email templates & abuse protection
+Email support
+Select Plan
+Enterprise
+For organizations with bespoke security or volume needs.
+Custom
+Audit Log
+Security Detection
+Audit log retention
+Abuse protection
+Log drain
+Custom dashboard domain
+Slack support
+Implementation assistance
+Contact Us
+Feature Starter Pro Enterprise
+Usage
+Dashboard seats 1 Unlimited Unlimited
+Audit log 10,000 / month 20,000 / month then $0.0001 / event Custom
+Audit log retention 1 day 7 days Custom
+Security detection 1,000 / month 10,000 / month then $0.001 / event Custom
+Transactional Email $0.001 / email Custom
+Transactional SMS $0.09 / SMS Custom
+Self-service SSO 1 connection then $50/month per connection Custom
+Directory Sync 1 connection then $50/month per connection Custom
+Features
+User management
+Audit log
+Security detection
+Transactional Email & SMS
+Email templates
+Custom domain for Dashboard $25 / month add-on
+Log drain $25 / month add-on
+Support
+Community
+Email
+Slack
+Feature Pro
+Dashboard seats Unlimited
+Audit log 20,000 / month then $0.0001 / event
+Audit log retention 7 days
+Security detection 10,000 / month then $0.001 / event
+Transactional Email $0.001 / email
+Transactional SMS $0.09 / SMS
+Self-service SSO 1 connection then $50/month per connection
+Directory Sync 1 connection then $50/month per connection

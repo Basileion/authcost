@@ -20,3 +20,7 @@ kinde-plus,Kinde,Plus,75,10500,MAU,0.0163,,0,verified,https://kinde.com/pricing/
 kinde-scale,Kinde,Scale,250,10500,MAU,0.0151,,0,verified,https://kinde.com/pricing/,2026-10-30,
 supabase-free,Supabase Auth,Free (platform),0,50000,MAU,,0,,verified,https://supabase.com/pricing,2026-10-30,
 supabase-pro,Supabase Auth,Pro (platform),25,100000,MAU,0.00325,,,verified,https://supabase.com/pricing,2026-10-30,
+firebase-identity-platform,Firebase Auth / Identity Platform,Pay as you go,0,50000,MAU,0.0055,,,verified,https://cloud.google.com/identity-platform/pricing,2026-10-31,
+descope-free,Descope,Free Forever,0,7500,MAU,,3,,verified,https://www.descope.com/pricing,2026-10-31,
+descope-pro,Descope,Pro,249,10000,MAU,0.05,5,50,verified,https://www.descope.com/pricing,2026-10-31,
+descope-growth,Descope,Growth,799,25000,MAU,0.05,10,50,verified,https://www.descope.com/pricing,2026-10-31,

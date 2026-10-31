@@ -5,7 +5,7 @@ Interactive MAU / MFA / SSO cost ranking: https://authcost.pages.dev/calculator/
 Share via query params: mau, sso, mfa (0|1), fed (federated MAU), vo (verified-only 0|1), embed=1 for chrome-free iframe.
 Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso=5" title="AuthCost calculator" width="100%" height="720" loading="lazy"></iframe>
 
-21 plans, 21 verified, 8 vendors. Checked through 2026-10-31.
+25 plans, 25 verified, 10 vendors. Checked through 2026-10-31.
 
 ## Vendors
 ### Clerk
@@ -63,6 +63,20 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - checked: 2026-10-31
 - unit: MAU
 - summary: Free: 50k MAU. Pro from $25/mo: 100k MAU then $0.00325/MAU. SAML SSO: 50 included then $0.015/MAU. Auth-only cost is entangled with the platform plan.
+
+### Firebase Auth / Identity Platform
+- id: firebase
+- source: https://cloud.google.com/identity-platform/pricing
+- checked: 2026-10-31
+- unit: MAU
+- summary: No cost up to 50k MAU (email, phone, anonymous, social), then $0.0055/MAU to 100k, $0.0046 to 1M, $0.0032 to 10M, $0.0025 above. SAML/OIDC: 50 MAU free then $0.015/MAU. SMS (phone sign-in and MFA) billed per message by region (US $0.01); first 10 SMS a day not billed. Sources: cloud.google.com/identity-platform/pricing and firebase.google.com/pricing.
+
+### Descope
+- id: descope
+- source: https://www.descope.com/pricing
+- checked: 2026-10-31
+- unit: MAU + tenant
+- summary: Free Forever $0: 7,500 MAU, 10 tenants, 3 SSO connections, no overages. Pro starts at $249/mo billed annually: 10,000 MAU then $0.05/MAU, 35 tenants then $1, 5 SSO then $50/connection. Growth starts at $799/mo: 25,000 MAU then $0.05/MAU, 100 tenants, 10 SSO then $50, SCIM. Enterprise: contact sales.
 
 ## Plans
 ### Clerk Hobby
@@ -321,6 +335,54 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - source: https://supabase.com/pricing (2026-10-30)
 - notes: Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits — not auth-only.
 
+### Firebase Auth / Identity Platform Pay as you go
+- id: firebase-identity-platform
+- base_mo: 0
+- included_users: 50000
+- unit: MAU
+- overage: 0.0055
+- sso_included: null
+- sso_extra_mo: null
+- status: verified
+- source: https://cloud.google.com/identity-platform/pricing (2026-10-31)
+- notes: Tier 1 (email, phone, anonymous, social): 0–50k MAU free, then $0.0055 (50k–100k), $0.0046 (100k–1M), $0.0032 (1M–10M), $0.0025 (10M+). Tier 2 SAML/OIDC: 50 MAU free then $0.015/MAU. Phone auth and SMS MFA billed per SMS sent by region (US $0.01, first 10/day not billed). Firebase pricing page: no cost up to 50K MAUs with Identity Platform, then Google Cloud pricing.
+
+### Descope Free Forever
+- id: descope-free
+- base_mo: 0
+- included_users: 7500
+- unit: MAU
+- overage: null
+- sso_included: 3
+- sso_extra_mo: null
+- status: verified
+- source: https://www.descope.com/pricing (2026-10-31)
+- notes: 7,500 MAU, 10 monthly active tenants, 3 SSO connections, 1 federated app (OIDC). No overages: upgrade required to exceed limits. MFA/step-up included.
+
+### Descope Pro
+- id: descope-pro
+- base_mo: 249
+- included_users: 10000
+- unit: MAU
+- overage: 0.05
+- sso_included: 5
+- sso_extra_mo: 50
+- status: verified
+- source: https://www.descope.com/pricing (2026-10-31)
+- notes: Starts at $249/mo, billed annually. 10,000 MAU then $0.05/MAU. 35 monthly active tenants then $1/tenant. 5 SSO connections then $50 each. SCIM is a Growth feature.
+
+### Descope Growth
+- id: descope-growth
+- base_mo: 799
+- included_users: 25000
+- unit: MAU
+- overage: 0.05
+- sso_included: 10
+- sso_extra_mo: 50
+- status: verified
+- source: https://www.descope.com/pricing (2026-10-31)
+- notes: Starts at $799/mo. 25,000 MAU then $0.05/MAU. 100 monthly active tenants. 10 SSO connections then $50 each. SCIM provisioning, bot protection, 1M anonymous users.
+
 ## Cost by MAU (cheapest verified plan per vendor, USD/month, no SSO)
 | Vendor | 10k | 50k | 100k | 1M |
 |---|---|---|---|---|
@@ -332,7 +394,12 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 | Logto | $0 (Free) | $0 (Free) | $24* (Pro) | $24* (Pro) |
 | Kinde | $0 (Free) | $716.25 (Pro) | $1533.85 (Plus) | $15191.45 (Scale) |
 | Supabase Auth | $0 (Free (platform)) | $0 (Free (platform)) | $25 (Pro (platform)) | $2,950 (Pro (platform)) |
+| Firebase Auth / Identity Platform | $0 (Pay as you go) | $0 (Pay as you go) | $275 (Pay as you go) | $4,415 (Pay as you go) |
+| Descope | $249 (Pro) | $2,049 (Growth) | $4,549 (Growth) | $49,549 (Growth) |
 * Logto Pro bills access tokens, not MAU (50k tokens included, then $0.08 per 100) — the figure is base fee only; token overage depends on your usage.
+
+## Self-hosting (Better Auth / Auth.js)
+Open-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Better Auth) have no per-user fee. Costs instead: transactional email (Amazon SES $0.10/1,000 outbound), SMS (Identity Platform US $0.01/SMS reference), database/hosting and engineer hours (user-supplied assumptions). Optional Better Auth managed infrastructure: Pro $20/mo, SSO 1 connection then $50/mo each, email $0.001, SMS $0.09 (better-auth.com/pricing, checked 2026-10-31). Break-even math vs Clerk/Auth0/Firebase at 10k/50k/100k: https://authcost.pages.dev/guides/self-hosted-auth-cost
 
 ## Search pages
 - Clerk pricing: https://authcost.pages.dev/vendors/clerk
@@ -351,9 +418,14 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - Kinde alternatives: https://authcost.pages.dev/alternatives/kinde
 - Supabase Auth pricing: https://authcost.pages.dev/vendors/supabase
 - Supabase Auth alternatives: https://authcost.pages.dev/alternatives/supabase
+- Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/vendors/firebase
+- Firebase Auth / Identity Platform alternatives: https://authcost.pages.dev/alternatives/firebase
+- Descope pricing: https://authcost.pages.dev/vendors/descope
+- Descope alternatives: https://authcost.pages.dev/alternatives/descope
 - Auth pricing by MAU: every vendor at 10k, 50k, 100k and 1M users: https://authcost.pages.dev/guides/auth-cost-by-mau
 - Cheapest auth at 100k users: https://authcost.pages.dev/guides/cheapest-auth-100k
 - Auth free tiers compared: https://authcost.pages.dev/guides/auth-free-tiers-compared
+- Self-hosted auth cost: Better Auth / Auth.js vs Clerk and Auth0: https://authcost.pages.dev/guides/self-hosted-auth-cost
 - Clerk vs Auth0 pricing: https://authcost.pages.dev/compare/clerk-vs-auth0
 - Clerk vs Amazon Cognito pricing: https://authcost.pages.dev/compare/clerk-vs-cognito
 - Clerk vs WorkOS pricing: https://authcost.pages.dev/compare/clerk-vs-workos
@@ -361,30 +433,48 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - Clerk vs Kinde pricing: https://authcost.pages.dev/compare/clerk-vs-kinde
 - Clerk vs Supabase Auth pricing: https://authcost.pages.dev/compare/clerk-vs-supabase
 - Clerk vs Logto pricing: https://authcost.pages.dev/compare/clerk-vs-logto
+- Clerk vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/clerk-vs-firebase
+- Clerk vs Descope pricing: https://authcost.pages.dev/compare/clerk-vs-descope
 - Auth0 vs Amazon Cognito pricing: https://authcost.pages.dev/compare/auth0-vs-cognito
 - Auth0 vs WorkOS pricing: https://authcost.pages.dev/compare/auth0-vs-workos
 - Auth0 vs Stytch pricing: https://authcost.pages.dev/compare/auth0-vs-stytch
 - Auth0 vs Kinde pricing: https://authcost.pages.dev/compare/auth0-vs-kinde
 - Auth0 vs Supabase Auth pricing: https://authcost.pages.dev/compare/auth0-vs-supabase
 - Auth0 vs Logto pricing: https://authcost.pages.dev/compare/auth0-vs-logto
+- Auth0 vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/auth0-vs-firebase
+- Auth0 vs Descope pricing: https://authcost.pages.dev/compare/auth0-vs-descope
 - Amazon Cognito vs WorkOS pricing: https://authcost.pages.dev/compare/cognito-vs-workos
 - Amazon Cognito vs Stytch pricing: https://authcost.pages.dev/compare/cognito-vs-stytch
 - Amazon Cognito vs Kinde pricing: https://authcost.pages.dev/compare/cognito-vs-kinde
 - Amazon Cognito vs Supabase Auth pricing: https://authcost.pages.dev/compare/cognito-vs-supabase
 - Amazon Cognito vs Logto pricing: https://authcost.pages.dev/compare/cognito-vs-logto
+- Amazon Cognito vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/cognito-vs-firebase
+- Amazon Cognito vs Descope pricing: https://authcost.pages.dev/compare/cognito-vs-descope
 - WorkOS vs Stytch pricing: https://authcost.pages.dev/compare/workos-vs-stytch
 - WorkOS vs Kinde pricing: https://authcost.pages.dev/compare/workos-vs-kinde
 - WorkOS vs Supabase Auth pricing: https://authcost.pages.dev/compare/workos-vs-supabase
 - WorkOS vs Logto pricing: https://authcost.pages.dev/compare/workos-vs-logto
+- WorkOS vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/workos-vs-firebase
+- WorkOS vs Descope pricing: https://authcost.pages.dev/compare/workos-vs-descope
 - Stytch vs Kinde pricing: https://authcost.pages.dev/compare/stytch-vs-kinde
 - Stytch vs Supabase Auth pricing: https://authcost.pages.dev/compare/stytch-vs-supabase
 - Stytch vs Logto pricing: https://authcost.pages.dev/compare/stytch-vs-logto
+- Stytch vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/stytch-vs-firebase
+- Stytch vs Descope pricing: https://authcost.pages.dev/compare/stytch-vs-descope
 - Kinde vs Supabase Auth pricing: https://authcost.pages.dev/compare/kinde-vs-supabase
 - Kinde vs Logto pricing: https://authcost.pages.dev/compare/kinde-vs-logto
+- Kinde vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/kinde-vs-firebase
+- Kinde vs Descope pricing: https://authcost.pages.dev/compare/kinde-vs-descope
 - Supabase Auth vs Logto pricing: https://authcost.pages.dev/compare/supabase-vs-logto
+- Supabase Auth vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/supabase-vs-firebase
+- Supabase Auth vs Descope pricing: https://authcost.pages.dev/compare/supabase-vs-descope
+- Logto vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/logto-vs-firebase
+- Logto vs Descope pricing: https://authcost.pages.dev/compare/logto-vs-descope
+- Firebase Auth / Identity Platform vs Descope pricing: https://authcost.pages.dev/compare/firebase-vs-descope
 
 ## Changes
 - 2027-01-01 Clerk (fee-start): Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing. [https://clerk.com/pricing]
+- 2026-10-31 AuthCost (coverage-added): Added Firebase Auth / Identity Platform (no cost to 50k MAU, then $0.0055→$0.0025/MAU bands; SAML/OIDC $0.015/MAU after 50) and Descope (Free 7.5k MAU; Pro from $249/mo with 10k MAU + $0.05/MAU; Growth from $799/mo with 25k MAU), read from their official pricing pages. New guide: what self-hosting Better Auth / Auth.js costs instead. [https://cloud.google.com/identity-platform/pricing]
 - 2026-10-31 Clerk (new-tier): Clerk publishes a new enterprise SSO connection band: connections 101–250 now cost $48/mo each (was "Contact us" for 101+). Earlier bands are unchanged: 1 included, $75/mo each for 2–15, $60/mo each for 16–100; 251+ is contact sales. [https://clerk.com/pricing]
 - 2026-10-31 Auth0 (correction): Correction: our earlier Auth0 data (2026-10-30) listed paid tiers only at 500 MAU and called higher volumes and B2B “custom”. That was wrong — Auth0 publishes MAU tiers: B2C Essentials $70 (1k) to $3,500 (50k)/mo, B2C Professional to $3,200 (20k), B2B Essentials $150 (500) to $3,800 (20k) with 3 SSO connections, B2B Professional $800 to $2,400 (10k) with 5. Billing rounds up to the next tier; yearly = 11× monthly; extra SSO connections $100/mo. Not an Auth0 price change — our omission, now fixed. [https://auth0.com/pricing.md]
 - 2026-10-30 AuthCost (launch-seed): Initial ledger seeded from official pricing pages (Clerk, Auth0, Cognito, WorkOS, Stytch, Logto, Kinde, Supabase Auth). [https://clerk.com/pricing]

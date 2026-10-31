@@ -630,5 +630,104 @@
     "source": "https://supabase.com/pricing",
     "checked": "2026-10-30",
     "status": "verified"
+  },
+  {
+    "id": "firebase-identity-platform",
+    "vendor_id": "firebase",
+    "vendor": "Firebase Auth / Identity Platform",
+    "plan": "Pay as you go",
+    "tier": "usage",
+    "base_mo": 0,
+    "included_users": 50000,
+    "user_unit": "MAU",
+    "overage_per_user": 0.0055,
+    "overage_bands": [
+      {
+        "to": 100000,
+        "rate": 0.0055
+      },
+      {
+        "to": 1000000,
+        "rate": 0.0046
+      },
+      {
+        "to": 10000000,
+        "rate": 0.0032
+      },
+      {
+        "to": null,
+        "rate": 0.0025
+      }
+    ],
+    "sso_included": null,
+    "sso_extra_mo": null,
+    "federated_free": 50,
+    "federated_per_mau": 0.015,
+    "sms_per_message_us": 0.01,
+    "notes": "Tier 1 (email, phone, anonymous, social): 0–50k MAU free, then $0.0055 (50k–100k), $0.0046 (100k–1M), $0.0032 (1M–10M), $0.0025 (10M+). Tier 2 SAML/OIDC: 50 MAU free then $0.015/MAU. Phone auth and SMS MFA billed per SMS sent by region (US $0.01, first 10/day not billed). Firebase pricing page: no cost up to 50K MAUs with Identity Platform, then Google Cloud pricing.",
+    "source": "https://cloud.google.com/identity-platform/pricing",
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true
+  },
+  {
+    "id": "descope-free",
+    "vendor_id": "descope",
+    "vendor": "Descope",
+    "plan": "Free Forever",
+    "tier": "free",
+    "base_mo": 0,
+    "included_users": 7500,
+    "user_unit": "MAU",
+    "overage_per_user": null,
+    "sso_included": 3,
+    "sso_extra_mo": null,
+    "scim_included": 0,
+    "scim_extra_mo": null,
+    "notes": "7,500 MAU, 10 monthly active tenants, 3 SSO connections, 1 federated app (OIDC). No overages: upgrade required to exceed limits. MFA/step-up included.",
+    "source": "https://www.descope.com/pricing",
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true
+  },
+  {
+    "id": "descope-pro",
+    "vendor_id": "descope",
+    "vendor": "Descope",
+    "plan": "Pro",
+    "tier": "paid",
+    "base_mo": 249,
+    "included_users": 10000,
+    "user_unit": "MAU",
+    "overage_per_user": 0.05,
+    "sso_included": 5,
+    "sso_extra_mo": 50,
+    "scim_included": 0,
+    "scim_extra_mo": null,
+    "notes": "Starts at $249/mo, billed annually. 10,000 MAU then $0.05/MAU. 35 monthly active tenants then $1/tenant. 5 SSO connections then $50 each. SCIM is a Growth feature.",
+    "source": "https://www.descope.com/pricing",
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true
+  },
+  {
+    "id": "descope-growth",
+    "vendor_id": "descope",
+    "vendor": "Descope",
+    "plan": "Growth",
+    "tier": "paid",
+    "base_mo": 799,
+    "included_users": 25000,
+    "user_unit": "MAU",
+    "overage_per_user": 0.05,
+    "sso_included": 10,
+    "sso_extra_mo": 50,
+    "scim_included": null,
+    "scim_extra_mo": null,
+    "notes": "Starts at $799/mo. 25,000 MAU then $0.05/MAU. 100 monthly active tenants. 10 SSO connections then $50 each. SCIM provisioning, bot protection, 1M anonymous users.",
+    "source": "https://www.descope.com/pricing",
+    "checked": "2026-10-31",
+    "status": "verified",
+    "mfa_available": true
   }
 ]

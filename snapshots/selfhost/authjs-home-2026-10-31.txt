@@ -1,0 +1,5 @@
+Auth.js | Authentication for the Web Skip to content The Auth.js project is now part of Better Auth .
+Auth.js Authentication for the Web.
+Free and open source.
+Get Started
+Source
