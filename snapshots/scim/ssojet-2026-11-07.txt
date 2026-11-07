@@ -1,0 +1,17 @@
+Source: https://ssojet.com/pricing/
+Fetched: 2026-11-07 ~01:10 ET (WebFetch); excerpts
+Free $0 forever: unlimited users, MAUs and organizations; passkeys/social/magic link/OTP/MFA; NO enterprise SSO or SCIM.
+Business: pay per production connection (SSO or SCIM each count as one). Test env free.
+Price per connection (monthly / annual, annual = 25% less):
+  2–4: $79 / $59
+  5–9: $72 / $54
+  10–24: $65 / $49
+  25–49: $55 / $41
+  50–99: $47 / $35
+  100+: Custom
+Business marketing starts at 2 connections ($118/mo billed annually = 2 × $59). Monthly list for 2–4 is $79/conn.
+Examples on page (monthly): 3 connections $237; 10 connections $650; 50 connections $2,350.
+"Just below a tier the bill is capped at that tier's price."
+No per-user / per-MAU charge on any plan.
+Enterprise: custom per connection, private cloud.
+AuthCost models monthly list prices (not annual). Connection 1 priced at the 2–4 band rate ($79/mo) since that is the published list rate for the lowest volume band.

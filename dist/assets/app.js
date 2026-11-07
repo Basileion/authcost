@@ -54,13 +54,36 @@ function orgCost(plan, mau, sso=0, opts={}){
 // RT-20261031-93: SCIM / Directory Sync. `scim` = SSO customers that also need SCIM (capped at the SSO connection count).
 // Models (plans.json scim_model): separate ladder (WorkOS, Clerk), pooled with SSO (Stytch), included (Auth0 B2B/Free, Descope Growth).
 // Returns null when the plan has no published SCIM price (none / not_published / coming_soon), so it drops out of SCIM scenarios.
+function volumeConnCost(n, bands){
+  if(n<=0) return 0;
+  if(!bands||!bands.length) return null;
+  const band=bands.find(b=>n>=b.from&&n<=b.to); if(!band) return null;
+  let cost=n*band.rate;
+  const next=bands.find(b=>b.from>band.to)||bands.find(b=>b.from>n);
+  if(next) cost=Math.min(cost, next.from*next.rate);
+  return cost;
+}
 function scimCost(plan, sso=0, scim=0){
   const need=Math.max(0, sso|0), n=Math.min(Math.max(0, Math.floor(+scim||0)), need);
   const r={fee:0,n,note:''};
   if(!n) return r;
   const m=plan.scim_model, f$=v=>'$'+v.toLocaleString('en-US'), pl=(k,w)=>k+' '+w+(k===1?'':'s');
   if(m==='included'){ r.note=`SCIM: ${pl(n,'customer')} on included SCIM, no separate fee printed.`; return r; }
-  if(m==='pooled'){ const inc=plan.scim_included||0, before=Math.max(0,need-inc), after=Math.max(0,need+n-inc); r.fee=(after-before)*plan.scim_extra_mo; r.note=`SCIM shares the ${inc} included SSO-or-SCIM connections: ${need} SSO + ${n} SCIM = ${need+n}; SCIM adds ${f$(r.fee)}/mo.`; return r; }
+  if(m==='pooled'){
+    const bands=plan.scim_bands||plan.sso_bands;
+    if(bands&&bands.length){
+      const ladder=tot=>{
+        if(plan.sso_bands_all) return volumeConnCost(tot, bands);
+        let c=0;for(let i=1;i<=tot;i++){const b=bands.find(x=>i>=x.from&&i<=x.to);if(!b)return null;c+=b.rate}return c;
+      };
+      const before=ladder(need), after=ladder(need+n);
+      if(before==null||after==null) return null;
+      r.fee=after-before;
+      r.note=`SCIM shares the SSO connection ladder: ${need} SSO + ${n} SCIM = ${need+n} connections; SCIM adds ${f$(r.fee)}/mo.`;
+      return r;
+    }
+    const inc=plan.scim_included||0, before=Math.max(0,need-inc), after=Math.max(0,need+n-inc); r.fee=(after-before)*plan.scim_extra_mo; r.note=`SCIM shares the ${inc} included SSO-or-SCIM connections: ${need} SSO + ${n} SCIM = ${need+n}; SCIM adds ${f$(r.fee)}/mo.`; return r;
+  }
   if(m==='separate'){ const inc=plan.scim_included||0; let c=0; for(let i=inc+1;i<=n;i++){ const b=(plan.scim_bands||[]).find(x=>i>=x.from&&i<=x.to); if(!b) return null; c+=b.rate; } r.fee=c; r.note=`SCIM / Directory Sync is a separate connection: ${pl(n,'connection')} (${inc} included) = ${f$(c)}/mo${plan.scim_billing_starts?`, billed from ${plan.scim_billing_starts} ($0 before)`:''}.`; return r; }
   return null;
 }
@@ -96,14 +119,21 @@ function estimate(plan, mau, sso=0, opts={}){
   if(plan.sso_unlimited){ out.sso=0; }
   else if(need===0){ out.sso=0; }
   else if(plan.sso_bands){
-    let cost=0;
     const included=plan.sso_included||0;
+    if(plan.sso_bands_all){
+      const full=volumeConnCost(need, plan.sso_bands);
+      if(full==null) return null;
+      if(included<=0) out.sso=full;
+      else { const free=volumeConnCost(Math.min(included, need), plan.sso_bands); out.sso=full-(free||0); }
+    } else {
+    let cost=0;
     if(plan.vendor_id==='workos'){
       for(let i=1;i<=need;i++){ const band=plan.sso_bands.find(b=>i>=b.from&&i<=b.to)||plan.sso_bands.at(-1); cost+=band.rate; }
     } else {
       for(let i=1;i<=need;i++){ if(i<=included) continue; const band=plan.sso_bands.find(b=>i>=b.from&&i<=b.to)||plan.sso_bands.at(-1); cost+=band.rate; }
     }
     out.sso=cost;
+    }
   } else if(plan.federated_per_mau!=null){
     const fedMau=opts.federated_mau??(need*FED_PER_CONN);
     out.sso=Math.max(0, fedMau-(plan.federated_free??0))*plan.federated_per_mau;

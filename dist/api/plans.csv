@@ -24,3 +24,7 @@ firebase-identity-platform,Firebase Auth / Identity Platform,Pay as you go,0,500
 descope-free,Descope,Free Forever,0,7500,MAU,,3,,verified,https://www.descope.com/pricing,2026-10-31,,,10,,,,none,0,,,https://www.descope.com/pricing,2026-10-31
 descope-pro,Descope,Pro,249,10000,MAU,0.05,5,50,verified,https://www.descope.com/pricing,2026-10-31,,35,,1,,,none,0,,,https://www.descope.com/pricing,2026-10-31
 descope-growth,Descope,Growth,799,25000,MAU,0.05,10,50,verified,https://www.descope.com/pricing,2026-10-31,,100,,1,,,included,,,,https://www.descope.com/pricing,2026-10-31
+scalekit-free,Scalekit,Free,0,25000,MAU,,1,,verified,https://www.scalekit.com/pricing/auth-for-saas,2026-11-07,,,25,,,,separate,1,,,https://www.scalekit.com/pricing/auth-for-saas,2026-11-07
+scalekit-growth,Scalekit,Growth,99,100000,MAU,0.05,1,60,verified,https://www.scalekit.com/pricing/auth-for-saas,2026-11-07,,100,,1,,,separate,1,60,,https://www.scalekit.com/pricing/auth-for-saas,2026-11-07
+ssojet-free,SSOJet,Free,0,,MAU,,0,,verified,https://ssojet.com/pricing/,2026-11-07,,,,,,,none,0,,,https://ssojet.com/pricing/,2026-11-07
+ssojet-business,SSOJet,Business,0,,MAU,,0,79,verified,https://ssojet.com/pricing/,2026-11-07,,,,,,,pooled,0,79,,https://ssojet.com/pricing/,2026-11-07

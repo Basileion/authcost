@@ -9,7 +9,7 @@ const CHECKOUT_PRO_MONTHLY='https://o11y-watch.kit.com/products/authcost-pro';
 const CHECKOUT_PRO_ANNUAL='https://o11y-watch.kit.com/products/authcost-pro';
 const CHECKOUT_SPONSOR='https://o11y-watch.kit.com/products/authcost-founding-sponsor-slot';
 const CONTACT='mailto:basileion.ops@gmail.com';
-const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending',firebase:'#pending',descope:'#pending'}; // replace #pending when affiliate programs approved
+const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending',firebase:'#pending',descope:'#pending',scalekit:'#pending',ssojet:'#pending'}; // replace #pending when affiliate programs approved
 const NAME='AuthCost';
 const rd=f=>JSON.parse(fs.readFileSync(R('data/'+f),'utf8'));
 const vendors=rd('vendors.json'),plans=rd('plans.json'),changes=rd('changes.json').sort((a,b)=>b.date.localeCompare(a.date));
@@ -97,13 +97,39 @@ export function orgCost(plan, mau, sso=0, opts={}){
 // RT-20261031-93: SCIM / Directory Sync. `scim` = SSO customers that also need SCIM (capped at the SSO connection count).
 // Models (plans.json scim_model): separate ladder (WorkOS, Clerk), pooled with SSO (Stytch), included (Auth0 B2B/Free, Descope Growth).
 // Returns null when the plan has no published SCIM price (none / not_published / coming_soon), so it drops out of SCIM scenarios.
+// SSOJet-style volume bands: all N connections billed at the rate for total N (not per-connection like WorkOS/Clerk).
+// Cap: bill never exceeds the next tier's entry price ("just below a tier the bill is capped").
+export function volumeConnCost(n, bands){
+  if(n<=0) return 0;
+  if(!bands||!bands.length) return null;
+  const band=bands.find(b=>n>=b.from&&n<=b.to); if(!band) return null;
+  let cost=n*band.rate;
+  const next=bands.find(b=>b.from>band.to)||bands.find(b=>b.from>n);
+  if(next) cost=Math.min(cost, next.from*next.rate);
+  return cost;
+}
 export function scimCost(plan, sso=0, scim=0){
   const need=Math.max(0, sso|0), n=Math.min(Math.max(0, Math.floor(+scim||0)), need);
   const r={fee:0,n,note:''};
   if(!n) return r;
   const m=plan.scim_model, f$=v=>'$'+v.toLocaleString('en-US'), pl=(k,w)=>k+' '+w+(k===1?'':'s');
   if(m==='included'){ r.note=`SCIM: ${pl(n,'customer')} on included SCIM, no separate fee printed.`; return r; }
-  if(m==='pooled'){ const inc=plan.scim_included||0, before=Math.max(0,need-inc), after=Math.max(0,need+n-inc); r.fee=(after-before)*plan.scim_extra_mo; r.note=`SCIM shares the ${inc} included SSO-or-SCIM connections: ${need} SSO + ${n} SCIM = ${need+n}; SCIM adds ${f$(r.fee)}/mo.`; return r; }
+  if(m==='pooled'){
+    const bands=plan.scim_bands||plan.sso_bands;
+    if(bands&&bands.length){
+      // Volume (SSOJet) or per-connection: prefer volumeConnCost when plan.sso_bands_all, else sum-per-conn
+      const ladder=tot=>{
+        if(plan.sso_bands_all) return volumeConnCost(tot, bands);
+        let c=0;for(let i=1;i<=tot;i++){const b=bands.find(x=>i>=x.from&&i<=x.to);if(!b)return null;c+=b.rate}return c;
+      };
+      const before=ladder(need), after=ladder(need+n);
+      if(before==null||after==null) return null;
+      r.fee=after-before;
+      r.note=`SCIM shares the SSO connection ladder: ${need} SSO + ${n} SCIM = ${need+n} connections; SCIM adds ${f$(r.fee)}/mo.`;
+      return r;
+    }
+    const inc=plan.scim_included||0, before=Math.max(0,need-inc), after=Math.max(0,need+n-inc); r.fee=(after-before)*plan.scim_extra_mo; r.note=`SCIM shares the ${inc} included SSO-or-SCIM connections: ${need} SSO + ${n} SCIM = ${need+n}; SCIM adds ${f$(r.fee)}/mo.`; return r;
+  }
   if(m==='separate'){ const inc=plan.scim_included||0; let c=0; for(let i=inc+1;i<=n;i++){ const b=(plan.scim_bands||[]).find(x=>i>=x.from&&i<=x.to); if(!b) return null; c+=b.rate; } r.fee=c; r.note=`SCIM / Directory Sync is a separate connection: ${pl(n,'connection')} (${inc} included) = ${f$(c)}/mo${plan.scim_billing_starts?`, billed from ${plan.scim_billing_starts} ($0 before)`:''}.`; return r; }
   return null;
 }
@@ -170,6 +196,18 @@ export function estimate(plan, mau, sso=0, opts={}){
     let extra=Math.max(0, need - included);
     if(extra===0) out.sso=0;
     else if(plan.sso_bands){
+      if(plan.sso_bands_all){
+        // SSOJet: every connection billed at the volume rate for the total count (cap at next tier)
+        const billable=Math.max(0, need - included);
+        // volume rate is looked up on total enabled connections (need), fee applies to billable
+        const full=volumeConnCost(need, plan.sso_bands);
+        if(full==null) return null;
+        if(included<=0) out.sso=full;
+        else {
+          const free=volumeConnCost(Math.min(included, need), plan.sso_bands);
+          out.sso=full-(free||0);
+        }
+      } else {
       // WorkOS / Clerk ladder: charge each connection at its band rate
       let cost=0;
       for(let i=1;i<=need;i++){
@@ -186,6 +224,7 @@ export function estimate(plan, mau, sso=0, opts={}){
         }
       }
       out.sso=cost;
+      }
     } else if(plan.sso_extra_mo!=null){
       out.sso=extra*plan.sso_extra_mo;
     } else {
@@ -399,8 +438,8 @@ const SC={mau:10000,sso:3,scim:3,label:'10k users · 3 SSO + 3 SCIM'};
 const scimBit=z=>{const fee=NEGTEST_SCIM?0:z.e.scim,tot=NEGTEST_SCIM?z.e.total-z.e.scim:z.e.total;return `${z.p.vendor} ${z.p.plan} ${usd(tot)}/mo incl. ${usd(fee)}/mo SCIM${z.p.scim_billing_starts?` (Directory Sync billed from ${z.p.scim_billing_starts}, $0 before)`:''}${z.e.org>EPS?` and ${usd(z.e.org)}/mo ${z.e.orgLabel}`:''}`};
 const auditScim=(where,mau,sso,scim,zs,text)=>{SCIM_AUDIT.push({where,mau,sso,scim,zs:zs.filter(Boolean),text});ORG_AUDIT.push({where,text,zs:zs.filter(Boolean)});return text};
 const scimTermTxt=p=>{const m=p.scim_model,inc=p.scim_included||0;
-  if(m==='separate')return `Separate from SSO: ${inc} included, then ${p.scim_bands.map(b=>`${usd(b.rate)} (${b.from}–${b.to})`).join(', ')} per connection${p.scim_billing_starts?`; billed from ${p.scim_billing_starts}`:''}`;
-  if(m==='pooled')return `Shared with SSO: ${inc} SSO-or-SCIM connections included, then ${usd(p.scim_extra_mo)} each`;
+  if(m==='separate')return p.scim_bands&&p.scim_bands.length?`Separate from SSO: ${inc} included, then ${p.scim_bands.map(b=>`${usd(b.rate)} (${b.from}–${b.to})`).join(', ')} per connection${p.scim_billing_starts?`; billed from ${p.scim_billing_starts}`:''}`:`Separate from SSO: ${inc} included${p.scim_extra_mo==null?', no extra SCIM connections on this plan':`, then ${usd(p.scim_extra_mo)} each`}${p.scim_billing_starts?`; billed from ${p.scim_billing_starts}`:''}`;
+  if(m==='pooled'){const bands=p.scim_bands||p.sso_bands;if(bands&&bands.length)return `Shared with SSO on one connection ladder: ${bands.map(b=>`${usd(b.rate)} (${b.from}–${b.to})`).join(', ')} per connection (SSO + SCIM counted together)`;return `Shared with SSO: ${inc} SSO-or-SCIM connections included, then ${usd(p.scim_extra_mo)} each`}
   if(m==='included')return p.vendor_id==='auth0'?'Inbound SCIM included (uses the customer’s enterprise connection), no separate fee':'Included, no per-connection SCIM fee printed';
   if(m==='coming_soon')return 'Coming soon (not priced)';
   if(m==='not_published')return 'Not on the pricing page';
@@ -409,17 +448,14 @@ const scimModelOf=vid=>{const ms=plans.filter(p=>p.vendor_id===vid&&p.status==='
 const SCIM_MODEL_LBL={separate:'Separate connection (2nd fee per customer)',pooled:'Pooled with SSO connections',included:'Included with enterprise SSO',coming_soon:'Coming soon',none:'Higher plan only / not offered',not_published:'Not published'};
 const SCIM_PLANS=plans.filter(p=>p.status==='verified'&&p.scim_source);
 const scimTable=()=>`<div class="tbl"><table><thead><tr><th>Plan</th><th>SCIM / Directory Sync (published)</th><th>Source · checked</th></tr></thead><tbody>${SCIM_PLANS.map(p=>`<tr><td><a href="/vendors/${p.vendor_id}">${esc(p.vendor)}</a> ${esc(p.plan)}</td><td style="white-space:normal">${esc(scimTermTxt(p))}. <span class="src">${esc(p.scim_note)}</span></td><td class="src"><a href="${p.scim_source}" rel="noopener">source</a> · ${p.scim_checked}</td></tr>`).join('')}</tbody></table></div>`;
-// Scalekit (SSO + SCIM vendor, not a full ledger row yet): reference figures from scalekit.com/pricing/auth-for-saas read 2026-10-31
-const SK={src:'https://www.scalekit.com/pricing/auth-for-saas',checked:'2026-10-31',freeMau:25000,freeOrgs:25,growth:99,growthMau:100000,perUser:0.05,orgIncl:100,perOrg:1,bands:[{from:2,to:15,rate:60},{from:16,to:30,rate:45},{from:31,to:50,rate:35},{from:51,to:100,rate:30}]};
-const skLadder=n=>{let c=0;for(let i=2;i<=n;i++){const b=SK.bands.find(x=>i>=x.from&&i<=x.to);if(!b)return null;c+=b.rate}return c};
-const skCost=(mau,sso,scim=0)=>{scim=Math.min(scim,sso);if(mau<=SK.freeMau&&sso<=1&&scim<=1&&sso<=SK.freeOrgs)return {plan:'Free',total:0,scim:0};const a=skLadder(sso),b=skLadder(scim);if(a==null||b==null)return null;const users=Math.max(0,mau-SK.growthMau)*SK.perUser,orgs=Math.max(0,sso-SK.orgIncl)*SK.perOrg;return {plan:'Growth',total:SK.growth+users+orgs+a+b,scim:b}};
+// Scalekit + SSOJet are full ledger vendors (RT-20261106-06 / RT-20261031-58); priced via plans.json + estimate().
 const scimRank=(mau=SC.mau,sso=SC.sso,scim=SC.scim)=>rankScenario(mau,sso,{scim});
 const scimBest=(mau=SC.mau,sso=SC.sso,scim=SC.scim)=>{const r=scimRank(mau,sso,scim);const seen=new Set(),out=[];for(const z of r){if(seen.has(z.p.vendor_id))continue;seen.add(z.p.vendor_id);out.push(z)}return out};
 const SCIM_NOPRICE=()=>{const have=new Set(scimBest().map(z=>z.p.vendor_id));return vendors.filter(v=>!have.has(v.id))};
 const scimWhy=v=>{const m=scimModelOf(v.id);return m==='not_published'?'no SCIM on the pricing page':m==='coming_soon'?'SCIM coming soon':m==='none'?'SCIM not on a plan that fits':'no plan fits'};
 const scimPair=(where,ids)=>{const b=scimBest();const zs=ids.map(id=>b.find(z=>z.p.vendor_id===id)||null);const bits=ids.map((id,i)=>zs[i]?scimBit(zs[i]):`${P[id].name}: no SCIM price (${scimWhy(P[id])})`);return auditScim(where,SC.mau,SC.sso,SC.scim,zs,`At ${SC.label} customers (${SCIM_SHORT}; ${ORG_SHORT}): ${bits.join('; ')}.`)};
-const SCIM_ANS=(where)=>{const b=scimBest();const sk=skCost(SC.mau,SC.sso,SC.scim);const no=SCIM_NOPRICE();
-  return auditScim(where,SC.mau,SC.sso,SC.scim,b,`At ${SC.label} customers (${SCIM_SHORT}; ${ORG_SHORT}), cheapest verified plan per vendor: ${b.map(scimBit).join('; ')}. WorkOS bills SSO and Directory Sync as separate connections, so a customer on both is two connections; Stytch’s ${pid('stytch-payg').scim_included} included connections are shared between SSO and SCIM. Not priceable with SCIM: ${no.map(v=>`${v.name} (${scimWhy(v)})`).join(', ')}.${sk?` Reference, not in the ledger: Scalekit ${sk.plan} ${usd(sk.total)}/mo with ${usd(sk.scim)}/mo for SCIM (first SSO and first SCIM connection free, then ${usd(SK.bands[0].rate)} each; read ${SK.checked}).`:''}`)};
+const SCIM_ANS=(where)=>{const b=scimBest();const no=SCIM_NOPRICE();
+  return auditScim(where,SC.mau,SC.sso,SC.scim,b,`At ${SC.label} customers (${SCIM_SHORT}; ${ORG_SHORT}), cheapest verified plan per vendor: ${b.map(scimBit).join('; ')}. WorkOS bills SSO and Directory Sync as separate connections, so a customer on both is two connections; Stytch’s ${pid('stytch-payg').scim_included} included connections are shared between SSO and SCIM; Scalekit bills SCIM as a separate connection (first of each free); SSOJet bills SSO and SCIM on one shared connection ladder. Not priceable with SCIM: ${no.map(v=>`${v.name} (${scimWhy(v)})`).join(', ')}.`)};
 // ---- Vendors
 const topTier=vid=>{const t=plans.filter(p=>p.vendor_id===vid&&p.price_tiers).map(p=>p.tier_max_mau);return t.length?Math.max(...t):null};
 const noPrice=(v,m)=>{const t=topTier(v.id);return t&&m>t?`Enterprise only (contact sales) — top published tier is ${kfmt(t)} MAU`:'no published self-serve price'};
@@ -663,7 +699,6 @@ ${mailBox('gsh','Hear when hosted auth prices move','Send me the weekly ledger')
     if(p.sso_extra_mo!=null)return `${inc} incl., then ${usd(p.sso_extra_mo)} each${p.sso_max?` (max ${p.sso_max})`:''}`;
     return inc?`${inc} incl., no extra connections on this plan`:'No enterprise SSO'};
   const scim=p=>scimTermTxt(p);
-  const skCell=(n,sc)=>{const k=skCost(GM,n,sc?n:0);return k?`<td class="n">${usd(k.total)}${sc?`<br><span class="src">SCIM ${usd(k.scim)}</span>`:''}<br><span class="src">${k.plan}</span></td>`:'<td class="n">—</td>'};
   const cellS=(vid,n)=>{const z=scimBest(GM,n,n).find(y=>y.p.vendor_id===vid);return z?`<td class="n">${usd(z.e.total)}<br><span class="src">SCIM ${usd(z.e.scim)}${z.p.scim_billing_starts?'‡':''}</span><br><span class="src">${esc(z.p.plan)}</span></td>`:`<td class="n" title="${esc(scimWhy(P[vid]))}">—</td>`};
   const dag=(z)=>z?`${z.p.vendor} ${z.p.plan} ${z.e.total<EPS?'$0':usd(z.e.total)+'/mo'}${!NEGTEST_ORG&&!NEGTEST_ORG_FEE&&z.e.org>EPS?` incl. ${usd(z.e.org)}/mo ${z.e.orgLabel}`:''}${isFed(z.p)?` (${FED_SHORT}; ${fedSensText(z.p.vendor_id,z._m,z._n).split('; ').at(-1)})`:''}`:'';
   const topList=(m,n)=>{const r=rankScenario(m,n).map(z=>Object.assign(z,{_m:m,_n:n}));const zero=r.filter(z=>z.e.total<EPS);const rest=r.filter(z=>z.e.total>=EPS);
@@ -693,17 +728,15 @@ ${mailBox('gsh','Hear when hosted auth prices move','Send me the weekly ledger')
 <div class="tbl"><table><thead><tr><th>Vendor</th><th>SSO pricing model</th>${CONN.map(n=>`<th class="n">${n} connection${n>1?'s':''}</th>`).join('')}</tr></thead><tbody>
 ${vendors.map(v=>`<tr><td><a href="/vendors/${v.id}">${esc(v.name)}</a></td><td>${esc(model(v.id))}</td>${CONN.map(n=>cellN(v.id,n)).join('')}</tr>`).join('')}
 <tr><td><a href="${BA.src}" rel="noopener">Better Auth</a> (self-hosted library)</td><td>Per connection (managed infra)</td>${CONN.map(n=>`<td class="n">${usd(baCost(n))}<br><span class="src">Infra Pro + SSO, excl. hosting</span></td>`).join('')}</tr>
-<tr><td><a href="${SK.src}" rel="noopener">Scalekit</a> (reference, read ${SK.checked})</td><td>Per connection (first free)</td>${CONN.map(n=>skCell(n,false)).join('')}</tr>
 </tbody></table></div>
 <p class="note">Cheapest verified plan per vendor, total monthly USD list price (base + ${kfmt(GM)} users + SSO), no MFA/SMS add-ons. “—” = no verified plan can price that many connections at ${kfmt(GM)} users (e.g. a free tier caps below it, or the plan has no SSO). † ${FED_NOTE} ${ORG_NOTE} Better Auth row: Infrastructure Pro $${BA.base}/mo plus $${BA.per} per connection after the first (<a href="${BA.src}" rel="noopener">better-auth.com/pricing</a>, read ${BA.checked}); hosting your app and database is extra. ${tokNote} ${meth}.</p>
 <h2 id="scim">SCIM is often billed as a second connection</h2>
 <p>Enterprise customers who ask for SSO usually ask for SCIM / Directory Sync next (automatic user provisioning and deprovisioning from Okta, Entra ID or Google Workspace). Vendors bill it 3 ways: <b>a separate connection</b> (WorkOS ${usd(pid('workos-authkit').scim_bands[0].rate)} and Clerk ${usd(pid('clerk-pro').scim_bands[0].rate)} after 1 included, so one customer on both is two connections), <b>a shared pool</b> (Stytch: ${pid('stytch-payg').scim_included} “SSO or SCIM” connections, then ${usd(pid('stytch-payg').scim_extra_mo)}), or <b>included</b> (Auth0 inbound SCIM on Free and B2B plans; Descope Growth). ${esc(listJoin(SCIM_NOPRICE().map(v=>`${v.name} (${scimWhy(v)})`)))} can’t be priced with SCIM. Below: the same table when every SSO customer also needs SCIM (${SCIM_SHORT}).</p>
 <div class="tbl"><table><thead><tr><th>Vendor</th><th>SCIM billing</th>${CONN.map(n=>`<th class="n">${n} SSO + ${n} SCIM</th>`).join('')}</tr></thead><tbody>
 ${vendors.map(v=>`<tr><td><a href="/vendors/${v.id}">${esc(v.name)}</a></td><td>${esc((()=>{const ps=plans.filter(p=>p.vendor_id===v.id&&p.status==='verified');const inc=ps.filter(p=>p.scim_model==='included');return inc.length&&inc.length<ps.length&&!ps.some(p=>p.scim_model==='separate'||p.scim_model==='pooled')?`Included on ${inc.map(p=>p.plan).join(', ')}`:SCIM_MODEL_LBL[scimModelOf(v.id)]})())}</td>${CONN.map(n=>cellS(v.id,n)).join('')}</tr>`).join('')}
-<tr><td><a href="${SK.src}" rel="noopener">Scalekit</a> (reference, read ${SK.checked})</td><td>Separate connection (first of each free)</td>${CONN.map(n=>skCell(n,true)).join('')}</tr>
 <tr><td><a href="${BA.src}" rel="noopener">Better Auth</a> (self-hosted library)</td><td>Not yet checked</td>${CONN.map(()=>'<td class="n">—</td>').join('')}</tr>
 </tbody></table></div>
-<p class="note">Total monthly USD list price at ${kfmt(GM)} users (base + users + SSO + SCIM + org fees), cheapest verified plan per vendor; “SCIM” = the part of the total that SCIM adds. “—” = no published SCIM price on a plan that fits (${esc(SCIM_NOPRICE().map(v=>v.name).join(', '))}). ‡ Clerk: Directory Sync “billing … starts January 1, 2027”; until then extra connections are $0, the column shows the list price from that date. SCIM terms per plan, with sources: <a href="/methodology#scim">methodology</a>. Scalekit is a reference row (not yet a full ledger vendor), from <a href="${SK.src}" rel="noopener">its pricing page</a>. <a href="/calculator/?mau=${GM}&sso=3&scim=3">Price your own SSO + SCIM mix</a>.</p>
+<p class="note">Total monthly USD list price at ${kfmt(GM)} users (base + users + SSO + SCIM + org fees), cheapest verified plan per vendor; “SCIM” = the part of the total that SCIM adds. “—” = no published SCIM price on a plan that fits (${esc(SCIM_NOPRICE().map(v=>v.name).join(', '))}). ‡ Clerk: Directory Sync “billing … starts January 1, 2027”; until then extra connections are $0, the column shows the list price from that date. SCIM terms per plan, with sources: <a href="/methodology#scim">methodology</a>. Scalekit and SSOJet are full ledger vendors (read 2026-11-07). <a href="/calculator/?mau=${GM}&sso=3&scim=3">Price your own SSO + SCIM mix</a>.</p>
 <h2>“Auth0 wants $800/month”: the Auth0 SSO math</h2><p>${esc(a0ans)} Compare <a href="/vendors/auth0">Auth0 pricing tiers</a> and <a href="/compare/clerk-vs-auth0">Clerk vs Auth0</a>.</p>
 ${a0sBox()}
 <h2>The 3 ways vendors charge for enterprise SSO</h2>
@@ -720,7 +753,7 @@ ${plans.filter(p=>p.status==='verified'&&(p.sso_included||p.sso_extra_mo!=null||
 <p class="note">SCIM terms read on each vendor’s pricing page on 2026-10-31 (source per plan in the <a href="/methodology#scim">methodology</a>). Stytch’s included connections are shared between SSO and SCIM; WorkOS and Clerk count SCIM / Directory Sync as separate connections. Descope Free also caps at 10 monthly active tenants. B2B organization/tenant fees and caps are included: see <a href="#b2b-orgs">B2B org fees</a>.</p>
 <h2 id="b2b-orgs">B2B org fees: does my organization count change the bill?</h2><p>${esc(B2B_ANS)}</p>${orgExTable()}${orgTable()}
 <h2>“Migrating SSO/SCIM sounds like it might be a bit of a pain”</h2><p>It is per customer: each connection means re-configuring that customer’s IdP. If you expect more than a handful of enterprise customers, compare the 10- and 25-connection columns before you pick, not just the free tier. Self-hosting? ${esc(shQ)} See <a href="${SH}">self-hosted auth cost</a>.</p>
-<p class="note">Scalekit appears above as a reference row from its pricing page (read ${SK.checked}); it is not yet a full ledger vendor, so the calculator doesn’t rank it. Not in the ledger yet: SSOJet. We add a vendor only after reading its pricing page; until then we don’t quote it.</p>
+<p class="note">Scalekit and SSOJet are full ledger vendors (pricing pages read 2026-11-07) and rank in the <a href="/calculator/?mau=${GM}&sso=3">calculator</a>. Authagonal is still unread (no row until we read authagonal.io/pricing).</p>
 <h2>Questions</h2>${Q.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
 ${mailBox('gsso','Hear when an SSO price moves','Send me the weekly ledger')}`});
 }
@@ -1031,12 +1064,38 @@ W('_redirects','/calculator.html /calculator/ 301\n');
  for(const a of SCIM_AUDIT){for(const z of a.zs){const e=estimate(z.p,a.mau,a.sso,{scim:a.scim});if(!e||e.total==null){bad.push(`RT-93 ${a.where}: ${z.p.id} cannot price ${a.sso} SSO + ${a.scim} SCIM`);continue}
    const want=`${z.p.vendor} ${z.p.plan} ${usd(e.total)}/mo incl. ${usd(e.scim)}/mo SCIM`;scimExpect.add(want);if(!a.text.includes(want))bad.push(`RT-93 ${a.where}: SCIM answer should read "${want}": ${a.text.slice(0,140)}`)}
   if(!a.text.includes(SCIM_SHORT))bad.push(`RT-93 ${a.where}: SCIM answer omits "${SCIM_SHORT}"`);
-  if(/Scalekit/.test(a.text)){const k=skCost(a.mau,a.sso,a.scim);if(!k||!a.text.includes(`Scalekit ${k.plan} ${usd(k.total)}/mo with ${usd(k.scim)}/mo for SCIM`))bad.push(`RT-93 ${a.where}: Scalekit SCIM reference does not match its published ladder`)}}
+  }
  if(!SCIM_AUDIT.length)bad.push('RT-93: no SCIM answers audited (audit hook missing)');
  for(const p of plans)if(p.status==='verified'&&(!p.scim_model||!p.scim_source||!p.scim_checked))bad.push(`RT-93 data: ${p.id} lacks scim_model / scim_source / scim_checked`);
  let scimSeen=0;for(const p of files){const s=fs.readFileSync(p,'utf8').replace(/&amp;/g,'&');for(const m of s.matchAll(/\$[\d,.]+\/mo incl\. \$[\d,.]+\/mo SCIM/g)){scimSeen++;const end=m.index+m[0].length;if(![...scimExpect].some(w=>s.slice(end-w.length,end)===w))bad.push(`RT-93 ${path.relative(D,p)}: SCIM figure not matching the ledger: "${s.slice(Math.max(0,m.index-70),end)}"`)}}
  if(bad.length){console.error('Build guards failed ('+bad.length+'):\n'+bad.slice(0,40).join('\n'));process.exit(1)}
  console.log(`guards ok: RT-93 SCIM figures in ${SCIM_AUDIT.length} answers (${scimSeen} printed), RT-56 org fees in ${ORG_AUDIT.length} SSO answers, RT-57 SSO-assumption disclosure, RT-59 hero, RT-60 ties/precision/MAU-MRU`);}
+// RT-20261106-06 / RT-20261031-58: Scalekit + SSOJet are full ledger vendors; SSO guide ladder cells match estimate(); no reference-only / unread wording.
+{const bad=[];const g=fs.readFileSync(path.join(D,'guides/enterprise-sso-cost.html'),'utf8');
+ if(/Scalekit[^<]{0,80}reference|SSOJet[^<]{0,120}not (yet )?in the ledger|SSOJet[^<]{0,80}pricing page not read|reference, not (yet )?a full ledger vendor/i.test(g))bad.push('RT-06 enterprise-sso-cost still has Scalekit/SSOJet reference-only / unread wording');
+ if(!fs.existsSync(path.join(D,'vendors/scalekit.html'))||!fs.existsSync(path.join(D,'vendors/ssojet.html')))bad.push('RT-06 missing /vendors/scalekit or /vendors/ssojet');
+ const GM=10000,CONN=[1,3,5,10,25];
+ for(const vid of ['scalekit','ssojet']){
+   for(const n of CONN){
+     const z=bestFor(vid,GM,n); if(!z){bad.push(`RT-06 ${vid} cannot price ${n} SSO at ${GM} MAU`);continue}
+     if(!g.includes(usd(z.e.total)))bad.push(`RT-06 enterprise-sso-cost missing ${vid} ${n}-conn total ${usd(z.e.total)} (${z.p.plan})`);
+   }
+   const z3=scimBest(GM,3,3).find(z=>z.p.vendor_id===vid); if(!z3)bad.push(`RT-06 ${vid} cannot price 3 SSO + 3 SCIM`);
+   else if(!g.includes(usd(z3.e.total)))bad.push(`RT-06 enterprise-sso-cost missing ${vid} 3+3 SCIM total ${usd(z3.e.total)}`);
+ }
+ // Published ladder sanity (snapshots/scim/*-2026-11-07.txt)
+ const sk3=estimate(pid('scalekit-growth'),GM,3), sk5=estimate(pid('scalekit-growth'),GM,5), sk10=estimate(pid('scalekit-growth'),GM,10), sk25=estimate(pid('scalekit-growth'),GM,25);
+ if(!sk3||sk3.total!==219)bad.push(`RT-06 Scalekit Growth 3 SSO should be $219, got ${sk3&&sk3.total}`);
+ if(!sk5||sk5.total!==339)bad.push(`RT-06 Scalekit Growth 5 SSO should be $339, got ${sk5&&sk5.total}`);
+ if(!sk10||sk10.total!==639)bad.push(`RT-06 Scalekit Growth 10 SSO should be $639, got ${sk10&&sk10.total}`);
+ if(!sk25||sk25.total!==1389)bad.push(`RT-06 Scalekit Growth 25 SSO should be $1389, got ${sk25&&sk25.total}`);
+ const sj3=estimate(pid('ssojet-business'),GM,3), sj5=estimate(pid('ssojet-business'),GM,5);
+ if(!sj3||sj3.total!==237)bad.push(`RT-06 SSOJet Business 3 SSO should be $237, got ${sj3&&sj3.total}`);
+ if(!sj5||sj5.total!==360)bad.push(`RT-06 SSOJet Business 5 SSO should be $360, got ${sj5&&sj5.total}`);
+ const sj33=estimate(pid('ssojet-business'),GM,3,{scim:3});
+ if(!sj33||sj33.total!==432||sj33.scim!==195)bad.push(`RT-06 SSOJet 3 SSO + 3 SCIM should be $432 incl. $195 SCIM, got ${sj33&&sj33.total}/${sj33&&sj33.scim}`);
+ if(bad.length){console.error('RT-06 Scalekit/SSOJet ledger guard: '+bad.length+'\n'+bad.join('\n'));process.exit(1)}
+ console.log('RT-06 Scalekit/SSOJet ledger guard: full vendors, ladder cells match estimate()')}
 // Pro proof guard (RT-20261031-04 / -08 / -61, same idea as VPSLedger 4c9a66c). Never disable: fix the cause.
 // AC_NEGTEST_PRO=1 injects a Pro-only 'CSV export' claim + a wrong cliff figure + a 'checked weekly' claim; the build must exit 1.
 {const bad=[];const NEG=process.env.AC_NEGTEST_PRO==='1';const rdD=f=>fs.readFileSync(path.join(D,f),'utf8');

@@ -1,6 +1,6 @@
 # AuthCost
 
-> Auth and identity list prices (base + MAU/MRU + SSO), 25 plan rows, 25 verified, 10 vendors, checked 2026-10-31.
+> Auth and identity list prices (base + MAU/MRU + SSO), 29 plan rows, 29 verified, 12 vendors, checked 2026-11-07.
 
 ## Methodology
 Prices from each vendor's own pricing page only. Verified rows were read on the date shown. We never invent a price. Details: https://authcost.pages.dev/methodology

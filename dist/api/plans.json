@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-07T05:14:50.117Z",
+  "generated": "2026-11-07T06:14:43.252Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "affiliates": {},
@@ -93,6 +93,24 @@
       "billing_unit": "MAU + tenant",
       "billing_unit_note": "Plans include MAUs, monthly active tenants and SSO connections; Pro and Growth bill overages. Free has hard limits (no overages; upgrade required).",
       "summary": "Free Forever $0: 7,500 MAU, 10 tenants, 3 SSO connections, no overages. Pro starts at $249/mo billed annually: 10,000 MAU then $0.05/MAU, 35 tenants then $1, 5 SSO then $50/connection. Growth starts at $799/mo: 25,000 MAU then $0.05/MAU, 100 tenants, 10 SSO then $50, SCIM. Enterprise: contact sales."
+    },
+    {
+      "id": "scalekit",
+      "name": "Scalekit",
+      "source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "checked": "2026-11-07",
+      "billing_unit": "MAU + connection",
+      "billing_unit_note": "MAU and monthly active organizations, plus per-connection SSO and SCIM ladders (first of each free).",
+      "summary": "Free $0: 25k MAU, 25 orgs, 1 SSO + 1 SCIM (hard caps). Growth $99/mo: 100k MAU then $0.05, 100 orgs then $1; SSO and SCIM each 1 free then $60 (2–15), $45 (16–30), $35 (31–50), $30 (51–100)."
+    },
+    {
+      "id": "ssojet",
+      "name": "SSOJet",
+      "source": "https://ssojet.com/pricing/",
+      "checked": "2026-11-07",
+      "billing_unit": "connection",
+      "billing_unit_note": "No per-user or per-MAU charge. Business bills each production SSO or SCIM link as one connection on a shared volume ladder; Free has unlimited users but no enterprise SSO/SCIM.",
+      "summary": "Free $0 forever: unlimited users/MAUs/orgs, no enterprise SSO or SCIM. Business: monthly list $79/conn (2–4), $72 (5–9), $65 (10–24), $55 (25–49), $47 (50–99); annual ~25% less. SSO and SCIM each count as one connection on the same ladder."
     }
   ],
   "plans": [
@@ -1167,6 +1185,222 @@
       "scim_note": "SCIM provisioning included on Growth; no per-connection SCIM fee printed.",
       "scim_source": "https://www.descope.com/pricing",
       "scim_checked": "2026-10-31"
+    },
+    {
+      "id": "scalekit-free",
+      "vendor_id": "scalekit",
+      "vendor": "Scalekit",
+      "plan": "Free",
+      "tier": "free",
+      "base_mo": 0,
+      "included_users": 25000,
+      "user_unit": "MAU",
+      "overage_per_user": null,
+      "sso_included": 1,
+      "sso_extra_mo": null,
+      "notes": "25,000 MAUs and 25 organizations hard caps (auto-upgrade to Growth). 1 SSO and 1 SCIM connection included. Scalekit branding on auth widgets & emails.",
+      "source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "checked": "2026-11-07",
+      "status": "verified",
+      "mfa_available": true,
+      "org_max": 25,
+      "org_counts": "MAO",
+      "org_note": "25 monthly active organizations (MAO) hard cap on Free; no overages — upgrade to Growth. An organization is active when it has at least 2 users and at least 1 logs in that month.",
+      "org_source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "org_checked": "2026-11-07",
+      "scim_model": "separate",
+      "scim_included": 1,
+      "scim_extra_mo": null,
+      "scim_note": "1 SCIM connection included on Free; more requires Growth. First SSO and first SCIM are free on every plan.",
+      "scim_source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "scim_checked": "2026-11-07"
+    },
+    {
+      "id": "scalekit-growth",
+      "vendor_id": "scalekit",
+      "vendor": "Scalekit",
+      "plan": "Growth",
+      "tier": "paid",
+      "base_mo": 99,
+      "included_users": 100000,
+      "user_unit": "MAU",
+      "overage_per_user": 0.05,
+      "sso_included": 1,
+      "sso_extra_mo": 60,
+      "sso_bands": [
+        {
+          "from": 2,
+          "to": 15,
+          "rate": 60
+        },
+        {
+          "from": 16,
+          "to": 30,
+          "rate": 45
+        },
+        {
+          "from": 31,
+          "to": 50,
+          "rate": 35
+        },
+        {
+          "from": 51,
+          "to": 100,
+          "rate": 30
+        }
+      ],
+      "sso_note": "100+ connections: custom (Let's talk). First SSO connection free.",
+      "notes": "Growth $99/mo. 100,000 MAUs then $0.05/MAU; 100 organizations then $1/org. First SSO and first SCIM free, then the published connection ladder ($60/$45/$35/$30). EU data residency add-on $99/mo not modeled.",
+      "source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "checked": "2026-11-07",
+      "status": "verified",
+      "mfa_available": true,
+      "org_included": 100,
+      "org_extra_mo": 1,
+      "org_counts": "MAO",
+      "org_note": "100 monthly active organizations included, then $1 per additional org. An organization is active when it has at least 2 users and at least 1 logs in that month.",
+      "org_source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "org_checked": "2026-11-07",
+      "scim_model": "separate",
+      "scim_included": 1,
+      "scim_extra_mo": 60,
+      "scim_bands": [
+        {
+          "from": 2,
+          "to": 15,
+          "rate": 60
+        },
+        {
+          "from": 16,
+          "to": 30,
+          "rate": 45
+        },
+        {
+          "from": 31,
+          "to": 50,
+          "rate": 35
+        },
+        {
+          "from": 51,
+          "to": 100,
+          "rate": 30
+        }
+      ],
+      "scim_note": "SCIM is a separate connection from SSO: 1 included free, then the same ladder as SSO ($60 2–15, $45 16–30, $35 31–50, $30 51–100). A customer on both is two connections.",
+      "scim_source": "https://www.scalekit.com/pricing/auth-for-saas",
+      "scim_checked": "2026-11-07"
+    },
+    {
+      "id": "ssojet-free",
+      "vendor_id": "ssojet",
+      "vendor": "SSOJet",
+      "plan": "Free",
+      "tier": "free",
+      "base_mo": 0,
+      "included_users": null,
+      "user_unit": "MAU",
+      "overage_per_user": null,
+      "sso_included": 0,
+      "sso_extra_mo": null,
+      "notes": "Free forever. Unlimited users, MAUs and organizations. Passkeys, social login, magic link, email OTP, MFA. No enterprise SSO or SCIM — upgrade to Business when the first enterprise customer asks.",
+      "source": "https://ssojet.com/pricing/",
+      "checked": "2026-11-07",
+      "status": "verified",
+      "mfa_available": true,
+      "org_unlimited": true,
+      "org_note": "Unlimited organizations on Free.",
+      "org_source": "https://ssojet.com/pricing/",
+      "org_checked": "2026-11-07",
+      "scim_model": "none",
+      "scim_included": 0,
+      "scim_extra_mo": null,
+      "scim_note": "No enterprise SSO or SCIM on Free.",
+      "scim_source": "https://ssojet.com/pricing/",
+      "scim_checked": "2026-11-07"
+    },
+    {
+      "id": "ssojet-business",
+      "vendor_id": "ssojet",
+      "vendor": "SSOJet",
+      "plan": "Business",
+      "tier": "paid",
+      "base_mo": 0,
+      "included_users": null,
+      "user_unit": "MAU",
+      "overage_per_user": null,
+      "sso_included": 0,
+      "sso_extra_mo": 79,
+      "sso_bands": [
+        {
+          "from": 1,
+          "to": 4,
+          "rate": 79
+        },
+        {
+          "from": 5,
+          "to": 9,
+          "rate": 72
+        },
+        {
+          "from": 10,
+          "to": 24,
+          "rate": 65
+        },
+        {
+          "from": 25,
+          "to": 49,
+          "rate": 55
+        },
+        {
+          "from": 50,
+          "to": 99,
+          "rate": 47
+        }
+      ],
+      "sso_note": "Business marketing starts at 2 connections; connection 1 is priced at the published 2–4 list rate ($79/mo). Annual billing ~25% less ($59 at 2–4). 100+ connections: custom. Test-environment connections are free.",
+      "notes": "No base fee and no per-user charge. Monthly list bills every connection at the volume rate for the total count: $79/conn (1–4; published table starts at 2–4), $72 (5–9), $65 (10–24), $55 (25–49), $47 (50–99); bill capped at the next tier’s entry price. SSO and SCIM each count as one connection on the same ladder. Annual ≈25% less (not used in rankings).",
+      "source": "https://ssojet.com/pricing/",
+      "checked": "2026-11-07",
+      "status": "verified",
+      "mfa_available": true,
+      "org_unlimited": true,
+      "org_note": "Unlimited organizations on Business.",
+      "org_source": "https://ssojet.com/pricing/",
+      "org_checked": "2026-11-07",
+      "scim_model": "pooled",
+      "scim_included": 0,
+      "scim_extra_mo": 79,
+      "scim_bands": [
+        {
+          "from": 1,
+          "to": 4,
+          "rate": 79
+        },
+        {
+          "from": 5,
+          "to": 9,
+          "rate": 72
+        },
+        {
+          "from": 10,
+          "to": 24,
+          "rate": 65
+        },
+        {
+          "from": 25,
+          "to": 49,
+          "rate": 55
+        },
+        {
+          "from": 50,
+          "to": 99,
+          "rate": 47
+        }
+      ],
+      "scim_note": "SSO and SCIM share one connection ladder: each SSO or SCIM link is one connection. Adding SCIM customers raises the total connection count (and may drop the per-connection rate). Same monthly list as SSO.",
+      "scim_source": "https://ssojet.com/pricing/",
+      "scim_checked": "2026-11-07",
+      "sso_bands_all": true
     }
   ]
 }

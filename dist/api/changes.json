@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-07T05:14:50.117Z",
+  "generated": "2026-11-07T06:14:43.252Z",
   "site": "https://authcost.pages.dev",
   "license": "CC-BY-4.0",
   "changes": [
@@ -11,6 +11,15 @@
       "kind": "fee-start",
       "summary": "Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing.",
       "source": "https://clerk.com/pricing"
+    },
+    {
+      "date": "2026-11-07",
+      "observed": "2026-11-07",
+      "vendor": "AuthCost",
+      "vendor_id": "authcost",
+      "kind": "coverage-added",
+      "summary": "Added Scalekit (Free 25k MAU / 1 SSO+1 SCIM; Growth $99 + $60/$45/$35/$30 connection ladder, first of each free) and SSOJet (Free unlimited users no SSO; Business monthly $79/$72/$65/$55/$47 per shared SSO-or-SCIM connection) as full ledger vendors. Read from scalekit.com/pricing/auth-for-saas and ssojet.com/pricing on 2026-11-07. They now rank in the calculator and on /guides/enterprise-sso-cost (no longer reference-only / unread).",
+      "source": "https://www.scalekit.com/pricing/auth-for-saas"
     },
     {
       "date": "2026-10-31",

@@ -1,11 +1,20 @@
 [
   {
+    "date": "2026-11-07",
+    "observed": "2026-11-07",
+    "vendor": "AuthCost",
+    "vendor_id": "authcost",
+    "kind": "coverage-added",
+    "summary": "Added Scalekit (Free 25k MAU / 1 SSO+1 SCIM; Growth $99 + $60/$45/$35/$30 connection ladder, first of each free) and SSOJet (Free unlimited users no SSO; Business monthly $79/$72/$65/$55/$47 per shared SSO-or-SCIM connection) as full ledger vendors. Read from scalekit.com/pricing/auth-for-saas and ssojet.com/pricing on 2026-11-07. They now rank in the calculator and on /guides/enterprise-sso-cost (no longer reference-only / unread).",
+    "source": "https://www.scalekit.com/pricing/auth-for-saas"
+  },
+  {
     "date": "2026-10-31",
     "observed": "2026-10-31",
     "vendor": "AuthCost",
     "vendor_id": "authcost",
     "kind": "correction",
-    "summary": "Addition/correction: SCIM / Directory Sync is now priced, from each vendor's pricing page read 2026-10-31. WorkOS bills Directory Sync as its own connection ($125 each for 1–15, then $100/$80/$65), so a customer on SSO and SCIM is two connections; Clerk includes 1 Directory Sync connection, then $75/mo each (2–15), $60, $48, billed from January 1, 2027; Stytch's 5 included connections are shared between SSO and SCIM, then $125 each; Auth0 includes inbound SCIM on Free and B2B plans; Descope includes SCIM on Growth; Kinde lists SCIM as coming soon on Scale; Cognito, Supabase, Firebase / Identity Platform and Logto publish no SCIM on their pricing pages. Before, SCIM was listed per plan but never added to totals: at 10k users with 3 SSO customers who all need SCIM, WorkOS read $375/mo and is $750/mo; Stytch read $0 and is $125/mo; Clerk Pro read $275/mo and is $425/mo from 2027-01-01. New calculator input scim= (default 0).",
+    "summary": "Addition/correction: SCIM / Directory Sync is now priced, from each vendor's pricing page read 2026-10-31. WorkOS bills Directory Sync as its own connection ($125 each for 1\u201315, then $100/$80/$65), so a customer on SSO and SCIM is two connections; Clerk includes 1 Directory Sync connection, then $75/mo each (2\u201315), $60, $48, billed from January 1, 2027; Stytch's 5 included connections are shared between SSO and SCIM, then $125 each; Auth0 includes inbound SCIM on Free and B2B plans; Descope includes SCIM on Growth; Kinde lists SCIM as coming soon on Scale; Cognito, Supabase, Firebase / Identity Platform and Logto publish no SCIM on their pricing pages. Before, SCIM was listed per plan but never added to totals: at 10k users with 3 SSO customers who all need SCIM, WorkOS read $375/mo and is $750/mo; Stytch read $0 and is $125/mo; Clerk Pro read $275/mo and is $425/mo from 2027-01-01. New calculator input scim= (default 0).",
     "source": "https://workos.com/pricing"
   },
   {
@@ -23,7 +32,7 @@
     "vendor": "AuthCost",
     "vendor_id": "authcost",
     "kind": "correction",
-    "summary": "Correction: SSO and B2B answers now include organization/tenant fees and caps read from vendor pages on 2026-10-31. Clerk: 100 monthly retained orgs and 20 members per org free; above either, the B2B Authentication add-on is $100/mo ($85 annual), then $1/mo per org (101–1,000), $0.90 (1,001–10,000), $0.75 (10,001–100,000), $0.60 (100,001+). Auth0: Free 5 and B2C plans 10 organizations; B2B unlimited. Descope: 10/35/100 active tenants, then $1 per tenant on Pro and Growth. Kinde: Free 5 orgs, paid 50 then $0.50/$0.47/$0.43. Logto: Organizations add-on $48/mo. Each SSO connection now counts as 1 customer organization. Before, Clerk vs Auth0 at 10k users with 1 SSO connection read '$300/yr less than Clerk'; it is $1,500/yr (Clerk Pro $125/mo incl. the $100/mo add-on for 200-member orgs).",
+    "summary": "Correction: SSO and B2B answers now include organization/tenant fees and caps read from vendor pages on 2026-10-31. Clerk: 100 monthly retained orgs and 20 members per org free; above either, the B2B Authentication add-on is $100/mo ($85 annual), then $1/mo per org (101\u20131,000), $0.90 (1,001\u201310,000), $0.75 (10,001\u2013100,000), $0.60 (100,001+). Auth0: Free 5 and B2C plans 10 organizations; B2B unlimited. Descope: 10/35/100 active tenants, then $1 per tenant on Pro and Growth. Kinde: Free 5 orgs, paid 50 then $0.50/$0.47/$0.43. Logto: Organizations add-on $48/mo. Each SSO connection now counts as 1 customer organization. Before, Clerk vs Auth0 at 10k users with 1 SSO connection read '$300/yr less than Clerk'; it is $1,500/yr (Clerk Pro $125/mo incl. the $100/mo add-on for 200-member orgs).",
     "source": "https://clerk.com/pricing"
   },
   {
@@ -32,7 +41,7 @@
     "vendor": "AuthCost",
     "vendor_id": "authcost",
     "kind": "coverage-added",
-    "summary": "Added Firebase Auth / Identity Platform (no cost to 50k MAU, then $0.0055→$0.0025/MAU bands; SAML/OIDC $0.015/MAU after 50) and Descope (Free 7.5k MAU; Pro from $249/mo with 10k MAU + $0.05/MAU; Growth from $799/mo with 25k MAU), read from their official pricing pages. New guide: what self-hosting Better Auth / Auth.js costs instead.",
+    "summary": "Added Firebase Auth / Identity Platform (no cost to 50k MAU, then $0.0055\u2192$0.0025/MAU bands; SAML/OIDC $0.015/MAU after 50) and Descope (Free 7.5k MAU; Pro from $249/mo with 10k MAU + $0.05/MAU; Growth from $799/mo with 25k MAU), read from their official pricing pages. New guide: what self-hosting Better Auth / Auth.js costs instead.",
     "source": "https://cloud.google.com/identity-platform/pricing"
   },
   {
@@ -41,7 +50,7 @@
     "vendor": "Clerk",
     "vendor_id": "clerk",
     "kind": "new-tier",
-    "summary": "Clerk publishes a new enterprise SSO connection band: connections 101–250 now cost $48/mo each (was \"Contact us\" for 101+). Earlier bands are unchanged: 1 included, $75/mo each for 2–15, $60/mo each for 16–100; 251+ is contact sales.",
+    "summary": "Clerk publishes a new enterprise SSO connection band: connections 101\u2013250 now cost $48/mo each (was \"Contact us\" for 101+). Earlier bands are unchanged: 1 included, $75/mo each for 2\u201315, $60/mo each for 16\u2013100; 251+ is contact sales.",
     "source": "https://clerk.com/pricing"
   },
   {
@@ -68,7 +77,7 @@
     "vendor": "Auth0",
     "vendor_id": "auth0",
     "kind": "correction",
-    "summary": "Correction: our earlier Auth0 data (2026-10-30) listed paid tiers only at 500 MAU and called higher volumes and B2B “custom”. That was wrong — Auth0 publishes MAU tiers: B2C Essentials $70 (1k) to $3,500 (50k)/mo, B2C Professional to $3,200 (20k), B2B Essentials $150 (500) to $3,800 (20k) with 3 SSO connections, B2B Professional $800 to $2,400 (10k) with 5. Billing rounds up to the next tier; yearly = 11× monthly; extra SSO connections $100/mo. Not an Auth0 price change — our omission, now fixed.",
+    "summary": "Correction: our earlier Auth0 data (2026-10-30) listed paid tiers only at 500 MAU and called higher volumes and B2B \u201ccustom\u201d. That was wrong \u2014 Auth0 publishes MAU tiers: B2C Essentials $70 (1k) to $3,500 (50k)/mo, B2C Professional to $3,200 (20k), B2B Essentials $150 (500) to $3,800 (20k) with 3 SSO connections, B2B Professional $800 to $2,400 (10k) with 5. Billing rounds up to the next tier; yearly = 11\u00d7 monthly; extra SSO connections $100/mo. Not an Auth0 price change \u2014 our omission, now fixed.",
     "source": "https://auth0.com/pricing.md"
   }
 ]

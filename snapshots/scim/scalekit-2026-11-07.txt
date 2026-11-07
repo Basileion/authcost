@@ -1,0 +1,10 @@
+Source: https://www.scalekit.com/pricing/auth-for-saas
+Fetched: 2026-11-07 ~01:10 ET (WebFetch); excerpts
+SaaSKit Free $0/month: 25,000 MAUs (hard cap, auto-upgrades to Growth after), 25 organizations (hard cap), 1 SSO & 1 SCIM connection. Community + email support.
+Growth $99/month: 100,000 MAUs + $0.05 per additional user; 100 organizations + $1 per additional org.
+SSO beyond 1 connection: 2-15 $60/conn/mo, 16-30 $45, 31-50 $35, 51-100 $30. SCIM: same ladder (priced separately; first of each free).
+FAQ: "Your first connection of each type is free ... Example: enable 3 SSO connections and you pay for 2 (the first is free), so $120/month."
+"The Free plan is a hard cap with no overages."
+100+ connections: Let's talk (Custom).
+EU data residency add-on $99/mo (not modeled; add-on).
+Identical to snapshots/scim/scalekit-2026-10-31.txt on the Free/Growth ladder.

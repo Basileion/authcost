@@ -1,1 +1,1 @@
-{"scenarios":[{"mau":1000,"sso":0,"label":"1k users · no SSO"},{"mau":10000,"sso":1,"label":"10k users · 1 SSO"},{"mau":50000,"sso":5,"label":"50k users · 5 SSO"},{"mau":100000,"sso":10,"label":"100k users · 10 SSO"}],"lastChecked":"2026-10-31","nVer":25}
+{"scenarios":[{"mau":1000,"sso":0,"label":"1k users · no SSO"},{"mau":10000,"sso":1,"label":"10k users · 1 SSO"},{"mau":50000,"sso":5,"label":"50k users · 5 SSO"},{"mau":100000,"sso":10,"label":"100k users · 10 SSO"}],"lastChecked":"2026-11-07","nVer":29}
