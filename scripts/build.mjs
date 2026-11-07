@@ -29,6 +29,9 @@ const NAV=[['/','Ledger'],['/calculator/','Calculator'],['/compare/','Compare'],
 const urls=[];
 const WEBSITE_LD={'@context':'https://schema.org','@type':'WebSite','@id':SITE+'/#website',name:NAME,url:SITE+'/',description:'Auth and identity vendor list prices (MAU, MRU, SSO connections), sourced and dated.',inLanguage:'en',publisher:{'@id':SITE+'/#org'}};
 const ORG_LD={'@context':'https://schema.org','@type':'Organization','@id':SITE+'/#org',name:NAME,url:SITE+'/',sameAs:['https://bsky.app/profile/o11ywatch.bsky.social']};
+const strip=h=>String(h).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+const origin=u=>{try{return new URL(u).origin+'/'}catch(e){return u}};
+const crumbs=(id,items)=>({'@context':'https://schema.org','@type':'BreadcrumbList','@id':id,itemListElement:items.map(([name,u],i)=>({'@type':'ListItem',position:i+1,name,item:SITE+u}))});
 const cleanPath=f=>f.replace(/index\.html$/,'').replace(/\.html$/,'');
 const NOSITEMAP=[];const page=({file,title,desc,body,og='home',ld=[],canonical})=>{urls.push(cleanPath(file));if(canonical)NOSITEMAP.push(cleanPath(file));const url=SITE+'/'+cleanPath(file);W(file,`<!doctype html><html lang="en" data-product="auth"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${canonical?SITE+canonical:url}"><meta name="robots" content="${NOINDEX.includes(file)?'noindex,follow':'index,follow'}">
@@ -324,7 +327,7 @@ ${mailBox('h','Know the week an auth price changes','Send me the weekly ledger')
 <h2>Questions</h2>${faq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}`});
 
 // ---- Calculator
-page({file:'calculator/index.html',og:'calculator',title:`Auth cost calculator — MAU, MFA, SSO and SCIM | ${NAME}`,desc:'Pick MAU, MFA, enterprise SSO connections and SCIM / Directory Sync customers. See every verifiable plan ranked by monthly cost. Shareable URL and embed snippet.',body:`
+page({file:'calculator/index.html',og:'calculator',ld:[ORG_LD,{'@context':'https://schema.org','@type':'WebApplication','@id':SITE+'/calculator/#app',name:'AuthCost auth cost calculator',url:SITE+'/calculator/',description:'Ranks auth / identity plans by estimated monthly cost from published list prices for your MAU, MFA, SSO connections, SCIM / Directory Sync customers and organizations.',applicationCategory:'BusinessApplication',operatingSystem:'Any (runs in a web browser)',browserRequirements:'Requires JavaScript',isAccessibleForFree:true,inLanguage:'en',offers:{'@type':'Offer',price:0,priceCurrency:'USD'},publisher:{'@id':SITE+'/#org'},dateModified:lastChecked,isBasedOn:SITE+'/api/plans.json'},crumbs(SITE+'/calculator/#breadcrumb',[['AuthCost','/'],['Calculator','/calculator/']])],title:`Auth cost calculator — MAU, MFA, SSO and SCIM | ${NAME}`,desc:'Pick MAU, MFA, enterprise SSO connections and SCIM / Directory Sync customers. See every verifiable plan ranked by monthly cost. Shareable URL and embed snippet.',body:`
 <section class="hero"><div class="eyebrow">Cost calculator · ${asOf}</div><h1>Your MAU, MFA, and SSO count in — your bill out.</h1>
 <p class="lede">Rank verified plans by estimated monthly cost from published list prices only. The URL updates as you type; copy it or embed the calculator.</p></section>
 <div class="panel" id="calc"><div class="filters" style="margin:0">
@@ -422,6 +425,16 @@ const topTier=vid=>{const t=plans.filter(p=>p.vendor_id===vid&&p.price_tiers).ma
 const noPrice=(v,m)=>{const t=topTier(v.id);return t&&m>t?`Enterprise only (contact sales) — top published tier is ${kfmt(t)} MAU`:'no published self-serve price'};
 const tierTables=ps=>{const tp=ps.filter(p=>p.price_tiers);if(!tp.length)return '';const ms=[...new Set(tp.flatMap(p=>p.price_tiers.map(t=>t.mau)))].sort((a,b)=>a-b);
   return `<h2>Published MAU tiers (monthly / yearly)</h2><div class="tbl"><table><thead><tr><th class="n">MAU up to</th>${tp.map(p=>`<th class="n">${esc(p.plan)}</th>`).join('')}</tr></thead><tbody>${ms.map(m=>`<tr><td class="n">${m.toLocaleString('en-US')}</td>${tp.map(p=>{const t=p.price_tiers.find(x=>x.mau===m);return t?`<td class="n">$${t.mo.toLocaleString('en-US')}/mo<br><span class="src">$${t.yr.toLocaleString('en-US')}/yr</span></td>`:`<td class="n" title="Not offered at this tier">${p.tier_unavailable_from&&m>=p.tier_unavailable_from?'Not available':(m>p.tier_max_mau?'Contact sales':'—')}</td>`}).join('')}</tr>`).join('')}</tbody></table></div><p class="note">Usage between tiers is billed at the next tier up. Above the last tier: Enterprise, contact sales. Source: ${[...new Set(tp.map(p=>p.source))].map(u=>`<a href="${u}" rel="noopener">${esc(u.replace(/^https?:\/\//,''))}</a>`).join(', ')}, checked ${tp[0].checked}.</p>`};
+// RT-20261106-08: structured data built only from plans.json / vendors.json (no ratings, no invented fields)
+const offerDesc=p=>{const u=p.user_unit==='token'?'access tokens':p.user_unit;let d=`Base ${usd(p.base_mo)}/mo`;
+  if(p.price_tiers)d+=`; published MAU tiers from ${p.price_tiers[0].mau.toLocaleString('en-US')} to ${p.tier_max_mau.toLocaleString('en-US')} MAU, billed at the next tier up, above that contact sales`;
+  else{if(p.included_users!=null)d+=`, includes ${p.included_users.toLocaleString('en-US')} ${u}`;if(p.overage_per_user!=null)d+=`, then ${p.overage_bands?'from ':''}${usd(p.overage_per_user)} per ${u}`}
+  return `${d}. ${p.notes||''} List price read ${p.checked} from ${p.source}.`.replace(/\s+/g,' ').trim()};
+const vendorFaq=v=>{const ps=plans.filter(p=>p.vendor_id===v.id);const q=[];
+  q.push([`How much does ${v.name} cost at 10k, 50k and 100k users?`,MAU_TIERS.map(m=>{const b=bestFor(v.id,m);return b?`${kfmt(m)} users: ${usd(b.e.total)}/mo${star(b.p)} on ${b.p.plan}`:`${kfmt(m)} users: ${noPrice(v,m)}`}).join('; ')+`. Cheapest verified ${v.name} plan, monthly USD list price, no SSO, from ${v.source} (checked ${v.checked}).${ps.some(p=>p.user_unit==='token')?' '+tokNote:''}`]);
+  q.push([`How does ${v.name} count billable users?`,`${v.name} bills by ${v.billing_unit}: ${v.billing_unit_note.replace(/\.?$/,'.')}`]);
+  const sc=ps.filter(p=>p.scim_source);if(sc.length)q.push([`Does ${v.name} charge for SCIM / Directory Sync?`,sc.map(p=>`${p.plan}: ${scimTermTxt(p)}`).join('. ')+'.']);
+  return q};
 for(const v of vendors){
   const ps=plans.filter(p=>p.vendor_id===v.id);
   const ranks=SCENARIOS.map(s=>{const r=rankScenario(s.mau,s.sso);const best=r.find(x=>x.p.vendor_id===v.id);const overall=r[0];
@@ -437,8 +450,13 @@ for(const v of vendors){
     auditOrg(`vendors/${v.id}`,txt,[best,overall],s.sso);
     return `<li><b>${esc(s.label)}:</b> ${txt}.</li>`;
   }).join('');
-  page({file:`vendors/${v.id}.html`,og:'home',title:`${v.name} pricing — auth cost | ${NAME}`,desc:`${v.name} auth pricing with MAU/MRU and SSO fees, ranked against ${vendors.length-1} other vendors. Source checked ${v.checked}.`,body:`
-<section class="hero"><div class="eyebrow">Vendor</div><h1>${esc(v.name)}</h1>
+  const vUrl=SITE+'/vendors/'+v.id,vDm=[v.checked,...ps.map(p=>p.checked)].sort().pop(),vFaq=vendorFaq(v),bases=ps.map(p=>p.base_mo);
+  const vLd=[ORG_LD,{'@context':'https://schema.org','@type':'WebPage','@id':vUrl+'#webpage',url:vUrl,name:`${v.name} pricing — auth cost`,description:`${v.name} auth pricing with MAU/MRU and SSO fees, ranked against ${vendors.length-1} other vendors.`,inLanguage:'en',isPartOf:{'@id':SITE+'/#website'},publisher:{'@id':SITE+'/#org'},breadcrumb:{'@id':vUrl+'#breadcrumb'},mainEntity:{'@id':vUrl+'#product'},dateModified:vDm,lastReviewed:vDm,isBasedOn:SITE+'/api/plans.json',citation:[...new Set([v.source,...ps.map(p=>p.source)])]},
+    crumbs(vUrl+'#breadcrumb',[['AuthCost','/'],['Vendors','/vendors/'],[v.name,'/vendors/'+v.id]]),
+    {'@context':'https://schema.org','@type':'Product','@id':vUrl+'#product',name:`${v.name} authentication`,brand:{'@type':'Brand',name:v.name},url:vUrl,description:v.summary,category:'Authentication / identity platform',offers:{'@type':'AggregateOffer',priceCurrency:'USD',lowPrice:Math.min(...bases),highPrice:Math.max(...bases),offerCount:ps.length,offers:ps.map(p=>({'@type':'Offer',name:`${v.name} ${p.plan}`,url:p.source,price:p.base_mo,priceCurrency:'USD',description:offerDesc(p),seller:{'@type':'Organization',name:v.name,url:origin(v.source)},priceSpecification:{'@type':'UnitPriceSpecification',price:p.base_mo,priceCurrency:'USD',unitText:'MONTH',referenceQuantity:{'@type':'QuantitativeValue',value:1,unitCode:'MON'}}}))}},
+    {'@context':'https://schema.org','@type':'FAQPage',mainEntity:vFaq.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))}];
+  page({file:`vendors/${v.id}.html`,og:'home',ld:vLd,title:`${v.name} pricing — auth cost | ${NAME}`,desc:`${v.name} auth pricing with MAU/MRU and SSO fees, ranked against ${vendors.length-1} other vendors. Source checked ${v.checked}.`,body:`
+<section class="hero"><div class="eyebrow"><a href="/vendors/">Vendors</a> / ${esc(v.name)}</div><h1>${esc(v.name)}</h1>
 <p class="lede">Billing unit: <b>${esc(v.billing_unit)}</b> — ${esc(v.billing_unit_note)} Source: <a href="${v.source}" rel="noopener">${esc(v.source.replace(/^https?:\/\//,''))}</a>, checked ${v.checked}. <a href="${aff(v.id)}" rel="noopener">Visit ${esc(v.name)}</a></p></section>
 <div class="verdict"><div class="eyebrow">Answer · ${esc(v.name)} cost by MAU (no SSO)</div><p>${MAU_TIERS.map(m=>{const b=bestFor(v.id,m);return b?`<b>${kfmt(m)} users:</b> ${usd(b.e.total)}/mo${star(b.p)} on ${esc(b.p.plan)}`:`<b>${kfmt(m)} users:</b> ${noPrice(v,m)}`}).join(' · ')}.</p><ul>${ranks}</ul><p class="note">${asOf}. ${FED_NOTE} ${ORG_NOTE} ${meth}.</p>${ctaRow()}</div>${v.id==='auth0'?'\n<p class="note" data-a0-pricing-link><b>Full bracket table:</b> <a href="/guides/auth0-pricing">Auth0 pricing 2026: what you’ll actually pay at 1k–100k MAU</a> (every plan, cost cliffs, SSO and Startups month 13).</p>\n'+a0sBox():''}
 <p>${esc(v.summary)}</p>
@@ -451,6 +469,7 @@ ${ps.some(p=>p.org_source)?`<h2>${esc(v.name)} B2B organizations / tenants</h2><
 ${vLinks(v)}
 <div class="tbl"><table><thead><tr><th>Plan</th><th class="n">Base</th><th class="n">Included</th><th>Unit</th><th class="n">Overage</th><th class="n">SSO</th><th>Status</th><th>Notes</th></tr></thead>
 <tbody>${ps.map(p=>`<tr><td>${esc(p.plan)}</td><td class="n">${usd(p.base_mo)}</td><td class="n">${p.included_users??'—'}</td><td>${esc(p.user_unit||'—')}</td><td class="n">${p.overage_per_user!=null?usd(p.overage_per_user):'—'}</td><td class="n">${p.sso_unlimited?'unlimited':(p.sso_included!=null?p.sso_included+' incl.':'—')}${p.sso_extra_mo!=null?' · +'+usd(p.sso_extra_mo):''}</td><td>${tag(p.status)}</td><td style="white-space:normal;min-width:220px" class="src">${esc(p.notes)}</td></tr>`).join('')}</tbody></table></div>
+<section class="vfaq" id="faq"><h2>${esc(v.name)} pricing FAQ</h2>${vFaq.map(([q,a])=>`<h3 class="h3">${esc(q)}</h3><p>${esc(a)}</p>`).join('')}<p class="note">Answers are computed from the <a href="/api/plans.json">ledger rows</a> above; last read ${vDm}.</p></section>
 ${mailBox('v'+v.id,`Get alerted if ${v.name} changes prices`,`Watch ${v.name} for me`)}`});
 }
 page({file:'vendors/index.html',title:`Auth vendors tracked | ${NAME}`,desc:`All ${vendors.length} auth vendors in ${NAME} with plan counts and sources.`,body:`<section class="hero"><div class="eyebrow">Vendors</div><h1>${vendors.length} vendors</h1></section>
@@ -1041,4 +1060,19 @@ W('_redirects','/calculator.html /calculator/ 301\n');
  for(const v of vendors)if(!rdD('methodology.html').includes(`${esc(v.name)} ${v.checked}`))bad.push(`methodology: no last-read date for ${v.name}`);
  if(bad.length){console.error(`Pro proof guard: ${bad.length} problem(s):\n`+bad.join('\n'));process.exit(1)}
  console.log(`Pro proof guard: ${CLIFFS.length} cliffs + sample alert match estimate(); no Pro-only CSV or unprovable cadence claim in ${files.length} files`)}
+// RT-20261106-08 JSON-LD guard: every block parses; vendor/calculator types present; FAQ questions visible; Offer prices == plans.json. Never disable.
+// AC_NEGTEST_LD=1 corrupts one block + one Offer price + adds an invisible FAQ; the build must exit 1.
+{const bad=[];const NEG=process.env.AC_NEGTEST_LD==='1';let n=0;const files=[];const walk=d=>{for(const f of fs.readdirSync(d)){const q=path.join(d,f);if(fs.statSync(q).isDirectory())walk(q);else if(f.endsWith('.html'))files.push(q)}};walk(D);
+ for(const q of files){const rel=path.relative(D,q);let h=fs.readFileSync(q,'utf8');
+  if(NEG&&rel==='vendors/clerk.html')h=h.replace('"price":25,','"price":26,').replace('</head>','<script type="application/ld+json">{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Invisible question?"}]}</script><script type="application/ld+json">{bad</script></head>');
+  const blocks=[];for(const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)){n++;try{blocks.push(JSON.parse(m[1]))}catch(e){bad.push(`${rel}: JSON-LD does not parse (${e.message})`)}}
+  const vis=strip(h.replace(/^[\s\S]*?<body>/,'').replace(/<script[\s\S]*?<\/script>/g,''));
+  if(/^vendors\/(?!index)/.test(rel)){for(const t of ['WebPage','BreadcrumbList','Product','FAQPage'])if(!blocks.some(b=>b['@type']===t))bad.push(`${rel}: no ${t} JSON-LD`);
+   const wp=blocks.find(b=>b['@type']==='WebPage');if(wp&&!/^\d{4}-\d{2}-\d{2}$/.test(wp.dateModified||''))bad.push(`${rel}: WebPage.dateModified missing`);
+   const pr=blocks.find(b=>b['@type']==='Product');for(const o of pr?.offers?.offers||[]){const pl=plans.find(p=>`${p.vendor} ${p.plan}`===o.name);if(!pl||pl.base_mo!==o.price)bad.push(`${rel}: Offer "${o.name}" price ${o.price} != plans.json`)}
+   if(pr&&/aggregateRating|review/i.test(JSON.stringify(pr)))bad.push(`${rel}: rating/review in Product LD`)}
+  if(rel==='calculator/index.html'){const a=blocks.find(b=>b['@type']==='WebApplication');if(!a||a.isAccessibleForFree!==true||a.offers?.price!==0)bad.push('calculator: WebApplication (free, price 0) missing')}
+  if(/^vendors\/(?!index)|^calculator/.test(rel))for(const b of blocks.filter(b=>b['@type']==='FAQPage'))for(const qq of b.mainEntity||[])if(!vis.includes(qq.name))bad.push(`${rel}: FAQ question not visible on page: ${qq.name}`)}
+ if(bad.length){console.error(`JSON-LD guard: ${bad.length} problem(s):\n`+bad.slice(0,30).join('\n'));process.exit(1)}
+ console.log(`JSON-LD guard: ${n} blocks parse in ${files.length} pages; vendor Product/Offer prices match plans.json; FAQ questions visible`)}
 console.log(`built ${urls.length} pages (${sm.length} in sitemap) → dist/ (${plans.length} plans, ${nVer} verified, ${vendors.length} vendors)`);
