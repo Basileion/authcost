@@ -1,11 +1,11 @@
 # AuthCost — full ledger
 
 ## Calculator
-Interactive MAU / MFA / SSO cost ranking: https://authcost.pages.dev/calculator/?mau=50000&sso=5&mfa=0
+Interactive MAU / MFA / SSO cost ranking: http://localhost:4190/calculator/?mau=50000&sso=5&mfa=0
 Share via query params: mau, sso, scim (SSO customers that also need SCIM / Directory Sync, default 0), org (organizations / tenants, default 0 = B2C; each SSO connection counts as at least 1), mpo (members per organization, default = fpc), mfa (0|1), fpc (SSO users per connection for per-SSO-user vendors, default 200), vo (verified-only 0|1), embed=1 for chrome-free iframe.
-Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso=5" title="AuthCost calculator" width="100%" height="720" loading="lazy"></iframe>
+Embed: <iframe src="http://localhost:4190/calculator/?embed=1&mau=50000&sso=5" title="AuthCost calculator" width="100%" height="720" loading="lazy"></iframe>
 
-29 plans, 29 verified, 12 vendors. Checked through 2026-11-07.
+34 plans, 34 verified, 13 vendors. Checked through 2026-11-07.
 
 ## Vendors
 ### Clerk
@@ -91,6 +91,13 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - checked: 2026-11-07
 - unit: connection
 - summary: Free $0 forever: unlimited users/MAUs/orgs, no enterprise SSO or SCIM. Business: monthly list $79/conn (2–4), $72 (5–9), $65 (10–24), $55 (25–49), $47 (50–99); annual ~25% less. SSO and SCIM each count as one connection on the same ladder.
+
+### Authagonal
+- id: authagonal
+- source: https://authagonal.io/pricing
+- checked: 2026-11-07
+- unit: MAU
+- summary: Free $0: 250 active users, every feature incl. unlimited SSO + SCIM (hard cap). Starter $29/mo to 1,000 (hard cap after grace). Pro $69 to 5,000 then $0.04/user. Scale $149 to 25,000 then $0.025. Enterprise $339 for 100,000+ then $0.015 (vendor blog prices 50k MAU / 10 SAML+SCIM at $339). Yearly = Save 1 month (11× monthly). 14-day free trial on paid plans.
 
 ## Plans
 ### Clerk Hobby
@@ -497,6 +504,76 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 - source: https://ssojet.com/pricing/ (2026-11-07)
 - notes: No base fee and no per-user charge. Monthly list bills every connection at the volume rate for the total count: $79/conn (1–4; published table starts at 2–4), $72 (5–9), $65 (10–24), $55 (25–49), $47 (50–99); bill capped at the next tier’s entry price. SSO and SCIM each count as one connection on the same ladder. Annual ≈25% less (not used in rankings).
 
+### Authagonal Free
+- id: authagonal-free
+- base_mo: 0
+- included_users: 250
+- unit: MAU
+- overage: null
+- sso_included: null
+- sso_extra_mo: 0
+- organizations: Unlimited organizations (https://authagonal.io/pricing, 2026-11-07)
+- scim: Included, no per-connection SCIM fee printed. SCIM provisioning included on every plan; no per-connection SCIM fee. (https://authagonal.io/pricing, 2026-11-07)
+- status: verified
+- source: https://authagonal.io/pricing (2026-11-07)
+- notes: Free forever to 250 active users; hard cap (no continuous overage). Every feature incl. unlimited SSO + SCIM; community support; no card. 14-day free trial on paid plans (no card to start). Free SSO unlimited only to 250 users. No dedicated Mid plan between Scale (≤25k) and Enterprise (100k+ card); Enterprise used at 50k MAU per authagonal.io/blog/the-sso-tax-in-dollars. Yearly billing saves 1 month (11× monthly).
+
+### Authagonal Starter
+- id: authagonal-starter
+- base_mo: 29
+- included_users: 1000
+- unit: MAU
+- overage: null
+- sso_included: null
+- sso_extra_mo: 0
+- organizations: Unlimited organizations (https://authagonal.io/pricing, 2026-11-07)
+- scim: Included, no per-connection SCIM fee printed. SCIM provisioning included on every plan; no per-connection SCIM fee. (https://authagonal.io/pricing, 2026-11-07)
+- status: verified
+- source: https://authagonal.io/pricing (2026-11-07)
+- notes: Starter $29/mo ($27/mo billed yearly = Save 1 month). Up to 1,000 active users; after a 10-day grace, new sign-ins beyond the limit are paused (treat as hard cap; no continuous overage). Unlimited SSO + SCIM. Email support. 14-day free trial on paid plans (no card to start). Free SSO unlimited only to 250 users. No dedicated Mid plan between Scale (≤25k) and Enterprise (100k+ card); Enterprise used at 50k MAU per authagonal.io/blog/the-sso-tax-in-dollars. Yearly billing saves 1 month (11× monthly).
+
+### Authagonal Pro
+- id: authagonal-pro
+- base_mo: 69
+- included_users: 5000
+- unit: MAU
+- overage: 0.04
+- sso_included: null
+- sso_extra_mo: 0
+- organizations: Unlimited organizations (https://authagonal.io/pricing, 2026-11-07)
+- scim: Included, no per-connection SCIM fee printed. SCIM provisioning included on every plan; no per-connection SCIM fee. (https://authagonal.io/pricing, 2026-11-07)
+- status: verified
+- source: https://authagonal.io/pricing (2026-11-07)
+- notes: Pro $69/mo ($63/mo billed yearly). Up to 5,000 active users, then $0.04 per extra active user (FAQ). Unlimited SSO + SCIM. Priority support. 14-day free trial on paid plans (no card to start). Free SSO unlimited only to 250 users. No dedicated Mid plan between Scale (≤25k) and Enterprise (100k+ card); Enterprise used at 50k MAU per authagonal.io/blog/the-sso-tax-in-dollars. Yearly billing saves 1 month (11× monthly).
+
+### Authagonal Scale
+- id: authagonal-scale
+- base_mo: 149
+- included_users: 25000
+- unit: MAU
+- overage: 0.025
+- sso_included: null
+- sso_extra_mo: 0
+- organizations: Unlimited organizations (https://authagonal.io/pricing, 2026-11-07)
+- scim: Included, no per-connection SCIM fee printed. SCIM provisioning included on every plan; no per-connection SCIM fee. (https://authagonal.io/pricing, 2026-11-07)
+- status: verified
+- source: https://authagonal.io/pricing (2026-11-07)
+- notes: Scale $149/mo ($137/mo billed yearly). Up to 25,000 active users, then $0.025 per extra. Unlimited SSO + SCIM. Priority support. 14-day free trial on paid plans (no card to start). Free SSO unlimited only to 250 users. No dedicated Mid plan between Scale (≤25k) and Enterprise (100k+ card); Enterprise used at 50k MAU per authagonal.io/blog/the-sso-tax-in-dollars. Yearly billing saves 1 month (11× monthly).
+
+### Authagonal Enterprise
+- id: authagonal-enterprise
+- base_mo: 339
+- included_users: 100000
+- unit: MAU
+- overage: 0.015
+- sso_included: null
+- sso_extra_mo: 0
+- organizations: Unlimited organizations (https://authagonal.io/pricing, 2026-11-07)
+- scim: Included, no per-connection SCIM fee printed. SCIM provisioning included on every plan; no per-connection SCIM fee. (https://authagonal.io/pricing, 2026-11-07)
+- status: verified
+- source: https://authagonal.io/pricing (2026-11-07)
+- notes: Enterprise $339/mo ($311/mo billed yearly). Card lists 100,000+ active users then $0.015 overage; vendor blog prices 50k MAU / 10 SAML+SCIM at $339 (no Mid plan for 25k–100k). Unlimited SSO + SCIM. Dedicated support engineer. 14-day free trial on paid plans (no card to start). Free SSO unlimited only to 250 users. No dedicated Mid plan between Scale (≤25k) and Enterprise (100k+ card); Enterprise used at 50k MAU per authagonal.io/blog/the-sso-tax-in-dollars. Yearly billing saves 1 month (11× monthly).
+
 ## Cost by MAU (cheapest verified plan per vendor, USD/month, no SSO)
 | Vendor | 10k | 50k | 100k | 1M |
 |---|---|---|---|---|
@@ -512,99 +589,103 @@ Embed: <iframe src="https://authcost.pages.dev/calculator/?embed=1&mau=50000&sso
 | Descope | $249 (Pro) | $2,049 (Growth) | $4,549 (Growth) | $49,549 (Growth) |
 | Scalekit | $0 (Free) | $99 (Growth) | $99 (Growth) | $45,099 (Growth) |
 | SSOJet | $0 (Free) | $0 (Free) | $0 (Free) | $0 (Free) |
+| Authagonal | $149 (Scale) | $339 (Enterprise) | $339 (Enterprise) | $13,839 (Enterprise) |
 * Logto Pro bills access tokens, not MAU (50k tokens included, then $0.08 per 100) — the figure is base fee only; token overage depends on your usage.
 
 ## B2B organizations / tenants
-SSO results assumes 1 customer organization per SSO connection (members per org = SSO users per connection, default 200). Clerk: 100 retained orgs and 20 members per org free, then the B2B Authentication add-on at $100/mo ($85 billed annually) plus $1→$0.60 per extra org; Auth0: Free 5 and B2C plans 10 organizations, B2B plans unlimited; Descope: 10 / 35 / 100 active tenants, then $1 per tenant on Pro and Growth (Free has no overage); Kinde: 5 orgs on Free, 50 included on paid plans then $0.50→$0.43 per org; Logto: Organizations add-on $48/mo. Plans over a published cap are excluded. Yes for Clerk, Auth0, Descope, Kinde and Logto. At 10k users with 1 SSO customer (assumes 1 customer organization per SSO connection, 200 members), Clerk Pro is $125/mo because more than 20 members per org needs the B2B Authentication add-on ($100/mo); with 20 or fewer members it is $25/mo. Auth0 Free lists $0 but caps at 5 organizations. At 10k users and 150 organizations (no SSO): Clerk Pro $175/mo (incl. $150 org fees), Descope Pro $364/mo (incl. $115), Kinde Pro $75/mo (incl. $50); Auth0 Free and B2C plans are out (5 and 10-org caps). Details: https://authcost.pages.dev/methodology#b2b-orgs
+SSO results assumes 1 customer organization per SSO connection (members per org = SSO users per connection, default 200). Clerk: 100 retained orgs and 20 members per org free, then the B2B Authentication add-on at $100/mo ($85 billed annually) plus $1→$0.60 per extra org; Auth0: Free 5 and B2C plans 10 organizations, B2B plans unlimited; Descope: 10 / 35 / 100 active tenants, then $1 per tenant on Pro and Growth (Free has no overage); Kinde: 5 orgs on Free, 50 included on paid plans then $0.50→$0.43 per org; Logto: Organizations add-on $48/mo. Plans over a published cap are excluded. Yes for Clerk, Auth0, Descope, Kinde and Logto. At 10k users with 1 SSO customer (assumes 1 customer organization per SSO connection, 200 members), Clerk Pro is $125/mo because more than 20 members per org needs the B2B Authentication add-on ($100/mo); with 20 or fewer members it is $25/mo. Auth0 Free lists $0 but caps at 5 organizations. At 10k users and 150 organizations (no SSO): Clerk Pro $175/mo (incl. $150 org fees), Descope Pro $364/mo (incl. $115), Kinde Pro $75/mo (incl. $50); Auth0 Free and B2C plans are out (5 and 10-org caps). Details: http://localhost:4190/methodology#b2b-orgs
 
 ## SCIM / Directory Sync
-Calculator param scim = SSO customers that also need SCIM (default 0, capped at sso). At 10k users · 3 SSO + 3 SCIM customers (assumes every SCIM customer is also an SSO customer; assumes 1 customer organization per SSO connection), cheapest verified plan per vendor: Stytch Pay as you go (B2B) $125/mo incl. $125/mo SCIM; Scalekit Growth $339/mo incl. $120/mo SCIM; Clerk Pro $425/mo incl. $150/mo SCIM (Directory Sync billed from 2027-01-01, $0 before) and $100/mo B2B Authentication add-on; SSOJet Business $432/mo incl. $195/mo SCIM; WorkOS AuthKit $750/mo incl. $375/mo SCIM; Descope Growth $799/mo incl. $0/mo SCIM; Auth0 Essentials (B2B) $2,100/mo incl. $0/mo SCIM. WorkOS bills SSO and Directory Sync as separate connections, so a customer on both is two connections; Stytch’s 5 included connections are shared between SSO and SCIM; Scalekit bills SCIM as a separate connection (first of each free); SSOJet bills SSO and SCIM on one shared connection ladder. Not priceable with SCIM: Amazon Cognito (no SCIM on the pricing page), Logto (no SCIM on the pricing page), Kinde (SCIM coming soon), Supabase Auth (no SCIM on the pricing page), Firebase Auth / Identity Platform (no SCIM on the pricing page). Details: https://authcost.pages.dev/guides/enterprise-sso-cost#scim
+Calculator param scim = SSO customers that also need SCIM (default 0, capped at sso). At 10k users · 3 SSO + 3 SCIM customers (assumes every SCIM customer is also an SSO customer; assumes 1 customer organization per SSO connection), cheapest verified plan per vendor: Stytch Pay as you go (B2B) $125/mo incl. $125/mo SCIM; Authagonal Scale $149/mo incl. $0/mo SCIM; Scalekit Growth $339/mo incl. $120/mo SCIM; Clerk Pro $425/mo incl. $150/mo SCIM (Directory Sync billed from 2027-01-01, $0 before) and $100/mo B2B Authentication add-on; SSOJet Business $432/mo incl. $195/mo SCIM; WorkOS AuthKit $750/mo incl. $375/mo SCIM; Descope Growth $799/mo incl. $0/mo SCIM; Auth0 Essentials (B2B) $2,100/mo incl. $0/mo SCIM. WorkOS bills SSO and Directory Sync as separate connections, so a customer on both is two connections; Stytch’s 5 included connections are shared between SSO and SCIM; Scalekit bills SCIM as a separate connection (first of each free); SSOJet bills SSO and SCIM on one shared connection ladder. Not priceable with SCIM: Amazon Cognito (no SCIM on the pricing page), Logto (no SCIM on the pricing page), Kinde (SCIM coming soon), Supabase Auth (no SCIM on the pricing page), Firebase Auth / Identity Platform (no SCIM on the pricing page). Details: http://localhost:4190/guides/enterprise-sso-cost#scim
 
 ## Auth0 for Startups (promotion, not used in rankings)
 Auth0 for Startups (auth0.com/startups, read 2026-10-31) gives eligible startups one year of the B2B Professional plan free, up to 100,000 MAU, with 5 Enterprise Connections, Enterprise MFA and inbound SCIM. Eligibility (Auth0’s words): venture-backed with less than $5M in funding; less than $1M in annual recurring revenue; less than two years from the date of incorporation; not valid for existing paid Auth0/Okta customers or past program members. When the 12 months end, list price applies: B2B Professional with 3 SSO connections is $800/mo at 1,000 MAU, $1,500/mo at 5,000 MAU, $2,400/mo at 10,000 MAU; above 10,000 MAU Auth0 publishes no B2B Professional price (contact sales). Not eligible? Nothing changes: list prices apply from month 1. Our rankings always use list prices. Source: https://auth0.com/startups (read 2026-10-31).
 
 ## Self-hosting (Better Auth / Auth.js)
-Open-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Better Auth) have no per-user fee. Costs instead: transactional email (Amazon SES $0.10/1,000 outbound), SMS (Identity Platform US $0.01/SMS reference), database/hosting and engineer hours (user-supplied assumptions). Optional Better Auth managed infrastructure: Pro $20/mo, SSO 1 connection then $50/mo each, email $0.001, SMS $0.09 (better-auth.com/pricing, checked 2026-10-31). Break-even math vs Clerk/Auth0/Firebase at 10k/50k/100k: https://authcost.pages.dev/guides/self-hosted-auth-cost
+Open-source libraries (Better Auth MIT, Auth.js ISC; Auth.js is now part of Better Auth) have no per-user fee. Costs instead: transactional email (Amazon SES $0.10/1,000 outbound), SMS (Identity Platform US $0.01/SMS reference), database/hosting and engineer hours (user-supplied assumptions). Optional Better Auth managed infrastructure: Pro $20/mo, SSO 1 connection then $50/mo each, email $0.001, SMS $0.09 (better-auth.com/pricing, checked 2026-10-31). Break-even math vs Clerk/Auth0/Firebase at 10k/50k/100k: http://localhost:4190/guides/self-hosted-auth-cost
 
 ## Search pages
-- Clerk pricing: https://authcost.pages.dev/vendors/clerk
-- Clerk alternatives: https://authcost.pages.dev/alternatives/clerk
-- Auth0 pricing: https://authcost.pages.dev/vendors/auth0
-- Auth0 alternatives: https://authcost.pages.dev/alternatives/auth0
-- Amazon Cognito pricing: https://authcost.pages.dev/vendors/cognito
-- Amazon Cognito alternatives: https://authcost.pages.dev/alternatives/cognito
-- WorkOS pricing: https://authcost.pages.dev/vendors/workos
-- WorkOS alternatives: https://authcost.pages.dev/alternatives/workos
-- Stytch pricing: https://authcost.pages.dev/vendors/stytch
-- Stytch alternatives: https://authcost.pages.dev/alternatives/stytch
-- Logto pricing: https://authcost.pages.dev/vendors/logto
-- Logto alternatives: https://authcost.pages.dev/alternatives/logto
-- Kinde pricing: https://authcost.pages.dev/vendors/kinde
-- Kinde alternatives: https://authcost.pages.dev/alternatives/kinde
-- Supabase Auth pricing: https://authcost.pages.dev/vendors/supabase
-- Supabase Auth alternatives: https://authcost.pages.dev/alternatives/supabase
-- Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/vendors/firebase
-- Firebase Auth / Identity Platform alternatives: https://authcost.pages.dev/alternatives/firebase
-- Descope pricing: https://authcost.pages.dev/vendors/descope
-- Descope alternatives: https://authcost.pages.dev/alternatives/descope
-- Scalekit pricing: https://authcost.pages.dev/vendors/scalekit
-- Scalekit alternatives: https://authcost.pages.dev/alternatives/scalekit
-- SSOJet pricing: https://authcost.pages.dev/vendors/ssojet
-- SSOJet alternatives: https://authcost.pages.dev/alternatives/ssojet
-- Auth pricing by MAU: every vendor at 10k, 50k, 100k and 1M users: https://authcost.pages.dev/guides/auth-cost-by-mau
-- Cheapest auth at 100k users: https://authcost.pages.dev/guides/cheapest-auth-100k
-- Auth free tiers compared: https://authcost.pages.dev/guides/auth-free-tiers-compared
-- Self-hosted auth cost: Better Auth / Auth.js vs Clerk and Auth0: https://authcost.pages.dev/guides/self-hosted-auth-cost
-- Enterprise SSO cost: every vendor at 1, 3, 5, 10 and 25 connections: https://authcost.pages.dev/guides/enterprise-sso-cost
-- Auth0 pricing 2026: what you’ll actually pay at 1k–100k MAU: https://authcost.pages.dev/guides/auth0-pricing
-- Clerk vs Auth0 pricing: https://authcost.pages.dev/compare/clerk-vs-auth0
-- Clerk vs Amazon Cognito pricing: https://authcost.pages.dev/compare/clerk-vs-cognito
-- Clerk vs WorkOS pricing: https://authcost.pages.dev/compare/clerk-vs-workos
-- Clerk vs Stytch pricing: https://authcost.pages.dev/compare/clerk-vs-stytch
-- Clerk vs Kinde pricing: https://authcost.pages.dev/compare/clerk-vs-kinde
-- Clerk vs Supabase Auth pricing: https://authcost.pages.dev/compare/clerk-vs-supabase
-- Clerk vs Logto pricing: https://authcost.pages.dev/compare/clerk-vs-logto
-- Clerk vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/clerk-vs-firebase
-- Clerk vs Descope pricing: https://authcost.pages.dev/compare/clerk-vs-descope
-- Auth0 vs Amazon Cognito pricing: https://authcost.pages.dev/compare/auth0-vs-cognito
-- Auth0 vs WorkOS pricing: https://authcost.pages.dev/compare/auth0-vs-workos
-- Auth0 vs Stytch pricing: https://authcost.pages.dev/compare/auth0-vs-stytch
-- Auth0 vs Kinde pricing: https://authcost.pages.dev/compare/auth0-vs-kinde
-- Auth0 vs Supabase Auth pricing: https://authcost.pages.dev/compare/auth0-vs-supabase
-- Auth0 vs Logto pricing: https://authcost.pages.dev/compare/auth0-vs-logto
-- Auth0 vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/auth0-vs-firebase
-- Auth0 vs Descope pricing: https://authcost.pages.dev/compare/auth0-vs-descope
-- Amazon Cognito vs WorkOS pricing: https://authcost.pages.dev/compare/cognito-vs-workos
-- Amazon Cognito vs Stytch pricing: https://authcost.pages.dev/compare/cognito-vs-stytch
-- Amazon Cognito vs Kinde pricing: https://authcost.pages.dev/compare/cognito-vs-kinde
-- Amazon Cognito vs Supabase Auth pricing: https://authcost.pages.dev/compare/cognito-vs-supabase
-- Amazon Cognito vs Logto pricing: https://authcost.pages.dev/compare/cognito-vs-logto
-- Amazon Cognito vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/cognito-vs-firebase
-- Amazon Cognito vs Descope pricing: https://authcost.pages.dev/compare/cognito-vs-descope
-- WorkOS vs Stytch pricing: https://authcost.pages.dev/compare/workos-vs-stytch
-- WorkOS vs Kinde pricing: https://authcost.pages.dev/compare/workos-vs-kinde
-- WorkOS vs Supabase Auth pricing: https://authcost.pages.dev/compare/workos-vs-supabase
-- WorkOS vs Logto pricing: https://authcost.pages.dev/compare/workos-vs-logto
-- WorkOS vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/workos-vs-firebase
-- WorkOS vs Descope pricing: https://authcost.pages.dev/compare/workos-vs-descope
-- Stytch vs Kinde pricing: https://authcost.pages.dev/compare/stytch-vs-kinde
-- Stytch vs Supabase Auth pricing: https://authcost.pages.dev/compare/stytch-vs-supabase
-- Stytch vs Logto pricing: https://authcost.pages.dev/compare/stytch-vs-logto
-- Stytch vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/stytch-vs-firebase
-- Stytch vs Descope pricing: https://authcost.pages.dev/compare/stytch-vs-descope
-- Kinde vs Supabase Auth pricing: https://authcost.pages.dev/compare/kinde-vs-supabase
-- Kinde vs Logto pricing: https://authcost.pages.dev/compare/kinde-vs-logto
-- Kinde vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/kinde-vs-firebase
-- Kinde vs Descope pricing: https://authcost.pages.dev/compare/kinde-vs-descope
-- Supabase Auth vs Logto pricing: https://authcost.pages.dev/compare/supabase-vs-logto
-- Supabase Auth vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/supabase-vs-firebase
-- Supabase Auth vs Descope pricing: https://authcost.pages.dev/compare/supabase-vs-descope
-- Logto vs Firebase Auth / Identity Platform pricing: https://authcost.pages.dev/compare/logto-vs-firebase
-- Logto vs Descope pricing: https://authcost.pages.dev/compare/logto-vs-descope
-- Firebase Auth / Identity Platform vs Descope pricing: https://authcost.pages.dev/compare/firebase-vs-descope
+- Clerk pricing: http://localhost:4190/vendors/clerk
+- Clerk alternatives: http://localhost:4190/alternatives/clerk
+- Auth0 pricing: http://localhost:4190/vendors/auth0
+- Auth0 alternatives: http://localhost:4190/alternatives/auth0
+- Amazon Cognito pricing: http://localhost:4190/vendors/cognito
+- Amazon Cognito alternatives: http://localhost:4190/alternatives/cognito
+- WorkOS pricing: http://localhost:4190/vendors/workos
+- WorkOS alternatives: http://localhost:4190/alternatives/workos
+- Stytch pricing: http://localhost:4190/vendors/stytch
+- Stytch alternatives: http://localhost:4190/alternatives/stytch
+- Logto pricing: http://localhost:4190/vendors/logto
+- Logto alternatives: http://localhost:4190/alternatives/logto
+- Kinde pricing: http://localhost:4190/vendors/kinde
+- Kinde alternatives: http://localhost:4190/alternatives/kinde
+- Supabase Auth pricing: http://localhost:4190/vendors/supabase
+- Supabase Auth alternatives: http://localhost:4190/alternatives/supabase
+- Firebase Auth / Identity Platform pricing: http://localhost:4190/vendors/firebase
+- Firebase Auth / Identity Platform alternatives: http://localhost:4190/alternatives/firebase
+- Descope pricing: http://localhost:4190/vendors/descope
+- Descope alternatives: http://localhost:4190/alternatives/descope
+- Scalekit pricing: http://localhost:4190/vendors/scalekit
+- Scalekit alternatives: http://localhost:4190/alternatives/scalekit
+- SSOJet pricing: http://localhost:4190/vendors/ssojet
+- SSOJet alternatives: http://localhost:4190/alternatives/ssojet
+- Authagonal pricing: http://localhost:4190/vendors/authagonal
+- Authagonal alternatives: http://localhost:4190/alternatives/authagonal
+- Auth pricing by MAU: every vendor at 10k, 50k, 100k and 1M users: http://localhost:4190/guides/auth-cost-by-mau
+- Cheapest auth at 100k users: http://localhost:4190/guides/cheapest-auth-100k
+- Auth free tiers compared: http://localhost:4190/guides/auth-free-tiers-compared
+- Self-hosted auth cost: Better Auth / Auth.js vs Clerk and Auth0: http://localhost:4190/guides/self-hosted-auth-cost
+- Enterprise SSO cost: every vendor at 1, 3, 5, 10 and 25 connections: http://localhost:4190/guides/enterprise-sso-cost
+- Auth0 pricing 2026: what you’ll actually pay at 1k–100k MAU: http://localhost:4190/guides/auth0-pricing
+- Clerk vs Auth0 pricing: http://localhost:4190/compare/clerk-vs-auth0
+- Clerk vs Amazon Cognito pricing: http://localhost:4190/compare/clerk-vs-cognito
+- Clerk vs WorkOS pricing: http://localhost:4190/compare/clerk-vs-workos
+- Clerk vs Stytch pricing: http://localhost:4190/compare/clerk-vs-stytch
+- Clerk vs Kinde pricing: http://localhost:4190/compare/clerk-vs-kinde
+- Clerk vs Supabase Auth pricing: http://localhost:4190/compare/clerk-vs-supabase
+- Clerk vs Logto pricing: http://localhost:4190/compare/clerk-vs-logto
+- Clerk vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/clerk-vs-firebase
+- Clerk vs Descope pricing: http://localhost:4190/compare/clerk-vs-descope
+- Auth0 vs Amazon Cognito pricing: http://localhost:4190/compare/auth0-vs-cognito
+- Auth0 vs WorkOS pricing: http://localhost:4190/compare/auth0-vs-workos
+- Auth0 vs Stytch pricing: http://localhost:4190/compare/auth0-vs-stytch
+- Auth0 vs Kinde pricing: http://localhost:4190/compare/auth0-vs-kinde
+- Auth0 vs Supabase Auth pricing: http://localhost:4190/compare/auth0-vs-supabase
+- Auth0 vs Logto pricing: http://localhost:4190/compare/auth0-vs-logto
+- Auth0 vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/auth0-vs-firebase
+- Auth0 vs Descope pricing: http://localhost:4190/compare/auth0-vs-descope
+- Amazon Cognito vs WorkOS pricing: http://localhost:4190/compare/cognito-vs-workos
+- Amazon Cognito vs Stytch pricing: http://localhost:4190/compare/cognito-vs-stytch
+- Amazon Cognito vs Kinde pricing: http://localhost:4190/compare/cognito-vs-kinde
+- Amazon Cognito vs Supabase Auth pricing: http://localhost:4190/compare/cognito-vs-supabase
+- Amazon Cognito vs Logto pricing: http://localhost:4190/compare/cognito-vs-logto
+- Amazon Cognito vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/cognito-vs-firebase
+- Amazon Cognito vs Descope pricing: http://localhost:4190/compare/cognito-vs-descope
+- WorkOS vs Stytch pricing: http://localhost:4190/compare/workos-vs-stytch
+- WorkOS vs Kinde pricing: http://localhost:4190/compare/workos-vs-kinde
+- WorkOS vs Supabase Auth pricing: http://localhost:4190/compare/workos-vs-supabase
+- WorkOS vs Logto pricing: http://localhost:4190/compare/workos-vs-logto
+- WorkOS vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/workos-vs-firebase
+- WorkOS vs Descope pricing: http://localhost:4190/compare/workos-vs-descope
+- Stytch vs Kinde pricing: http://localhost:4190/compare/stytch-vs-kinde
+- Stytch vs Supabase Auth pricing: http://localhost:4190/compare/stytch-vs-supabase
+- Stytch vs Logto pricing: http://localhost:4190/compare/stytch-vs-logto
+- Stytch vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/stytch-vs-firebase
+- Stytch vs Descope pricing: http://localhost:4190/compare/stytch-vs-descope
+- Kinde vs Supabase Auth pricing: http://localhost:4190/compare/kinde-vs-supabase
+- Kinde vs Logto pricing: http://localhost:4190/compare/kinde-vs-logto
+- Kinde vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/kinde-vs-firebase
+- Kinde vs Descope pricing: http://localhost:4190/compare/kinde-vs-descope
+- Supabase Auth vs Logto pricing: http://localhost:4190/compare/supabase-vs-logto
+- Supabase Auth vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/supabase-vs-firebase
+- Supabase Auth vs Descope pricing: http://localhost:4190/compare/supabase-vs-descope
+- Logto vs Firebase Auth / Identity Platform pricing: http://localhost:4190/compare/logto-vs-firebase
+- Logto vs Descope pricing: http://localhost:4190/compare/logto-vs-descope
+- Firebase Auth / Identity Platform vs Descope pricing: http://localhost:4190/compare/firebase-vs-descope
 
 ## Changes
 - 2027-01-01 Clerk (fee-start): Clerk Directory Sync connection billing starts 2027-01-01 (same ladder as SSO: 1 included on Pro/Business, then $75 / $60 bands). Announced on clerk.com/pricing. [https://clerk.com/pricing]
+- 2026-11-07 AuthCost (coverage-added): Added Authagonal (Free 250 MAU hard cap with unlimited SSO+SCIM; Starter $29/1k hard cap; Pro $69/5k then $0.04; Scale $149/25k then $0.025; Enterprise $339/100k+ then $0.015 — 50k scenarios select Enterprise at $339 per vendor blog; no Mid tier for 25k–100k) as a full ledger vendor. Read from authagonal.io/pricing on 2026-11-07. Yearly = Save 1 month (11× monthly). Now ranks in the calculator and on /guides/enterprise-sso-cost (no longer unread / reference-only). [https://authagonal.io/pricing]
 - 2026-11-07 AuthCost (coverage-added): Added Scalekit (Free 25k MAU / 1 SSO+1 SCIM; Growth $99 + $60/$45/$35/$30 connection ladder, first of each free) and SSOJet (Free unlimited users no SSO; Business monthly $79/$72/$65/$55/$47 per shared SSO-or-SCIM connection) as full ledger vendors. Read from scalekit.com/pricing/auth-for-saas and ssojet.com/pricing on 2026-11-07. They now rank in the calculator and on /guides/enterprise-sso-cost (no longer reference-only / unread). [https://www.scalekit.com/pricing/auth-for-saas]
 - 2026-10-31 AuthCost (correction): Addition/correction: SCIM / Directory Sync is now priced, from each vendor's pricing page read 2026-10-31. WorkOS bills Directory Sync as its own connection ($125 each for 1–15, then $100/$80/$65), so a customer on SSO and SCIM is two connections; Clerk includes 1 Directory Sync connection, then $75/mo each (2–15), $60, $48, billed from January 1, 2027; Stytch's 5 included connections are shared between SSO and SCIM, then $125 each; Auth0 includes inbound SCIM on Free and B2B plans; Descope includes SCIM on Growth; Kinde lists SCIM as coming soon on Scale; Cognito, Supabase, Firebase / Identity Platform and Logto publish no SCIM on their pricing pages. Before, SCIM was listed per plan but never added to totals: at 10k users with 3 SSO customers who all need SCIM, WorkOS read $375/mo and is $750/mo; Stytch read $0 and is $125/mo; Clerk Pro read $275/mo and is $425/mo from 2027-01-01. New calculator input scim= (default 0). [https://workos.com/pricing]
 - 2026-10-31 Auth0 (coverage-added): Added Auth0 for Startups (auth0.com/startups, read 2026-10-31): eligible startups (venture-backed with less than $5M in funding, less than $1M ARR, less than two years from incorporation; not existing paid Auth0/Okta customers or past members) get one year of the B2B Professional plan free, up to 100,000 MAU with 5 Enterprise Connections and inbound SCIM. Shown as a note on the SSO guide, Auth0 vendor page and every Auth0 comparison with the month-13 list price (B2B Professional with 3 SSO connections: $800/mo at 1,000 MAU, $1,500 at 5,000, $2,400 at 10,000; above 10,000 MAU contact sales). Rankings still use list prices. [https://auth0.com/startups]

@@ -5,6 +5,15 @@
     "vendor": "AuthCost",
     "vendor_id": "authcost",
     "kind": "coverage-added",
+    "summary": "Added Authagonal (Free 250 MAU hard cap with unlimited SSO+SCIM; Starter $29/1k hard cap; Pro $69/5k then $0.04; Scale $149/25k then $0.025; Enterprise $339/100k+ then $0.015 \u2014 50k scenarios select Enterprise at $339 per vendor blog; no Mid tier for 25k\u2013100k) as a full ledger vendor. Read from authagonal.io/pricing on 2026-11-07. Yearly = Save 1 month (11\u00d7 monthly). Now ranks in the calculator and on /guides/enterprise-sso-cost (no longer unread / reference-only).",
+    "source": "https://authagonal.io/pricing"
+  },
+  {
+    "date": "2026-11-07",
+    "observed": "2026-11-07",
+    "vendor": "AuthCost",
+    "vendor_id": "authcost",
+    "kind": "coverage-added",
     "summary": "Added Scalekit (Free 25k MAU / 1 SSO+1 SCIM; Growth $99 + $60/$45/$35/$30 connection ladder, first of each free) and SSOJet (Free unlimited users no SSO; Business monthly $79/$72/$65/$55/$47 per shared SSO-or-SCIM connection) as full ledger vendors. Read from scalekit.com/pricing/auth-for-saas and ssojet.com/pricing on 2026-11-07. They now rank in the calculator and on /guides/enterprise-sso-cost (no longer reference-only / unread).",
     "source": "https://www.scalekit.com/pricing/auth-for-saas"
   },

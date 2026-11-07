@@ -9,7 +9,7 @@ const CHECKOUT_PRO_MONTHLY='https://o11y-watch.kit.com/products/authcost-pro';
 const CHECKOUT_PRO_ANNUAL='https://o11y-watch.kit.com/products/authcost-pro';
 const CHECKOUT_SPONSOR='https://o11y-watch.kit.com/products/authcost-founding-sponsor-slot';
 const CONTACT='mailto:basileion.ops@gmail.com';
-const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending',firebase:'#pending',descope:'#pending',scalekit:'#pending',ssojet:'#pending'}; // replace #pending when affiliate programs approved
+const AFFILIATES={clerk:'#pending',auth0:'#pending',workos:'#pending',stytch:'#pending',kinde:'#pending',logto:'#pending',supabase:'#pending',cognito:'#pending',firebase:'#pending',descope:'#pending',scalekit:'#pending',ssojet:'#pending',authagonal:'#pending'}; // replace #pending when affiliate programs approved
 const NAME='AuthCost';
 const rd=f=>JSON.parse(fs.readFileSync(R('data/'+f),'utf8'));
 const vendors=rd('vendors.json'),plans=rd('plans.json'),changes=rd('changes.json').sort((a,b)=>b.date.localeCompare(a.date));
@@ -345,7 +345,8 @@ page({file:'index.html',title:`${NAME} — auth pricing that scales without the 
 <label>SSO connections<input id="k-sso" type="number" min="0" step="1" value="5"></label></div>
 <div id="k-out" class="kout" aria-live="polite"></div>
 <form class="signup inline" action="${FORM_ACTION}" method="post" data-form="kit"><label for="k-e" class="skip">Email</label><input id="k-e" type="email" name="email_address" required placeholder="you@company.com" autocomplete="email"><button class="btn ghost" type="submit">Email me weekly</button></form>
-<p class="note" style="margin:0">Weekly price changes for your scenario. Unsubscribe in one click · <a href="/privacy">Privacy</a>.</p></aside></div>
+<p class="note" style="margin:0">Weekly ledger: every vendor price change we confirm (all scenarios). Unsubscribe in one click · <a href="/privacy">Privacy</a>.</p>
+<p class="note" style="margin:6px 0 0">Want the $ delta for YOUR MAU+SSO+SCIM? <a href="/pro" id="k-pro">Pro →</a></p></aside></div>
 ${trust}</section>
 <section class="proof" aria-label="What backs these numbers"><div><b>${nVer}</b><span>plan rows verified on official pages</span></div><div><b>${vendors.length}</b><span>vendors, every row source-linked</span></div><div><b>${changes.length}</b><span>dated entries in the <a href="/changes">price log</a></span></div><div><b>${lastChecked}</b><span>last full check · <a href="/methodology">method</a></span></div></section>
 <div class="kpis">${SCENARIOS.map(s=>{const r=rankScenario(s.mau,s.sso);const z=r[0];if(!z)return '';const t=tieCount(r,z);const fed=s.sso&&isFed(z.p);return `<div><b>${z.e.total===0?'$0':usd(z.e.total)+'/mo'}${fed?'†':''}</b><span>cheapest · ${esc(s.label)}: ${t>1?`${z.e.total===0?`${t} plans tie at $0`:`${t} plans tie`}`:`${esc(z.p.vendor)} ${esc(z.p.plan)}`} (${r.length} ranked)</span></div>`}).join('')}</div>
@@ -736,7 +737,7 @@ ${vendors.map(v=>`<tr><td><a href="/vendors/${v.id}">${esc(v.name)}</a></td><td>
 ${vendors.map(v=>`<tr><td><a href="/vendors/${v.id}">${esc(v.name)}</a></td><td>${esc((()=>{const ps=plans.filter(p=>p.vendor_id===v.id&&p.status==='verified');const inc=ps.filter(p=>p.scim_model==='included');return inc.length&&inc.length<ps.length&&!ps.some(p=>p.scim_model==='separate'||p.scim_model==='pooled')?`Included on ${inc.map(p=>p.plan).join(', ')}`:SCIM_MODEL_LBL[scimModelOf(v.id)]})())}</td>${CONN.map(n=>cellS(v.id,n)).join('')}</tr>`).join('')}
 <tr><td><a href="${BA.src}" rel="noopener">Better Auth</a> (self-hosted library)</td><td>Not yet checked</td>${CONN.map(()=>'<td class="n">—</td>').join('')}</tr>
 </tbody></table></div>
-<p class="note">Total monthly USD list price at ${kfmt(GM)} users (base + users + SSO + SCIM + org fees), cheapest verified plan per vendor; “SCIM” = the part of the total that SCIM adds. “—” = no published SCIM price on a plan that fits (${esc(SCIM_NOPRICE().map(v=>v.name).join(', '))}). ‡ Clerk: Directory Sync “billing … starts January 1, 2027”; until then extra connections are $0, the column shows the list price from that date. SCIM terms per plan, with sources: <a href="/methodology#scim">methodology</a>. Scalekit and SSOJet are full ledger vendors (read 2026-11-07). <a href="/calculator/?mau=${GM}&sso=3&scim=3">Price your own SSO + SCIM mix</a>.</p>
+<p class="note">Total monthly USD list price at ${kfmt(GM)} users (base + users + SSO + SCIM + org fees), cheapest verified plan per vendor; “SCIM” = the part of the total that SCIM adds. “—” = no published SCIM price on a plan that fits (${esc(SCIM_NOPRICE().map(v=>v.name).join(', '))}). ‡ Clerk: Directory Sync “billing … starts January 1, 2027”; until then extra connections are $0, the column shows the list price from that date. SCIM terms per plan, with sources: <a href="/methodology#scim">methodology</a>. Scalekit, SSOJet and Authagonal are full ledger vendors (read 2026-11-07). <a href="/calculator/?mau=${GM}&sso=3&scim=3">Price your own SSO + SCIM mix</a>.</p>
 <h2>“Auth0 wants $800/month”: the Auth0 SSO math</h2><p>${esc(a0ans)} Compare <a href="/vendors/auth0">Auth0 pricing tiers</a> and <a href="/compare/clerk-vs-auth0">Clerk vs Auth0</a>.</p>
 ${a0sBox()}
 <h2>The 3 ways vendors charge for enterprise SSO</h2>
@@ -751,9 +752,26 @@ ${a0sBox()}
 ${plans.filter(p=>p.status==='verified'&&(p.sso_included||p.sso_extra_mo!=null||p.sso_bands||p.sso_unlimited||isFed(p))).map(p=>`<tr><td><a href="/vendors/${p.vendor_id}">${esc(p.vendor)}</a> ${esc(p.plan)}</td><td class="n">${p.price_tiers?`from ${usd(p.price_tiers[0].mo)}`:usd(p.base_mo)}</td><td style="white-space:normal">${esc(ladder(p))}</td><td style="white-space:normal">${esc(scim(p))}</td><td class="src"><a href="${p.source}" rel="noopener">source</a> · ${p.checked}</td></tr>`).join('')}
 </tbody></table></div>
 <p class="note">SCIM terms read on each vendor’s pricing page on 2026-10-31 (source per plan in the <a href="/methodology#scim">methodology</a>). Stytch’s included connections are shared between SSO and SCIM; WorkOS and Clerk count SCIM / Directory Sync as separate connections. Descope Free also caps at 10 monthly active tenants. B2B organization/tenant fees and caps are included: see <a href="#b2b-orgs">B2B org fees</a>.</p>
+<h2 id="connections-10-50">10 and 50 connections: monthly + annual list (shown, not ranked)</h2>
+<p>Dated ${lastChecked}. Citable totals at ${kfmt(GM)} users for <b>10</b> and <b>50</b> enterprise SSO connections when every connection also needs SCIM / Directory Sync (${SCIM_SHORT}; ${ORG_SHORT}). <b>Monthly</b> = calculator list total. <b>Annual</b> = 12× monthly list, except Authagonal yearly = 11× monthly (“Save 1 month” on <a href="https://authagonal.io/pricing" rel="noopener">authagonal.io/pricing</a>). Annual figures are <em>shown, not ranked</em> — rankings stay monthly. Sources and check dates are per plan in the table below and in <a href="/methodology">methodology</a>.</p>
+${(()=>{const NS=[10,50];
+  const rows=vendors.map(v=>{
+    const cells=NS.map(n=>{
+      const z=scimBest(GM,n,n).find(y=>y.p.vendor_id===v.id);
+      if(!z) return `<td class="n">—</td><td class="n">—</td>`;
+      const mo=z.e.total;
+      const yrMult=(v.id==='authagonal')?11:12;
+      const ann=Math.round(mo*yrMult);
+      return `<td class="n">${usd(mo)}<br><span class="src">${esc(z.p.plan)}</span></td><td class="n">${usd(ann)}/yr${v.id==='authagonal'?'<br><span class="src">11× mo</span>':''}</td>`;
+    }).join('');
+    return `<tr><td><a href="/vendors/${v.id}">${esc(v.name)}</a></td>${cells}</tr>`;
+  }).join('');
+  return `<div class="tbl"><table><thead><tr><th>Vendor</th><th class="n">10 SSO+SCIM / mo</th><th class="n">10 annual (shown)</th><th class="n">50 SSO+SCIM / mo</th><th class="n">50 annual (shown)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+})()}
+<p class="note">Checked ${lastChecked}. “—” = no verified plan can price that many SSO+SCIM connections at ${kfmt(GM)} users. Authagonal annual uses the published yearly discount (11× monthly); every other vendor’s annual column is 12× the monthly list unless that vendor publishes a different annual rate (we have not applied unpublished discounts). Not used in calculator rankings. <a href="/calculator/?mau=${GM}&sso=10&scim=10">Price 10 SSO+SCIM</a> · <a href="/calculator/?mau=${GM}&sso=50&scim=50">Price 50 SSO+SCIM</a>.</p>
 <h2 id="b2b-orgs">B2B org fees: does my organization count change the bill?</h2><p>${esc(B2B_ANS)}</p>${orgExTable()}${orgTable()}
 <h2>“Migrating SSO/SCIM sounds like it might be a bit of a pain”</h2><p>It is per customer: each connection means re-configuring that customer’s IdP. If you expect more than a handful of enterprise customers, compare the 10- and 25-connection columns before you pick, not just the free tier. Self-hosting? ${esc(shQ)} See <a href="${SH}">self-hosted auth cost</a>.</p>
-<p class="note">Scalekit and SSOJet are full ledger vendors (pricing pages read 2026-11-07) and rank in the <a href="/calculator/?mau=${GM}&sso=3">calculator</a>. Authagonal is still unread (no row until we read authagonal.io/pricing).</p>
+<p class="note">Scalekit, SSOJet and Authagonal are full ledger vendors (pricing pages read 2026-11-07) and rank in the <a href="/calculator/?mau=${GM}&sso=3">calculator</a>.</p>
 <h2>Questions</h2>${Q.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
 ${mailBox('gsso','Hear when an SSO price moves','Send me the weekly ledger')}`});
 }
@@ -1096,6 +1114,31 @@ W('_redirects','/calculator.html /calculator/ 301\n');
  if(!sj33||sj33.total!==432||sj33.scim!==195)bad.push(`RT-06 SSOJet 3 SSO + 3 SCIM should be $432 incl. $195 SCIM, got ${sj33&&sj33.total}/${sj33&&sj33.scim}`);
  if(bad.length){console.error('RT-06 Scalekit/SSOJet ledger guard: '+bad.length+'\n'+bad.join('\n'));process.exit(1)}
  console.log('RT-06 Scalekit/SSOJet ledger guard: full vendors, ladder cells match estimate()')}
+// RT-20261107-57/58/59: Authagonal full ledger; home form copy honest; 10/50 annual table; 50k/10/10 ranks Enterprise ~$339.
+{const bad=[];const g=fs.readFileSync(path.join(D,'guides/enterprise-sso-cost.html'),'utf8');const home=fs.readFileSync(path.join(D,'index.html'),'utf8');
+ if(/Authagonal[^<]{0,80}still unread|Authagonal[^<]{0,80}reference-only|no row until we read authagonal/i.test(g))bad.push('RT-57 enterprise-sso-cost still has Authagonal unread / reference-only wording');
+ if(!fs.existsSync(path.join(D,'vendors/authagonal.html')))bad.push('RT-57 missing /vendors/authagonal');
+ if(/Weekly price changes for your scenario/i.test(home))bad.push('RT-58 home form still promises scenario-specific weekly prices');
+ if(!/Weekly ledger: every vendor price change we confirm \(all scenarios\)/.test(home))bad.push('RT-58 home form missing honest weekly-ledger copy');
+ if(!home.includes('id="k-pro"')||!/Want the \$ delta for YOUR MAU\+SSO\+SCIM/.test(home))bad.push('RT-58 home missing Pro delta link');
+ if(!/connections-10-50/.test(g)||!/10 SSO\+SCIM \/ mo/.test(g)||!/50 SSO\+SCIM \/ mo/.test(g)||!/shown, not ranked/i.test(g))bad.push('RT-59 enterprise-sso-cost missing 10/50 monthly+annual table');
+ const ae=estimate(pid('authagonal-enterprise'),50000,10,{scim:10});
+ if(!ae||ae.total!==339)bad.push(`RT-57 Authagonal Enterprise 50k/10/10 should be $339, got ${ae&&ae.total}`);
+ const as=estimate(pid('authagonal-scale'),10000,10,{scim:10});
+ if(!as||as.total!==149)bad.push(`RT-57 Authagonal Scale 10k/10/10 should be $149, got ${as&&as.total}`);
+ const af=estimate(pid('authagonal-free'),251,1,{scim:1});
+ if(af)bad.push('RT-57 Authagonal Free must hard-cap out above 250 MAU');
+ const aSt=estimate(pid('authagonal-starter'),1001,1,{scim:1});
+ if(aSt)bad.push('RT-57 Authagonal Starter must hard-cap out above 1,000 MAU');
+ const ranked50=rankScenario(50000,10).filter(z=>{const e=estimate(z.p,50000,10,{scim:10});return e&&e.total!=null}).map(z=>({p:z.p,e:estimate(z.p,50000,10,{scim:10})})).filter(z=>z.e).sort((a,b)=>a.e.total-b.e.total);
+ // Prefer scimBest for proper SCIM ranking
+ const rankedScim=scimBest(50000,10,10);
+ if(!rankedScim.length||rankedScim[0].p.id!=='authagonal-enterprise'||rankedScim[0].e.total!==339)bad.push(`RT-57 50k/10/10 cheapest should be Authagonal Enterprise $339, got ${rankedScim[0]&&rankedScim[0].p.id} ${rankedScim[0]&&rankedScim[0].e.total}`);
+ if(!g.includes(usd(339))||!g.includes('Authagonal'))bad.push('RT-57 enterprise-sso-cost missing Authagonal $339');
+ // Annual Authagonal 10-conn at 10k = 149*11
+ if(!g.includes(usd(149*11))&&!g.includes('$1,639'))bad.push('RT-59 missing Authagonal 10-conn annual 11× ($1,639)');
+ if(bad.length){console.error('RT-57/58/59 Authagonal+form+annual guard: '+bad.length+'\n'+bad.join('\n'));process.exit(1)}
+ console.log('RT-57/58/59 Authagonal ledger + honest form + 10/50 annual table guard ok')}
 // Pro proof guard (RT-20261031-04 / -08 / -61, same idea as VPSLedger 4c9a66c). Never disable: fix the cause.
 // AC_NEGTEST_PRO=1 injects a Pro-only 'CSV export' claim + a wrong cliff figure + a 'checked weekly' claim; the build must exit 1.
 {const bad=[];const NEG=process.env.AC_NEGTEST_PRO==='1';const rdD=f=>fs.readFileSync(path.join(D,f),'utf8');

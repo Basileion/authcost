@@ -189,6 +189,8 @@ async function renderHome(){
   ${fedShown?`<p class="note">† Bills SSO per SSO user: assumes ${FED_PER_CONN} SSO users per connection. <a href="/calculator/?mau=${mau}&sso=${sso}&fpc=${FED_PER_CONN}">Change it</a>.</p>`:''}
   ${top.some(x=>x.e.org>0)?`<p class="note">‡ Includes B2B organization fees: assumes 1 customer organization per SSO connection (e.g. Clerk’s $100/mo B2B Authentication add-on above 20 members per org). <a href="/calculator/?mau=${mau}&sso=${sso}&org=${sso}">Set your org count</a>.</p>`:''}
   <p class="note">${ranked.length} plans ranked · <a href="/calculator/?mau=${mau}&sso=${sso}&mfa=0">Open full calculator</a></p>`;
+  const pro=$('#k-pro');
+  if(pro) pro.href=`/pro?mau=${mau}&sso=${sso}`;
 }
 if(kOut){ [kMau,kSso].forEach(el=>el&&el.addEventListener('input',renderHome)); renderHome(); }
 

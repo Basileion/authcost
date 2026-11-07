@@ -25,4 +25,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://authcost.pages.dev/sitemap.xml
+Sitemap: http://localhost:4190/sitemap.xml

@@ -28,3 +28,8 @@ scalekit-free,Scalekit,Free,0,25000,MAU,,1,,verified,https://www.scalekit.com/pr
 scalekit-growth,Scalekit,Growth,99,100000,MAU,0.05,1,60,verified,https://www.scalekit.com/pricing/auth-for-saas,2026-11-07,,100,,1,,,separate,1,60,,https://www.scalekit.com/pricing/auth-for-saas,2026-11-07
 ssojet-free,SSOJet,Free,0,,MAU,,0,,verified,https://ssojet.com/pricing/,2026-11-07,,,,,,,none,0,,,https://ssojet.com/pricing/,2026-11-07
 ssojet-business,SSOJet,Business,0,,MAU,,0,79,verified,https://ssojet.com/pricing/,2026-11-07,,,,,,,pooled,0,79,,https://ssojet.com/pricing/,2026-11-07
+authagonal-free,Authagonal,Free,0,250,MAU,,,0,verified,https://authagonal.io/pricing,2026-11-07,,,,,,,included,,0,,https://authagonal.io/pricing,2026-11-07
+authagonal-starter,Authagonal,Starter,29,1000,MAU,,,0,verified,https://authagonal.io/pricing,2026-11-07,,,,,,,included,,0,,https://authagonal.io/pricing,2026-11-07
+authagonal-pro,Authagonal,Pro,69,5000,MAU,0.04,,0,verified,https://authagonal.io/pricing,2026-11-07,,,,,,,included,,0,,https://authagonal.io/pricing,2026-11-07
+authagonal-scale,Authagonal,Scale,149,25000,MAU,0.025,,0,verified,https://authagonal.io/pricing,2026-11-07,,,,,,,included,,0,,https://authagonal.io/pricing,2026-11-07
+authagonal-enterprise,Authagonal,Enterprise,339,100000,MAU,0.015,,0,verified,https://authagonal.io/pricing,2026-11-07,,,,,,,included,,0,,https://authagonal.io/pricing,2026-11-07

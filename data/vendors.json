@@ -5,8 +5,8 @@
   "source": "https://clerk.com/pricing",
   "checked": "2026-11-07",
   "billing_unit": "MRU",
-  "billing_unit_note": "Monthly Retained User — counted only if the user returns 24+ hours after signup",
-  "summary": "Hobby free to 50k MRU/app. Pro $25/mo ($20 annual) with 50k MRU + 1 SSO + 1 Directory Sync. Extra SSO $75 (2–15) then $60 (16–100) and $48 (101–250). Directory Sync billed from 2027-01-01."
+  "billing_unit_note": "Monthly Retained User \u2014 counted only if the user returns 24+ hours after signup",
+  "summary": "Hobby free to 50k MRU/app. Pro $25/mo ($20 annual) with 50k MRU + 1 SSO + 1 Directory Sync. Extra SSO $75 (2\u201315) then $60 (16\u2013100) and $48 (101\u2013250). Directory Sync billed from 2027-01-01."
  },
  {
   "id": "auth0",
@@ -15,7 +15,7 @@
   "checked": "2026-11-07",
   "billing_unit": "MAU",
   "billing_unit_note": "Monthly active users (external). Paid plans are sold in published MAU tiers (500 up to 50k B2C / 20k B2B); usage between tiers is billed at the next tier up. Enterprise is contact sales.",
-  "summary": "Free to 25k MAU with 1 Enterprise Connection, Self-Service SSO and inbound SCIM. B2C Essentials runs $35 (500 MAU) → $700 (10k) → $3,500 (50k)/mo; B2C Professional $240 → $1,600 (10k) → $3,200 (20k). B2B Essentials $150 (500) → $2,100 (10k) → $3,800 (20k) with 3 SSO connections; B2B Professional $800 → $2,400 (10k) with 5. Extra SSO connections $100/mo. Yearly = 11× monthly. Above those tiers: Enterprise, contact sales."
+  "summary": "Free to 25k MAU with 1 Enterprise Connection, Self-Service SSO and inbound SCIM. B2C Essentials runs $35 (500 MAU) \u2192 $700 (10k) \u2192 $3,500 (50k)/mo; B2C Professional $240 \u2192 $1,600 (10k) \u2192 $3,200 (20k). B2B Essentials $150 (500) \u2192 $2,100 (10k) \u2192 $3,800 (20k) with 3 SSO connections; B2B Professional $800 \u2192 $2,400 (10k) with 5. Extra SSO connections $100/mo. Yearly = 11\u00d7 monthly. Above those tiers: Enterprise, contact sales."
  },
  {
   "id": "cognito",
@@ -33,7 +33,7 @@
   "checked": "2026-11-07",
   "billing_unit": "MAU + connection",
   "billing_unit_note": "AuthKit free to 1M MAU; SSO and Directory Sync billed per connection with volume bands.",
-  "summary": "AuthKit free to 1M MAU then $2,500/mo per additional 1M. SSO and Directory Sync each: $125 (1–15), $100 (16–30), $80 (31–50), $65 (51–100)."
+  "summary": "AuthKit free to 1M MAU then $2,500/mo per additional 1M. SSO and Directory Sync each: $125 (1\u201315), $100 (16\u201330), $80 (31\u201350), $65 (51\u2013100)."
  },
  {
   "id": "stytch",
@@ -96,7 +96,7 @@
   "checked": "2026-11-07",
   "billing_unit": "MAU + connection",
   "billing_unit_note": "MAU and monthly active organizations, plus per-connection SSO and SCIM ladders (first of each free).",
-  "summary": "Free $0: 25k MAU, 25 orgs, 1 SSO + 1 SCIM (hard caps). Growth $99/mo: 100k MAU then $0.05, 100 orgs then $1; SSO and SCIM each 1 free then $60 (2–15), $45 (16–30), $35 (31–50), $30 (51–100)."
+  "summary": "Free $0: 25k MAU, 25 orgs, 1 SSO + 1 SCIM (hard caps). Growth $99/mo: 100k MAU then $0.05, 100 orgs then $1; SSO and SCIM each 1 free then $60 (2\u201315), $45 (16\u201330), $35 (31\u201350), $30 (51\u2013100)."
  },
  {
   "id": "ssojet",
@@ -105,6 +105,15 @@
   "checked": "2026-11-07",
   "billing_unit": "connection",
   "billing_unit_note": "No per-user or per-MAU charge. Business bills each production SSO or SCIM link as one connection on a shared volume ladder; Free has unlimited users but no enterprise SSO/SCIM.",
-  "summary": "Free $0 forever: unlimited users/MAUs/orgs, no enterprise SSO or SCIM. Business: monthly list $79/conn (2–4), $72 (5–9), $65 (10–24), $55 (25–49), $47 (50–99); annual ~25% less. SSO and SCIM each count as one connection on the same ladder."
+  "summary": "Free $0 forever: unlimited users/MAUs/orgs, no enterprise SSO or SCIM. Business: monthly list $79/conn (2\u20134), $72 (5\u20139), $65 (10\u201324), $55 (25\u201349), $47 (50\u201399); annual ~25% less. SSO and SCIM each count as one connection on the same ladder."
+ },
+ {
+  "id": "authagonal",
+  "name": "Authagonal",
+  "source": "https://authagonal.io/pricing",
+  "checked": "2026-11-07",
+  "billing_unit": "MAU",
+  "billing_unit_note": "Active users = unique users who log in at least once in the billing month (including SCIM-provisioned). Plans differ by user limit and support; every plan includes SAML SSO, SCIM, MFA, custom domains and branding.",
+  "summary": "Free $0: 250 active users, every feature incl. unlimited SSO + SCIM (hard cap). Starter $29/mo to 1,000 (hard cap after grace). Pro $69 to 5,000 then $0.04/user. Scale $149 to 25,000 then $0.025. Enterprise $339 for 100,000+ then $0.015 (vendor blog prices 50k MAU / 10 SAML+SCIM at $339). Yearly = Save 1 month (11\u00d7 monthly). 14-day free trial on paid plans."
  }
 ]
