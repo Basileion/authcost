@@ -1,1290 +1,1290 @@
 [
-  {
-    "id": "clerk-hobby",
-    "vendor_id": "clerk",
-    "vendor": "Clerk",
-    "plan": "Hobby",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 50000,
-    "user_unit": "MRU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": null,
-    "notes": "50k MRU per app. No SSO. No MFA. Fixed 7-day session.",
-    "source": "https://clerk.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": false,
-    "org_included": 100,
-    "org_member_limit": 20,
-    "org_counts": "MRO",
-    "org_addon_available": false,
-    "org_note": "B2B Authentication included free: 100 monthly retained organizations (MROs) per app, up to 20 members per organization. Beyond 100 MROs or 20 members Clerk requires the B2B Authentication add-on ($100/mo); we price that add-on on Pro.",
-    "org_source": "https://clerk.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "Directory Sync connections: Not included on Hobby.",
-    "scim_source": "https://clerk.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "clerk-pro",
-    "vendor_id": "clerk",
-    "vendor": "Clerk",
-    "plan": "Pro",
-    "tier": "paid",
-    "base_mo": 25,
-    "base_mo_annual": 20,
-    "included_users": 50000,
-    "user_unit": "MRU",
-    "overage_per_user": 0.02,
-    "overage_bands": [
-      {
-        "to": 100000,
-        "rate": 0.02
-      },
-      {
-        "to": 1000000,
-        "rate": 0.018
-      },
-      {
-        "to": 10000000,
-        "rate": 0.015
-      },
-      {
-        "to": null,
-        "rate": 0.012
-      }
-    ],
-    "sso_included": 1,
-    "sso_extra_mo": 75,
-    "sso_bands": [
-      {
-        "from": 2,
-        "to": 15,
-        "rate": 75
-      },
-      {
-        "from": 16,
-        "to": 100,
-        "rate": 60
-      },
-      {
-        "from": 101,
-        "to": 250,
-        "rate": 48
-      }
-    ],
-    "notes": "Monthly $25 or $20 billed annually. 1 SSO + 1 Directory Sync included. Directory Sync billed from 2027-01-01. Extra SSO connections: $75 (2\u201315), $60 (16\u2013100), $48 (101\u2013250), contact sales 251+.",
-    "source": "https://clerk.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "sso_note": "251+ connections: contact sales",
-    "org_included": 100,
-    "org_member_limit": 20,
-    "org_counts": "MRO",
-    "org_addon_mo": 100,
-    "org_addon_mo_annual": 85,
-    "org_addon_name": "B2B Authentication add-on",
-    "org_bands": [
-      {
-        "from": 101,
-        "to": 1000,
-        "rate": 1
-      },
-      {
-        "from": 1001,
-        "to": 10000,
-        "rate": 0.9
-      },
-      {
-        "from": 10001,
-        "to": 100000,
-        "rate": 0.75
-      },
-      {
-        "from": 100001,
-        "to": null,
-        "rate": 0.6
-      }
-    ],
-    "org_note": "Free B2B Authentication: 100 MROs, up to 20 members per organization. B2B Authentication add-on $100/mo ($85/mo billed annually): unlimited members, link enterprise connections with Organizations, custom roles; 100 MROs included, then $1/mo each (101\u20131,000), $0.90 (1,001\u201310,000), $0.75 (10,001\u2013100,000), $0.60 (100,001+). Required above 100 MROs or 20 members per organization. An MRO is an organization with at least 2 members, one of them a retained user that month.",
-    "org_source": "https://clerk.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "separate",
-    "scim_included": 1,
-    "scim_extra_mo": 75,
-    "scim_bands": [
-      {
-        "from": 2,
-        "to": 15,
-        "rate": 75
-      },
-      {
-        "from": 16,
-        "to": 100,
-        "rate": 60
-      },
-      {
-        "from": 101,
-        "to": 250,
-        "rate": 48
-      }
-    ],
-    "scim_billing_starts": "2027-01-01",
-    "scim_note": "Directory Sync (SCIM or Google Workspace) is counted separately from SSO connections: 1 included per app, then $75/mo each (2\u201315), $60 (16\u2013100), $48 (101\u2013250), 251+ contact us. Billing for Directory Sync connections starts January 1, 2027.",
-    "scim_source": "https://clerk.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "clerk-business",
-    "vendor_id": "clerk",
-    "vendor": "Clerk",
-    "plan": "Business",
-    "tier": "paid",
-    "base_mo": 300,
-    "base_mo_annual": 250,
-    "included_users": 50000,
-    "user_unit": "MRU",
-    "overage_per_user": 0.02,
-    "sso_included": 1,
-    "sso_extra_mo": 75,
-    "notes": "SOC2, priority support, advanced Protect. Same MRU/SSO add-on ladder as Pro.",
-    "source": "https://clerk.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "org_included": 100,
-    "org_member_limit": 20,
-    "org_counts": "MRO",
-    "org_addon_mo": 100,
-    "org_addon_mo_annual": 85,
-    "org_addon_name": "B2B Authentication add-on",
-    "org_bands": [
-      {
-        "from": 101,
-        "to": 1000,
-        "rate": 1
-      },
-      {
-        "from": 1001,
-        "to": 10000,
-        "rate": 0.9
-      },
-      {
-        "from": 10001,
-        "to": 100000,
-        "rate": 0.75
-      },
-      {
-        "from": 100001,
-        "to": null,
-        "rate": 0.6
-      }
-    ],
-    "org_note": "Same B2B Authentication terms as Pro (add-ons apply to all applications).",
-    "org_source": "https://clerk.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "separate",
-    "scim_included": 1,
-    "scim_extra_mo": 75,
-    "scim_bands": [
-      {
-        "from": 2,
-        "to": 15,
-        "rate": 75
-      },
-      {
-        "from": 16,
-        "to": 100,
-        "rate": 60
-      },
-      {
-        "from": 101,
-        "to": 250,
-        "rate": 48
-      }
-    ],
-    "scim_billing_starts": "2027-01-01",
-    "scim_note": "Directory Sync (SCIM or Google Workspace) is counted separately from SSO connections: 1 included per app, then $75/mo each (2\u201315), $60 (16\u2013100), $48 (101\u2013250), 251+ contact us. Billing for Directory Sync connections starts January 1, 2027.",
-    "scim_source": "https://clerk.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "auth0-free",
-    "vendor_id": "auth0",
-    "vendor": "Auth0",
-    "plan": "Free",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 25000,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 1,
-    "sso_extra_mo": null,
-    "notes": "Up to 25,000 MAU (B2C and B2B identical). 1 Enterprise Connection, Self-Service SSO and inbound SCIM included. Above 25k MAU you need a paid MAU tier (Essentials/Professional) or Enterprise.",
-    "source": "https://auth0.com/pricing.md",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "org_max": 5,
-    "org_note": "5 Organizations (auth0.com/pricing.md).",
-    "org_source": "https://auth0.com/pricing.md",
-    "org_checked": "2026-10-31",
-    "scim_model": "included",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "Inbound SCIM: Included (Auth0 plan comparison); it runs on an enterprise connection, so each SCIM customer uses one of the plan's enterprise connections. No separate SCIM fee is printed.",
-    "scim_source": "https://auth0.com/pricing.md",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "auth0-essentials",
-    "vendor_id": "auth0",
-    "vendor": "Auth0",
-    "plan": "Essentials (B2C)",
-    "tier": "paid",
-    "base_mo": 35,
-    "included_users": 500,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": null,
-    "notes": "Published MAU tiers 500\u219250,000: $35 (500), $70 (1k), $175 (2.5k), $350 (5k), $525 (7.5k), $700 (10k), $1,400 (20k), $2,100 (30k), $2,800 (40k), $3,500 (50k)/mo. Billed at the next tier up; yearly = 11\u00d7 monthly. Above 50k: Enterprise (contact sales). B2C Essentials lists no Enterprise Connections \u2014 use B2B for SSO.",
-    "source": "https://auth0.com/pricing.md",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "price_tiers": [
-      {
-        "mau": 500,
-        "mo": 35,
-        "yr": 385
-      },
-      {
-        "mau": 1000,
-        "mo": 70,
-        "yr": 770
-      },
-      {
-        "mau": 2500,
-        "mo": 175,
-        "yr": 1925
-      },
-      {
-        "mau": 5000,
-        "mo": 350,
-        "yr": 3850
-      },
-      {
-        "mau": 7500,
-        "mo": 525,
-        "yr": 5775
-      },
-      {
-        "mau": 10000,
-        "mo": 700,
-        "yr": 7700
-      },
-      {
-        "mau": 20000,
-        "mo": 1400,
-        "yr": 15400
-      },
-      {
-        "mau": 30000,
-        "mo": 2100,
-        "yr": 23100
-      },
-      {
-        "mau": 40000,
-        "mo": 2800,
-        "yr": 30800
-      },
-      {
-        "mau": 50000,
-        "mo": 3500,
-        "yr": 38500
-      }
-    ],
-    "tier_rule": "next-tier-up",
-    "tier_max_mau": 50000,
-    "org_max": 10,
-    "org_note": "B2C Essentials: 10 Organizations; Enterprise Connections not available on B2C paid plans.",
-    "org_source": "https://auth0.com/pricing.md",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "B2C paid plans: \"Upgrade to B2B to continue using EC, Self-Service SSO, and SCIM\" (auth0.com/pricing). auth0.com/pricing.md lists Inbound SCIM as Included on all B2C columns; B2C Essentials has no Enterprise Connections either way.",
-    "scim_source": "https://auth0.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "auth0-professional",
-    "vendor_id": "auth0",
-    "vendor": "Auth0",
-    "plan": "Professional (B2C)",
-    "tier": "paid",
-    "base_mo": 240,
-    "included_users": 500,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": null,
-    "notes": "Published MAU tiers 500\u219220,000: $240 (500 and 1k), $545 (2.5k), $1,000 (5k), $1,200 (7.5k), $1,600 (10k), $3,200 (20k)/mo. 30k: contact us; 40k+ not available. Billed at the next tier up; yearly = 11\u00d7 monthly. Custom DB connections, enhanced attack protection, 5,000 M2M tokens.",
-    "source": "https://auth0.com/pricing.md",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "price_tiers": [
-      {
-        "mau": 500,
-        "mo": 240,
-        "yr": 2640
-      },
-      {
-        "mau": 1000,
-        "mo": 240,
-        "yr": 2640
-      },
-      {
-        "mau": 2500,
-        "mo": 545,
-        "yr": 5995
-      },
-      {
-        "mau": 5000,
-        "mo": 1000,
-        "yr": 11000
-      },
-      {
-        "mau": 7500,
-        "mo": 1200,
-        "yr": 13200
-      },
-      {
-        "mau": 10000,
-        "mo": 1600,
-        "yr": 17600
-      },
-      {
-        "mau": 20000,
-        "mo": 3200,
-        "yr": 35200
-      }
-    ],
-    "tier_rule": "next-tier-up",
-    "tier_max_mau": 20000,
-    "tier_unavailable_from": 40000,
-    "org_max": 10,
-    "org_note": "B2C Professional: 10 Organizations; Enterprise Connections not available on B2C paid plans.",
-    "org_source": "https://auth0.com/pricing.md",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "B2C paid plans: \"Upgrade to B2B to continue using EC, Self-Service SSO, and SCIM\" (auth0.com/pricing). auth0.com/pricing.md lists Inbound SCIM as Included on all B2C columns; B2C Professional has no Enterprise Connections either way.",
-    "scim_source": "https://auth0.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "auth0-b2b-essentials",
-    "vendor_id": "auth0",
-    "vendor": "Auth0",
-    "tier": "paid",
-    "user_unit": "MAU",
-    "plan": "Essentials (B2B)",
-    "base_mo": 150,
-    "included_users": 500,
-    "overage_per_user": null,
-    "sso_included": 3,
-    "sso_extra_mo": 100,
-    "sso_max": 30,
-    "price_tiers": [
-      {
-        "mau": 500,
-        "mo": 150,
-        "yr": 1650
-      },
-      {
-        "mau": 1000,
-        "mo": 300,
-        "yr": 3300
-      },
-      {
-        "mau": 2500,
-        "mo": 700,
-        "yr": 7700
-      },
-      {
-        "mau": 5000,
-        "mo": 1300,
-        "yr": 14300
-      },
-      {
-        "mau": 7500,
-        "mo": 1725,
-        "yr": 18975
-      },
-      {
-        "mau": 10000,
-        "mo": 2100,
-        "yr": 23100
-      },
-      {
-        "mau": 20000,
-        "mo": 3800,
-        "yr": 41800
-      }
-    ],
-    "tier_rule": "next-tier-up",
-    "tier_max_mau": 20000,
-    "notes": "Published MAU tiers 500\u219220,000: $150 (500), $300 (1k), $700 (2.5k), $1,300 (5k), $1,725 (7.5k), $2,100 (10k), $3,800 (20k)/mo. 30k+: contact us. 3 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA add-on $100/mo. Unlimited Organizations. Billed at next tier up; yearly = 11\u00d7 monthly.",
-    "source": "https://auth0.com/pricing.md",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "org_unlimited": true,
-    "org_note": "B2B Essentials: Unlimited Organizations (\u201csubject to system limitations\u201d).",
-    "org_source": "https://auth0.com/pricing.md",
-    "org_checked": "2026-10-31",
-    "scim_model": "included",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "Inbound SCIM: Included (Auth0 plan comparison); it runs on an enterprise connection, so each SCIM customer uses one of the plan's enterprise connections. No separate SCIM fee is printed.",
-    "scim_source": "https://auth0.com/pricing.md",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "auth0-b2b-professional",
-    "vendor_id": "auth0",
-    "vendor": "Auth0",
-    "tier": "paid",
-    "user_unit": "MAU",
-    "plan": "Professional (B2B)",
-    "base_mo": 800,
-    "included_users": 500,
-    "overage_per_user": null,
-    "sso_included": 5,
-    "sso_extra_mo": 100,
-    "sso_max": 30,
-    "price_tiers": [
-      {
-        "mau": 500,
-        "mo": 800,
-        "yr": 8800
-      },
-      {
-        "mau": 1000,
-        "mo": 800,
-        "yr": 8800
-      },
-      {
-        "mau": 2500,
-        "mo": 1200,
-        "yr": 13200
-      },
-      {
-        "mau": 5000,
-        "mo": 1500,
-        "yr": 16500
-      },
-      {
-        "mau": 7500,
-        "mo": 1800,
-        "yr": 19800
-      },
-      {
-        "mau": 10000,
-        "mo": 2400,
-        "yr": 26400
-      }
-    ],
-    "tier_rule": "next-tier-up",
-    "tier_max_mau": 10000,
-    "notes": "Published MAU tiers 500\u219210,000: $800 (500 and 1k), $1,200 (2.5k), $1,500 (5k), $1,800 (7.5k), $2,400 (10k)/mo. 20k+: contact us. 5 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA included. Billed at next tier up; yearly = 11\u00d7 monthly.",
-    "source": "https://auth0.com/pricing.md",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "org_unlimited": true,
-    "org_note": "B2B Professional: Unlimited Organizations (\u201csubject to system limitations\u201d).",
-    "org_source": "https://auth0.com/pricing.md",
-    "org_checked": "2026-10-31",
-    "scim_model": "included",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "Inbound SCIM: Included (Auth0 plan comparison); it runs on an enterprise connection, so each SCIM customer uses one of the plan's enterprise connections. No separate SCIM fee is printed.",
-    "scim_source": "https://auth0.com/pricing.md",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "cognito-lite",
-    "vendor_id": "cognito",
-    "vendor": "Amazon Cognito",
-    "plan": "Lite",
-    "tier": "usage",
-    "base_mo": 0,
-    "included_users": 10000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.0055,
-    "overage_bands": [
-      {
-        "to": 100000,
-        "rate": 0.0055
-      },
-      {
-        "to": null,
-        "rate": 0.0046
-      }
-    ],
-    "sso_included": null,
-    "sso_extra_mo": null,
-    "federated_free": 50,
-    "federated_per_mau": 0.015,
-    "notes": "Direct/social: 10k free, then $0.0055/MAU through 100k total, then $0.0046 (from official examples). Federated SAML/OIDC: 50 free then $0.015/MAU.",
-    "source": "https://aws.amazon.com/cognito/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_model": "none",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Amazon Cognito pricing page (read 2026-10-31).",
-    "scim_source": "https://aws.amazon.com/cognito/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "cognito-essentials",
-    "vendor_id": "cognito",
-    "vendor": "Amazon Cognito",
-    "plan": "Essentials",
-    "tier": "usage",
-    "base_mo": 0,
-    "included_users": 10000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.015,
-    "sso_included": null,
-    "sso_extra_mo": null,
-    "federated_free": 50,
-    "federated_per_mau": 0.015,
-    "notes": "Default for new pools. Direct/social: 10k free then $0.015/MAU (official example). Federated SAML/OIDC: 50 free then $0.015/MAU. Passwordless/passkeys included.",
-    "source": "https://aws.amazon.com/cognito/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_model": "none",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Amazon Cognito pricing page (read 2026-10-31).",
-    "scim_source": "https://aws.amazon.com/cognito/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "cognito-plus",
-    "vendor_id": "cognito",
-    "vendor": "Amazon Cognito",
-    "plan": "Plus",
-    "tier": "usage",
-    "base_mo": 0,
-    "included_users": 0,
-    "user_unit": "MAU",
-    "overage_per_user": 0.02,
-    "sso_included": null,
-    "sso_extra_mo": null,
-    "federated_free": 50,
-    "federated_per_mau": 0.015,
-    "notes": "No free tier for Plus. $0.020/MAU direct/social (official example). Includes threat protection / adaptive auth.",
-    "source": "https://aws.amazon.com/cognito/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_model": "none",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Amazon Cognito pricing page (read 2026-10-31).",
-    "scim_source": "https://aws.amazon.com/cognito/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "workos-authkit",
-    "vendor_id": "workos",
-    "vendor": "WorkOS",
-    "plan": "AuthKit",
-    "tier": "usage",
-    "base_mo": 0,
-    "included_users": 1000000,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "overage_per_1m_mau": 2500,
-    "sso_included": 0,
-    "sso_extra_mo": 125,
-    "sso_bands": [
-      {
-        "from": 1,
-        "to": 15,
-        "rate": 125
-      },
-      {
-        "from": 16,
-        "to": 30,
-        "rate": 100
-      },
-      {
-        "from": 31,
-        "to": 50,
-        "rate": 80
-      },
-      {
-        "from": 51,
-        "to": 100,
-        "rate": 65
-      }
-    ],
-    "notes": "AuthKit free to 1M MAU; +$2,500/mo per additional 1M. SSO and Directory Sync each use the connection ladder ($125\u2192$65). Custom domain $99/mo.",
-    "source": "https://workos.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "mfa_source_note": "workos.com/pricing (2026-10-31): \"AuthKit includes email + password, social login, passkeys, MFA, magic auth, and enterprise SSO\"",
-    "org_unlimited": true,
-    "org_published": false,
-    "org_note": "No organization fee or limit printed on workos.com/pricing.",
-    "org_source": "https://workos.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "separate",
-    "scim_included": 0,
-    "scim_extra_mo": 125,
-    "scim_bands": [
-      {
-        "from": 1,
-        "to": 15,
-        "rate": 125
-      },
-      {
-        "from": 16,
-        "to": 30,
-        "rate": 100
-      },
-      {
-        "from": 31,
-        "to": 50,
-        "rate": 80
-      },
-      {
-        "from": 51,
-        "to": 100,
-        "rate": 65
-      }
-    ],
-    "scim_note": "Directory Sync has its own connection ladder: $125 each (1\u201315), $100 (16\u201330), $80 (31\u201350), $65 (51\u2013100); more: talk to sales. \"Each enterprise customer you support with SSO or Directory Sync is counted as one connection\", so a customer on both is two connections.",
-    "scim_source": "https://workos.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "stytch-payg",
-    "vendor_id": "stytch",
-    "vendor": "Stytch",
-    "plan": "Pay as you go (B2B)",
-    "tier": "usage",
-    "base_mo": 0,
-    "included_users": 10000,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 5,
-    "sso_extra_mo": 125,
-    "notes": "10k MAU + 5 SSO or SCIM connections included. Extra connections $125 each. MAU overage rate not printed as a fixed USD figure on the checked page \u2014 left blank. Branding add-on $99.",
-    "source": "https://stytch.com/pricing",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_unlimited": true,
-    "org_note": "Unlimited organizations on Pay as you go.",
-    "org_source": "https://stytch.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "pooled",
-    "scim_included": 5,
-    "scim_extra_mo": 125,
-    "scim_note": "\"5 SSO or SCIM Connections\" included, shared between SSO and SCIM; additional connections $125 each.",
-    "scim_source": "https://stytch.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "logto-free",
-    "vendor_id": "logto",
-    "vendor": "Logto",
-    "plan": "Free",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 50000,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": null,
-    "notes": "50k MAU / 50k tokens. No Enterprise SSO on Free.",
-    "source": "https://logto.io/pricing",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_max": 0,
-    "org_note": "Organizations (multi-tenancy) is a paid add-on; not listed on Free.",
-    "org_source": "https://logto.io/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Logto pricing page (read 2026-10-31).",
-    "scim_source": "https://logto.io/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "logto-pro",
-    "vendor_id": "logto",
-    "vendor": "Logto",
-    "plan": "Pro",
-    "tier": "paid",
-    "base_mo": 24,
-    "included_users": null,
-    "user_unit": "token",
-    "overage_per_user": null,
-    "token_included": 50000,
-    "token_overage_per_100": 0.08,
-    "sso_included": 0,
-    "sso_extra_mo": 48,
-    "notes": "From $24/mo. Unlimited MAU. 50k tokens then $0.08 per 100. Enterprise SSO $48/connector. MFA add-on $48. Organizations add-on $48. Token\u2260MAU; calculator uses base + SSO only unless tokens estimated.",
-    "source": "https://logto.io/pricing",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "mfa_available": true,
-    "mfa_extra_mo": 48,
-    "org_unlimited": true,
-    "org_addon_mo": 48,
-    "org_addon_name": "Organizations add-on",
-    "org_note": "Organizations add-on $48/mo, unlimited organizations.",
-    "org_source": "https://logto.io/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Logto pricing page (read 2026-10-31).",
-    "scim_source": "https://logto.io/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "kinde-free",
-    "vendor_id": "kinde",
-    "vendor": "Kinde",
-    "plan": "Free",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 10500,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 1,
-    "sso_extra_mo": null,
-    "notes": "10,500 MAU. 1 enterprise SSO connection.",
-    "source": "https://kinde.com/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_max": 5,
-    "org_counts": "MAO",
-    "org_note": "5 monthly active organizations (MAO) included free; no extra-MAO price on Free. Organizations with a single active user are not counted.",
-    "org_source": "https://kinde.com/pricing/",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "SCIM/directory sync: Not included.",
-    "scim_source": "https://kinde.com/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "kinde-pro",
-    "vendor_id": "kinde",
-    "vendor": "Kinde",
-    "plan": "Pro",
-    "tier": "paid",
-    "base_mo": 25,
-    "included_users": 10500,
-    "user_unit": "MAU",
-    "overage_per_user": 0.0175,
-    "sso_included": 1,
-    "sso_extra_mo": null,
-    "notes": "$25/mo + $0.0175 per MAU above 10,500. 1 SSO included. MAU free when you bill users through Kinde Billing.",
-    "source": "https://kinde.com/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_included": 50,
-    "org_extra_mo": 0.5,
-    "org_counts": "MAO",
-    "org_note": "50 MAO included, then $0.50 per extra MAO.",
-    "org_source": "https://kinde.com/pricing/",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "SCIM/directory sync: Not included.",
-    "scim_source": "https://kinde.com/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "kinde-plus",
-    "vendor_id": "kinde",
-    "vendor": "Kinde",
-    "plan": "Plus",
-    "tier": "paid",
-    "base_mo": 75,
-    "included_users": 10500,
-    "user_unit": "MAU",
-    "overage_per_user": 0.0163,
-    "sso_included": null,
-    "sso_unlimited": true,
-    "sso_extra_mo": 0,
-    "notes": "$75/mo. Unlimited enterprise SSO at no per-connection fee. $0.0163/MAU above 10,500.",
-    "source": "https://kinde.com/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_included": 50,
-    "org_extra_mo": 0.47,
-    "org_counts": "MAO",
-    "org_note": "50 MAO included, then $0.47 per extra MAO.",
-    "org_source": "https://kinde.com/pricing/",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "SCIM/directory sync: Not included.",
-    "scim_source": "https://kinde.com/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "kinde-scale",
-    "vendor_id": "kinde",
-    "vendor": "Kinde",
-    "plan": "Scale",
-    "tier": "paid",
-    "base_mo": 250,
-    "included_users": 10500,
-    "user_unit": "MAU",
-    "overage_per_user": 0.0151,
-    "sso_included": null,
-    "sso_unlimited": true,
-    "sso_extra_mo": 0,
-    "notes": "$250/mo. Unlimited SSO. $0.0151/MAU above 10,500. SCIM coming soon per page.",
-    "source": "https://kinde.com/pricing/",
-    "checked": "2026-10-30",
-    "status": "verified",
-    "org_included": 50,
-    "org_extra_mo": 0.43,
-    "org_counts": "MAO",
-    "org_note": "50 MAO included, then $0.43 per extra MAO.",
-    "org_source": "https://kinde.com/pricing/",
-    "org_checked": "2026-10-31",
-    "scim_model": "coming_soon",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "Plan card lists \"SCIM (Coming soon)\"; the comparison table marks SCIM/directory sync Included. Not priced until it ships.",
-    "scim_source": "https://kinde.com/pricing/",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "supabase-free",
-    "vendor_id": "supabase",
-    "vendor": "Supabase Auth",
-    "plan": "Free (platform)",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 50000,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": null,
-    "notes": "50k Auth MAU on Free platform plan. No SAML SSO. Project pauses after 1 week inactivity.",
-    "source": "https://supabase.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on",
-    "org_model": "none",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Supabase pricing page (read 2026-10-31).",
-    "scim_source": "https://supabase.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "supabase-pro",
-    "vendor_id": "supabase",
-    "vendor": "Supabase Auth",
-    "plan": "Pro (platform)",
-    "tier": "paid",
-    "base_mo": 25,
-    "included_users": 100000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.00325,
-    "sso_included": null,
-    "sso_saml_included_mau": 50,
-    "sso_saml_per_mau": 0.015,
-    "notes": "Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits \u2014 not auth-only.",
-    "source": "https://supabase.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on",
-    "org_model": "none",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Supabase pricing page (read 2026-10-31).",
-    "scim_source": "https://supabase.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "firebase-identity-platform",
-    "vendor_id": "firebase",
-    "vendor": "Firebase Auth / Identity Platform",
-    "plan": "Pay as you go",
-    "tier": "usage",
-    "base_mo": 0,
-    "included_users": 50000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.0055,
-    "overage_bands": [
-      {
-        "to": 100000,
-        "rate": 0.0055
-      },
-      {
-        "to": 1000000,
-        "rate": 0.0046
-      },
-      {
-        "to": 10000000,
-        "rate": 0.0032
-      },
-      {
-        "to": null,
-        "rate": 0.0025
-      }
-    ],
-    "sso_included": null,
-    "sso_extra_mo": null,
-    "federated_free": 50,
-    "federated_per_mau": 0.015,
-    "sms_per_message_us": 0.01,
-    "notes": "Tier 1 (email, phone, anonymous, social): 0\u201350k MAU free, then $0.0055 (50k\u2013100k), $0.0046 (100k\u20131M), $0.0032 (1M\u201310M), $0.0025 (10M+). Tier 2 SAML/OIDC: 50 MAU free then $0.015/MAU. Phone auth and SMS MFA billed per SMS sent by region (US $0.01, first 10/day not billed). Firebase pricing page: no cost up to 50K MAUs with Identity Platform, then Google Cloud pricing.",
-    "source": "https://cloud.google.com/identity-platform/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "org_model": "none",
-    "scim_model": "not_published",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "No SCIM / Directory Sync on the Identity Platform pricing page (read 2026-10-31).",
-    "scim_source": "https://cloud.google.com/identity-platform/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "descope-free",
-    "vendor_id": "descope",
-    "vendor": "Descope",
-    "plan": "Free Forever",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 7500,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 3,
-    "sso_extra_mo": null,
-    "notes": "7,500 MAU, 10 monthly active tenants, 3 SSO connections, 1 federated app (OIDC). No overages: upgrade required to exceed limits. MFA/step-up included.",
-    "source": "https://www.descope.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "org_max": 10,
-    "org_counts": "active tenant",
-    "org_note": "10 monthly active tenants, no overages (upgrade required). A tenant is active when it has 2+ users and at least one logs in that month.",
-    "org_source": "https://www.descope.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "SCIM provisioning is listed under Growth (\"Everything in Pro, plus\").",
-    "scim_source": "https://www.descope.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "descope-pro",
-    "vendor_id": "descope",
-    "vendor": "Descope",
-    "plan": "Pro",
-    "tier": "paid",
-    "base_mo": 249,
-    "included_users": 10000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.05,
-    "sso_included": 5,
-    "sso_extra_mo": 50,
-    "notes": "Starts at $249/mo, billed annually. 10,000 MAU then $0.05/MAU. 35 monthly active tenants then $1/tenant. 5 SSO connections then $50 each. SCIM is a Growth feature.",
-    "source": "https://www.descope.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "org_included": 35,
-    "org_extra_mo": 1,
-    "org_counts": "active tenant",
-    "org_note": "35 monthly active tenants included, then $1 per additional tenant.",
-    "org_source": "https://www.descope.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "SCIM provisioning is listed under Growth (\"Everything in Pro, plus\").",
-    "scim_source": "https://www.descope.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "descope-growth",
-    "vendor_id": "descope",
-    "vendor": "Descope",
-    "plan": "Growth",
-    "tier": "paid",
-    "base_mo": 799,
-    "included_users": 25000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.05,
-    "sso_included": 10,
-    "sso_extra_mo": 50,
-    "notes": "Starts at $799/mo. 25,000 MAU then $0.05/MAU. 100 monthly active tenants. 10 SSO connections then $50 each. SCIM provisioning, bot protection, 1M anonymous users.",
-    "source": "https://www.descope.com/pricing",
-    "checked": "2026-10-31",
-    "status": "verified",
-    "mfa_available": true,
-    "org_included": 100,
-    "org_extra_mo": 1,
-    "org_counts": "active tenant",
-    "org_note": "100 monthly active tenants included, then $1 per additional tenant.",
-    "org_source": "https://www.descope.com/pricing",
-    "org_checked": "2026-10-31",
-    "scim_model": "included",
-    "scim_included": null,
-    "scim_extra_mo": null,
-    "scim_note": "SCIM provisioning included on Growth; no per-connection SCIM fee printed.",
-    "scim_source": "https://www.descope.com/pricing",
-    "scim_checked": "2026-10-31"
-  },
-  {
-    "id": "scalekit-free",
-    "vendor_id": "scalekit",
-    "vendor": "Scalekit",
-    "plan": "Free",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": 25000,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 1,
-    "sso_extra_mo": null,
-    "notes": "25,000 MAUs and 25 organizations hard caps (auto-upgrade to Growth). 1 SSO and 1 SCIM connection included. Scalekit branding on auth widgets & emails.",
-    "source": "https://www.scalekit.com/pricing/auth-for-saas",
-    "checked": "2026-11-07",
-    "status": "verified",
-    "mfa_available": true,
-    "org_max": 25,
-    "org_counts": "MAO",
-    "org_note": "25 monthly active organizations (MAO) hard cap on Free; no overages \u2014 upgrade to Growth. An organization is active when it has at least 2 users and at least 1 logs in that month.",
-    "org_source": "https://www.scalekit.com/pricing/auth-for-saas",
-    "org_checked": "2026-11-07",
-    "scim_model": "separate",
-    "scim_included": 1,
-    "scim_extra_mo": null,
-    "scim_note": "1 SCIM connection included on Free; more requires Growth. First SSO and first SCIM are free on every plan.",
-    "scim_source": "https://www.scalekit.com/pricing/auth-for-saas",
-    "scim_checked": "2026-11-07"
-  },
-  {
-    "id": "scalekit-growth",
-    "vendor_id": "scalekit",
-    "vendor": "Scalekit",
-    "plan": "Growth",
-    "tier": "paid",
-    "base_mo": 99,
-    "included_users": 100000,
-    "user_unit": "MAU",
-    "overage_per_user": 0.05,
-    "sso_included": 1,
-    "sso_extra_mo": 60,
-    "sso_bands": [
-      {
-        "from": 2,
-        "to": 15,
-        "rate": 60
-      },
-      {
-        "from": 16,
-        "to": 30,
-        "rate": 45
-      },
-      {
-        "from": 31,
-        "to": 50,
-        "rate": 35
-      },
-      {
-        "from": 51,
-        "to": 100,
-        "rate": 30
-      }
-    ],
-    "sso_note": "100+ connections: custom (Let's talk). First SSO connection free.",
-    "notes": "Growth $99/mo. 100,000 MAUs then $0.05/MAU; 100 organizations then $1/org. First SSO and first SCIM free, then the published connection ladder ($60/$45/$35/$30). EU data residency add-on $99/mo not modeled.",
-    "source": "https://www.scalekit.com/pricing/auth-for-saas",
-    "checked": "2026-11-07",
-    "status": "verified",
-    "mfa_available": true,
-    "org_included": 100,
-    "org_extra_mo": 1,
-    "org_counts": "MAO",
-    "org_note": "100 monthly active organizations included, then $1 per additional org. An organization is active when it has at least 2 users and at least 1 logs in that month.",
-    "org_source": "https://www.scalekit.com/pricing/auth-for-saas",
-    "org_checked": "2026-11-07",
-    "scim_model": "separate",
-    "scim_included": 1,
-    "scim_extra_mo": 60,
-    "scim_bands": [
-      {
-        "from": 2,
-        "to": 15,
-        "rate": 60
-      },
-      {
-        "from": 16,
-        "to": 30,
-        "rate": 45
-      },
-      {
-        "from": 31,
-        "to": 50,
-        "rate": 35
-      },
-      {
-        "from": 51,
-        "to": 100,
-        "rate": 30
-      }
-    ],
-    "scim_note": "SCIM is a separate connection from SSO: 1 included free, then the same ladder as SSO ($60 2\u201315, $45 16\u201330, $35 31\u201350, $30 51\u2013100). A customer on both is two connections.",
-    "scim_source": "https://www.scalekit.com/pricing/auth-for-saas",
-    "scim_checked": "2026-11-07"
-  },
-  {
-    "id": "ssojet-free",
-    "vendor_id": "ssojet",
-    "vendor": "SSOJet",
-    "plan": "Free",
-    "tier": "free",
-    "base_mo": 0,
-    "included_users": null,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": null,
-    "notes": "Free forever. Unlimited users, MAUs and organizations. Passkeys, social login, magic link, email OTP, MFA. No enterprise SSO or SCIM \u2014 upgrade to Business when the first enterprise customer asks.",
-    "source": "https://ssojet.com/pricing/",
-    "checked": "2026-11-07",
-    "status": "verified",
-    "mfa_available": true,
-    "org_unlimited": true,
-    "org_note": "Unlimited organizations on Free.",
-    "org_source": "https://ssojet.com/pricing/",
-    "org_checked": "2026-11-07",
-    "scim_model": "none",
-    "scim_included": 0,
-    "scim_extra_mo": null,
-    "scim_note": "No enterprise SSO or SCIM on Free.",
-    "scim_source": "https://ssojet.com/pricing/",
-    "scim_checked": "2026-11-07"
-  },
-  {
-    "id": "ssojet-business",
-    "vendor_id": "ssojet",
-    "vendor": "SSOJet",
-    "plan": "Business",
-    "tier": "paid",
-    "base_mo": 0,
-    "included_users": null,
-    "user_unit": "MAU",
-    "overage_per_user": null,
-    "sso_included": 0,
-    "sso_extra_mo": 79,
-    "sso_bands": [
-      {
-        "from": 1,
-        "to": 4,
-        "rate": 79
-      },
-      {
-        "from": 5,
-        "to": 9,
-        "rate": 72
-      },
-      {
-        "from": 10,
-        "to": 24,
-        "rate": 65
-      },
-      {
-        "from": 25,
-        "to": 49,
-        "rate": 55
-      },
-      {
-        "from": 50,
-        "to": 99,
-        "rate": 47
-      }
-    ],
-    "sso_note": "Business marketing starts at 2 connections; connection 1 is priced at the published 2\u20134 list rate ($79/mo). Annual billing ~25% less ($59 at 2\u20134). 100+ connections: custom. Test-environment connections are free.",
-    "notes": "No base fee and no per-user charge. Monthly list bills every connection at the volume rate for the total count: $79/conn (1\u20134; published table starts at 2\u20134), $72 (5\u20139), $65 (10\u201324), $55 (25\u201349), $47 (50\u201399); bill capped at the next tier\u2019s entry price. SSO and SCIM each count as one connection on the same ladder. Annual \u224825% less (not used in rankings).",
-    "source": "https://ssojet.com/pricing/",
-    "checked": "2026-11-07",
-    "status": "verified",
-    "mfa_available": true,
-    "org_unlimited": true,
-    "org_note": "Unlimited organizations on Business.",
-    "org_source": "https://ssojet.com/pricing/",
-    "org_checked": "2026-11-07",
-    "scim_model": "pooled",
-    "scim_included": 0,
-    "scim_extra_mo": 79,
-    "scim_bands": [
-      {
-        "from": 1,
-        "to": 4,
-        "rate": 79
-      },
-      {
-        "from": 5,
-        "to": 9,
-        "rate": 72
-      },
-      {
-        "from": 10,
-        "to": 24,
-        "rate": 65
-      },
-      {
-        "from": 25,
-        "to": 49,
-        "rate": 55
-      },
-      {
-        "from": 50,
-        "to": 99,
-        "rate": 47
-      }
-    ],
-    "scim_note": "SSO and SCIM share one connection ladder: each SSO or SCIM link is one connection. Adding SCIM customers raises the total connection count (and may drop the per-connection rate). Same monthly list as SSO.",
-    "scim_source": "https://ssojet.com/pricing/",
-    "scim_checked": "2026-11-07",
-    "sso_bands_all": true
-  }
+ {
+  "id": "clerk-hobby",
+  "vendor_id": "clerk",
+  "vendor": "Clerk",
+  "plan": "Hobby",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 50000,
+  "user_unit": "MRU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": null,
+  "notes": "50k MRU per app. No SSO. No MFA. Fixed 7-day session.",
+  "source": "https://clerk.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": false,
+  "org_included": 100,
+  "org_member_limit": 20,
+  "org_counts": "MRO",
+  "org_addon_available": false,
+  "org_note": "B2B Authentication included free: 100 monthly retained organizations (MROs) per app, up to 20 members per organization. Beyond 100 MROs or 20 members Clerk requires the B2B Authentication add-on ($100/mo); we price that add-on on Pro.",
+  "org_source": "https://clerk.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "Directory Sync connections: Not included on Hobby.",
+  "scim_source": "https://clerk.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "clerk-pro",
+  "vendor_id": "clerk",
+  "vendor": "Clerk",
+  "plan": "Pro",
+  "tier": "paid",
+  "base_mo": 25,
+  "base_mo_annual": 20,
+  "included_users": 50000,
+  "user_unit": "MRU",
+  "overage_per_user": 0.02,
+  "overage_bands": [
+   {
+    "to": 100000,
+    "rate": 0.02
+   },
+   {
+    "to": 1000000,
+    "rate": 0.018
+   },
+   {
+    "to": 10000000,
+    "rate": 0.015
+   },
+   {
+    "to": null,
+    "rate": 0.012
+   }
+  ],
+  "sso_included": 1,
+  "sso_extra_mo": 75,
+  "sso_bands": [
+   {
+    "from": 2,
+    "to": 15,
+    "rate": 75
+   },
+   {
+    "from": 16,
+    "to": 100,
+    "rate": 60
+   },
+   {
+    "from": 101,
+    "to": 250,
+    "rate": 48
+   }
+  ],
+  "notes": "Monthly $25 or $20 billed annually. 1 SSO + 1 Directory Sync included. Directory Sync billed from 2027-01-01. Extra SSO connections: $75 (2–15), $60 (16–100), $48 (101–250), contact sales 251+.",
+  "source": "https://clerk.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "sso_note": "251+ connections: contact sales",
+  "org_included": 100,
+  "org_member_limit": 20,
+  "org_counts": "MRO",
+  "org_addon_mo": 100,
+  "org_addon_mo_annual": 85,
+  "org_addon_name": "B2B Authentication add-on",
+  "org_bands": [
+   {
+    "from": 101,
+    "to": 1000,
+    "rate": 1
+   },
+   {
+    "from": 1001,
+    "to": 10000,
+    "rate": 0.9
+   },
+   {
+    "from": 10001,
+    "to": 100000,
+    "rate": 0.75
+   },
+   {
+    "from": 100001,
+    "to": null,
+    "rate": 0.6
+   }
+  ],
+  "org_note": "Free B2B Authentication: 100 MROs, up to 20 members per organization. B2B Authentication add-on $100/mo ($85/mo billed annually): unlimited members, link enterprise connections with Organizations, custom roles; 100 MROs included, then $1/mo each (101–1,000), $0.90 (1,001–10,000), $0.75 (10,001–100,000), $0.60 (100,001+). Required above 100 MROs or 20 members per organization. An MRO is an organization with at least 2 members, one of them a retained user that month.",
+  "org_source": "https://clerk.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "separate",
+  "scim_included": 1,
+  "scim_extra_mo": 75,
+  "scim_bands": [
+   {
+    "from": 2,
+    "to": 15,
+    "rate": 75
+   },
+   {
+    "from": 16,
+    "to": 100,
+    "rate": 60
+   },
+   {
+    "from": 101,
+    "to": 250,
+    "rate": 48
+   }
+  ],
+  "scim_billing_starts": "2027-01-01",
+  "scim_note": "Directory Sync (SCIM or Google Workspace) is counted separately from SSO connections: 1 included per app, then $75/mo each (2–15), $60 (16–100), $48 (101–250), 251+ contact us. Billing for Directory Sync connections starts January 1, 2027.",
+  "scim_source": "https://clerk.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "clerk-business",
+  "vendor_id": "clerk",
+  "vendor": "Clerk",
+  "plan": "Business",
+  "tier": "paid",
+  "base_mo": 300,
+  "base_mo_annual": 250,
+  "included_users": 50000,
+  "user_unit": "MRU",
+  "overage_per_user": 0.02,
+  "sso_included": 1,
+  "sso_extra_mo": 75,
+  "notes": "SOC2, priority support, advanced Protect. Same MRU/SSO add-on ladder as Pro.",
+  "source": "https://clerk.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_included": 100,
+  "org_member_limit": 20,
+  "org_counts": "MRO",
+  "org_addon_mo": 100,
+  "org_addon_mo_annual": 85,
+  "org_addon_name": "B2B Authentication add-on",
+  "org_bands": [
+   {
+    "from": 101,
+    "to": 1000,
+    "rate": 1
+   },
+   {
+    "from": 1001,
+    "to": 10000,
+    "rate": 0.9
+   },
+   {
+    "from": 10001,
+    "to": 100000,
+    "rate": 0.75
+   },
+   {
+    "from": 100001,
+    "to": null,
+    "rate": 0.6
+   }
+  ],
+  "org_note": "Same B2B Authentication terms as Pro (add-ons apply to all applications).",
+  "org_source": "https://clerk.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "separate",
+  "scim_included": 1,
+  "scim_extra_mo": 75,
+  "scim_bands": [
+   {
+    "from": 2,
+    "to": 15,
+    "rate": 75
+   },
+   {
+    "from": 16,
+    "to": 100,
+    "rate": 60
+   },
+   {
+    "from": 101,
+    "to": 250,
+    "rate": 48
+   }
+  ],
+  "scim_billing_starts": "2027-01-01",
+  "scim_note": "Directory Sync (SCIM or Google Workspace) is counted separately from SSO connections: 1 included per app, then $75/mo each (2–15), $60 (16–100), $48 (101–250), 251+ contact us. Billing for Directory Sync connections starts January 1, 2027.",
+  "scim_source": "https://clerk.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "auth0-free",
+  "vendor_id": "auth0",
+  "vendor": "Auth0",
+  "plan": "Free",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 25000,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 1,
+  "sso_extra_mo": null,
+  "notes": "Up to 25,000 MAU (B2C and B2B identical). 1 Enterprise Connection, Self-Service SSO and inbound SCIM included. Above 25k MAU you need a paid MAU tier (Essentials/Professional) or Enterprise.",
+  "source": "https://auth0.com/pricing.md",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_max": 5,
+  "org_note": "5 Organizations (auth0.com/pricing.md).",
+  "org_source": "https://auth0.com/pricing.md",
+  "org_checked": "2026-10-31",
+  "scim_model": "included",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "Inbound SCIM: Included (Auth0 plan comparison); it runs on an enterprise connection, so each SCIM customer uses one of the plan's enterprise connections. No separate SCIM fee is printed.",
+  "scim_source": "https://auth0.com/pricing.md",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "auth0-essentials",
+  "vendor_id": "auth0",
+  "vendor": "Auth0",
+  "plan": "Essentials (B2C)",
+  "tier": "paid",
+  "base_mo": 35,
+  "included_users": 500,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": null,
+  "notes": "Published MAU tiers 500→50,000: $35 (500), $70 (1k), $175 (2.5k), $350 (5k), $525 (7.5k), $700 (10k), $1,400 (20k), $2,100 (30k), $2,800 (40k), $3,500 (50k)/mo. Billed at the next tier up; yearly = 11× monthly. Above 50k: Enterprise (contact sales). B2C Essentials lists no Enterprise Connections — use B2B for SSO.",
+  "source": "https://auth0.com/pricing.md",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "price_tiers": [
+   {
+    "mau": 500,
+    "mo": 35,
+    "yr": 385
+   },
+   {
+    "mau": 1000,
+    "mo": 70,
+    "yr": 770
+   },
+   {
+    "mau": 2500,
+    "mo": 175,
+    "yr": 1925
+   },
+   {
+    "mau": 5000,
+    "mo": 350,
+    "yr": 3850
+   },
+   {
+    "mau": 7500,
+    "mo": 525,
+    "yr": 5775
+   },
+   {
+    "mau": 10000,
+    "mo": 700,
+    "yr": 7700
+   },
+   {
+    "mau": 20000,
+    "mo": 1400,
+    "yr": 15400
+   },
+   {
+    "mau": 30000,
+    "mo": 2100,
+    "yr": 23100
+   },
+   {
+    "mau": 40000,
+    "mo": 2800,
+    "yr": 30800
+   },
+   {
+    "mau": 50000,
+    "mo": 3500,
+    "yr": 38500
+   }
+  ],
+  "tier_rule": "next-tier-up",
+  "tier_max_mau": 50000,
+  "org_max": 10,
+  "org_note": "B2C Essentials: 10 Organizations; Enterprise Connections not available on B2C paid plans.",
+  "org_source": "https://auth0.com/pricing.md",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "B2C paid plans: \"Upgrade to B2B to continue using EC, Self-Service SSO, and SCIM\" (auth0.com/pricing). auth0.com/pricing.md lists Inbound SCIM as Included on all B2C columns; B2C Essentials has no Enterprise Connections either way.",
+  "scim_source": "https://auth0.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "auth0-professional",
+  "vendor_id": "auth0",
+  "vendor": "Auth0",
+  "plan": "Professional (B2C)",
+  "tier": "paid",
+  "base_mo": 240,
+  "included_users": 500,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": null,
+  "notes": "Published MAU tiers 500→20,000: $240 (500 and 1k), $545 (2.5k), $1,000 (5k), $1,200 (7.5k), $1,600 (10k), $3,200 (20k)/mo. 30k: contact us; 40k+ not available. Billed at the next tier up; yearly = 11× monthly. Custom DB connections, enhanced attack protection, 5,000 M2M tokens.",
+  "source": "https://auth0.com/pricing.md",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "price_tiers": [
+   {
+    "mau": 500,
+    "mo": 240,
+    "yr": 2640
+   },
+   {
+    "mau": 1000,
+    "mo": 240,
+    "yr": 2640
+   },
+   {
+    "mau": 2500,
+    "mo": 545,
+    "yr": 5995
+   },
+   {
+    "mau": 5000,
+    "mo": 1000,
+    "yr": 11000
+   },
+   {
+    "mau": 7500,
+    "mo": 1200,
+    "yr": 13200
+   },
+   {
+    "mau": 10000,
+    "mo": 1600,
+    "yr": 17600
+   },
+   {
+    "mau": 20000,
+    "mo": 3200,
+    "yr": 35200
+   }
+  ],
+  "tier_rule": "next-tier-up",
+  "tier_max_mau": 20000,
+  "tier_unavailable_from": 40000,
+  "org_max": 10,
+  "org_note": "B2C Professional: 10 Organizations; Enterprise Connections not available on B2C paid plans.",
+  "org_source": "https://auth0.com/pricing.md",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "B2C paid plans: \"Upgrade to B2B to continue using EC, Self-Service SSO, and SCIM\" (auth0.com/pricing). auth0.com/pricing.md lists Inbound SCIM as Included on all B2C columns; B2C Professional has no Enterprise Connections either way.",
+  "scim_source": "https://auth0.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "auth0-b2b-essentials",
+  "vendor_id": "auth0",
+  "vendor": "Auth0",
+  "tier": "paid",
+  "user_unit": "MAU",
+  "plan": "Essentials (B2B)",
+  "base_mo": 150,
+  "included_users": 500,
+  "overage_per_user": null,
+  "sso_included": 3,
+  "sso_extra_mo": 100,
+  "sso_max": 30,
+  "price_tiers": [
+   {
+    "mau": 500,
+    "mo": 150,
+    "yr": 1650
+   },
+   {
+    "mau": 1000,
+    "mo": 300,
+    "yr": 3300
+   },
+   {
+    "mau": 2500,
+    "mo": 700,
+    "yr": 7700
+   },
+   {
+    "mau": 5000,
+    "mo": 1300,
+    "yr": 14300
+   },
+   {
+    "mau": 7500,
+    "mo": 1725,
+    "yr": 18975
+   },
+   {
+    "mau": 10000,
+    "mo": 2100,
+    "yr": 23100
+   },
+   {
+    "mau": 20000,
+    "mo": 3800,
+    "yr": 41800
+   }
+  ],
+  "tier_rule": "next-tier-up",
+  "tier_max_mau": 20000,
+  "notes": "Published MAU tiers 500→20,000: $150 (500), $300 (1k), $700 (2.5k), $1,300 (5k), $1,725 (7.5k), $2,100 (10k), $3,800 (20k)/mo. 30k+: contact us. 3 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA add-on $100/mo. Unlimited Organizations. Billed at next tier up; yearly = 11× monthly.",
+  "source": "https://auth0.com/pricing.md",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_unlimited": true,
+  "org_note": "B2B Essentials: Unlimited Organizations (“subject to system limitations”).",
+  "org_source": "https://auth0.com/pricing.md",
+  "org_checked": "2026-10-31",
+  "scim_model": "included",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "Inbound SCIM: Included (Auth0 plan comparison); it runs on an enterprise connection, so each SCIM customer uses one of the plan's enterprise connections. No separate SCIM fee is printed.",
+  "scim_source": "https://auth0.com/pricing.md",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "auth0-b2b-professional",
+  "vendor_id": "auth0",
+  "vendor": "Auth0",
+  "tier": "paid",
+  "user_unit": "MAU",
+  "plan": "Professional (B2B)",
+  "base_mo": 800,
+  "included_users": 500,
+  "overage_per_user": null,
+  "sso_included": 5,
+  "sso_extra_mo": 100,
+  "sso_max": 30,
+  "price_tiers": [
+   {
+    "mau": 500,
+    "mo": 800,
+    "yr": 8800
+   },
+   {
+    "mau": 1000,
+    "mo": 800,
+    "yr": 8800
+   },
+   {
+    "mau": 2500,
+    "mo": 1200,
+    "yr": 13200
+   },
+   {
+    "mau": 5000,
+    "mo": 1500,
+    "yr": 16500
+   },
+   {
+    "mau": 7500,
+    "mo": 1800,
+    "yr": 19800
+   },
+   {
+    "mau": 10000,
+    "mo": 2400,
+    "yr": 26400
+   }
+  ],
+  "tier_rule": "next-tier-up",
+  "tier_max_mau": 10000,
+  "notes": "Published MAU tiers 500→10,000: $800 (500 and 1k), $1,200 (2.5k), $1,500 (5k), $1,800 (7.5k), $2,400 (10k)/mo. 20k+: contact us. 5 Enterprise SSO connections included, then $100/mo each (max 30). Enterprise MFA included. Billed at next tier up; yearly = 11× monthly.",
+  "source": "https://auth0.com/pricing.md",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_unlimited": true,
+  "org_note": "B2B Professional: Unlimited Organizations (“subject to system limitations”).",
+  "org_source": "https://auth0.com/pricing.md",
+  "org_checked": "2026-10-31",
+  "scim_model": "included",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "Inbound SCIM: Included (Auth0 plan comparison); it runs on an enterprise connection, so each SCIM customer uses one of the plan's enterprise connections. No separate SCIM fee is printed.",
+  "scim_source": "https://auth0.com/pricing.md",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "cognito-lite",
+  "vendor_id": "cognito",
+  "vendor": "Amazon Cognito",
+  "plan": "Lite",
+  "tier": "usage",
+  "base_mo": 0,
+  "included_users": 10000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.0055,
+  "overage_bands": [
+   {
+    "to": 100000,
+    "rate": 0.0055
+   },
+   {
+    "to": null,
+    "rate": 0.0046
+   }
+  ],
+  "sso_included": null,
+  "sso_extra_mo": null,
+  "federated_free": 50,
+  "federated_per_mau": 0.015,
+  "notes": "Direct/social: 10k free, then $0.0055/MAU through 100k total, then $0.0046 (from official examples). Federated SAML/OIDC: 50 free then $0.015/MAU.",
+  "source": "https://aws.amazon.com/cognito/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_model": "none",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Amazon Cognito pricing page (read 2026-10-31).",
+  "scim_source": "https://aws.amazon.com/cognito/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "cognito-essentials",
+  "vendor_id": "cognito",
+  "vendor": "Amazon Cognito",
+  "plan": "Essentials",
+  "tier": "usage",
+  "base_mo": 0,
+  "included_users": 10000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.015,
+  "sso_included": null,
+  "sso_extra_mo": null,
+  "federated_free": 50,
+  "federated_per_mau": 0.015,
+  "notes": "Default for new pools. Direct/social: 10k free then $0.015/MAU (official example). Federated SAML/OIDC: 50 free then $0.015/MAU. Passwordless/passkeys included.",
+  "source": "https://aws.amazon.com/cognito/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_model": "none",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Amazon Cognito pricing page (read 2026-10-31).",
+  "scim_source": "https://aws.amazon.com/cognito/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "cognito-plus",
+  "vendor_id": "cognito",
+  "vendor": "Amazon Cognito",
+  "plan": "Plus",
+  "tier": "usage",
+  "base_mo": 0,
+  "included_users": 0,
+  "user_unit": "MAU",
+  "overage_per_user": 0.02,
+  "sso_included": null,
+  "sso_extra_mo": null,
+  "federated_free": 50,
+  "federated_per_mau": 0.015,
+  "notes": "No free tier for Plus. $0.020/MAU direct/social (official example). Includes threat protection / adaptive auth.",
+  "source": "https://aws.amazon.com/cognito/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_model": "none",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Amazon Cognito pricing page (read 2026-10-31).",
+  "scim_source": "https://aws.amazon.com/cognito/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "workos-authkit",
+  "vendor_id": "workos",
+  "vendor": "WorkOS",
+  "plan": "AuthKit",
+  "tier": "usage",
+  "base_mo": 0,
+  "included_users": 1000000,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "overage_per_1m_mau": 2500,
+  "sso_included": 0,
+  "sso_extra_mo": 125,
+  "sso_bands": [
+   {
+    "from": 1,
+    "to": 15,
+    "rate": 125
+   },
+   {
+    "from": 16,
+    "to": 30,
+    "rate": 100
+   },
+   {
+    "from": 31,
+    "to": 50,
+    "rate": 80
+   },
+   {
+    "from": 51,
+    "to": 100,
+    "rate": 65
+   }
+  ],
+  "notes": "AuthKit free to 1M MAU; +$2,500/mo per additional 1M. SSO and Directory Sync each use the connection ladder ($125→$65). Custom domain $99/mo.",
+  "source": "https://workos.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "mfa_source_note": "workos.com/pricing (2026-10-31): \"AuthKit includes email + password, social login, passkeys, MFA, magic auth, and enterprise SSO\"",
+  "org_unlimited": true,
+  "org_published": false,
+  "org_note": "No organization fee or limit printed on workos.com/pricing.",
+  "org_source": "https://workos.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "separate",
+  "scim_included": 0,
+  "scim_extra_mo": 125,
+  "scim_bands": [
+   {
+    "from": 1,
+    "to": 15,
+    "rate": 125
+   },
+   {
+    "from": 16,
+    "to": 30,
+    "rate": 100
+   },
+   {
+    "from": 31,
+    "to": 50,
+    "rate": 80
+   },
+   {
+    "from": 51,
+    "to": 100,
+    "rate": 65
+   }
+  ],
+  "scim_note": "Directory Sync has its own connection ladder: $125 each (1–15), $100 (16–30), $80 (31–50), $65 (51–100); more: talk to sales. \"Each enterprise customer you support with SSO or Directory Sync is counted as one connection\", so a customer on both is two connections.",
+  "scim_source": "https://workos.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "stytch-payg",
+  "vendor_id": "stytch",
+  "vendor": "Stytch",
+  "plan": "Pay as you go (B2B)",
+  "tier": "usage",
+  "base_mo": 0,
+  "included_users": 10000,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 5,
+  "sso_extra_mo": 125,
+  "notes": "10k MAU + 5 SSO or SCIM connections included. Extra connections $125 each. MAU overage rate not printed as a fixed USD figure on the checked page — left blank. Branding add-on $99.",
+  "source": "https://stytch.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_unlimited": true,
+  "org_note": "Unlimited organizations on Pay as you go.",
+  "org_source": "https://stytch.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "pooled",
+  "scim_included": 5,
+  "scim_extra_mo": 125,
+  "scim_note": "\"5 SSO or SCIM Connections\" included, shared between SSO and SCIM; additional connections $125 each.",
+  "scim_source": "https://stytch.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "logto-free",
+  "vendor_id": "logto",
+  "vendor": "Logto",
+  "plan": "Free",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 50000,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": null,
+  "notes": "50k MAU / 50k tokens. No Enterprise SSO on Free.",
+  "source": "https://logto.io/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_max": 0,
+  "org_note": "Organizations (multi-tenancy) is a paid add-on; not listed on Free.",
+  "org_source": "https://logto.io/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Logto pricing page (read 2026-10-31).",
+  "scim_source": "https://logto.io/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "logto-pro",
+  "vendor_id": "logto",
+  "vendor": "Logto",
+  "plan": "Pro",
+  "tier": "paid",
+  "base_mo": 24,
+  "included_users": null,
+  "user_unit": "token",
+  "overage_per_user": null,
+  "token_included": 50000,
+  "token_overage_per_100": 0.08,
+  "sso_included": 0,
+  "sso_extra_mo": 48,
+  "notes": "From $24/mo. Unlimited MAU. 50k tokens then $0.08 per 100. Enterprise SSO $48/connector. MFA add-on $48. Organizations add-on $48. Token≠MAU; calculator uses base + SSO only unless tokens estimated.",
+  "source": "https://logto.io/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "mfa_extra_mo": 48,
+  "org_unlimited": true,
+  "org_addon_mo": 48,
+  "org_addon_name": "Organizations add-on",
+  "org_note": "Organizations add-on $48/mo, unlimited organizations.",
+  "org_source": "https://logto.io/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Logto pricing page (read 2026-10-31).",
+  "scim_source": "https://logto.io/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "kinde-free",
+  "vendor_id": "kinde",
+  "vendor": "Kinde",
+  "plan": "Free",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 10500,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 1,
+  "sso_extra_mo": null,
+  "notes": "10,500 MAU. 1 enterprise SSO connection.",
+  "source": "https://kinde.com/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_max": 5,
+  "org_counts": "MAO",
+  "org_note": "5 monthly active organizations (MAO) included free; no extra-MAO price on Free. Organizations with a single active user are not counted.",
+  "org_source": "https://kinde.com/pricing/",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "SCIM/directory sync: Not included.",
+  "scim_source": "https://kinde.com/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "kinde-pro",
+  "vendor_id": "kinde",
+  "vendor": "Kinde",
+  "plan": "Pro",
+  "tier": "paid",
+  "base_mo": 25,
+  "included_users": 10500,
+  "user_unit": "MAU",
+  "overage_per_user": 0.0175,
+  "sso_included": 1,
+  "sso_extra_mo": null,
+  "notes": "$25/mo + $0.0175 per MAU above 10,500. 1 SSO included. MAU free when you bill users through Kinde Billing.",
+  "source": "https://kinde.com/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_included": 50,
+  "org_extra_mo": 0.5,
+  "org_counts": "MAO",
+  "org_note": "50 MAO included, then $0.50 per extra MAO.",
+  "org_source": "https://kinde.com/pricing/",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "SCIM/directory sync: Not included.",
+  "scim_source": "https://kinde.com/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "kinde-plus",
+  "vendor_id": "kinde",
+  "vendor": "Kinde",
+  "plan": "Plus",
+  "tier": "paid",
+  "base_mo": 75,
+  "included_users": 10500,
+  "user_unit": "MAU",
+  "overage_per_user": 0.0163,
+  "sso_included": null,
+  "sso_unlimited": true,
+  "sso_extra_mo": 0,
+  "notes": "$75/mo. Unlimited enterprise SSO at no per-connection fee. $0.0163/MAU above 10,500.",
+  "source": "https://kinde.com/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_included": 50,
+  "org_extra_mo": 0.47,
+  "org_counts": "MAO",
+  "org_note": "50 MAO included, then $0.47 per extra MAO.",
+  "org_source": "https://kinde.com/pricing/",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "SCIM/directory sync: Not included.",
+  "scim_source": "https://kinde.com/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "kinde-scale",
+  "vendor_id": "kinde",
+  "vendor": "Kinde",
+  "plan": "Scale",
+  "tier": "paid",
+  "base_mo": 250,
+  "included_users": 10500,
+  "user_unit": "MAU",
+  "overage_per_user": 0.0151,
+  "sso_included": null,
+  "sso_unlimited": true,
+  "sso_extra_mo": 0,
+  "notes": "$250/mo. Unlimited SSO. $0.0151/MAU above 10,500. SCIM coming soon per page.",
+  "source": "https://kinde.com/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "org_included": 50,
+  "org_extra_mo": 0.43,
+  "org_counts": "MAO",
+  "org_note": "50 MAO included, then $0.43 per extra MAO.",
+  "org_source": "https://kinde.com/pricing/",
+  "org_checked": "2026-10-31",
+  "scim_model": "coming_soon",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "Plan card lists \"SCIM (Coming soon)\"; the comparison table marks SCIM/directory sync Included. Not priced until it ships.",
+  "scim_source": "https://kinde.com/pricing/",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "supabase-free",
+  "vendor_id": "supabase",
+  "vendor": "Supabase Auth",
+  "plan": "Free (platform)",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 50000,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": null,
+  "notes": "50k Auth MAU on Free platform plan. No SAML SSO. Project pauses after 1 week inactivity.",
+  "source": "https://supabase.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on",
+  "org_model": "none",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Supabase pricing page (read 2026-10-31).",
+  "scim_source": "https://supabase.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "supabase-pro",
+  "vendor_id": "supabase",
+  "vendor": "Supabase Auth",
+  "plan": "Pro (platform)",
+  "tier": "paid",
+  "base_mo": 25,
+  "included_users": 100000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.00325,
+  "sso_included": null,
+  "sso_saml_included_mau": 50,
+  "sso_saml_per_mau": 0.015,
+  "notes": "Platform Pro from $25/mo includes 100k MAU then $0.00325/MAU. SAML SSO: 50 MAU included then $0.015/MAU. Base also covers DB compute credits — not auth-only.",
+  "source": "https://supabase.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "mfa_source_note": "supabase.com/pricing (2026-10-31): \"Basic Multi-Factor Auth: Included\" on all plans; phone MFA is a $75/mo add-on",
+  "org_model": "none",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Supabase pricing page (read 2026-10-31).",
+  "scim_source": "https://supabase.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "firebase-identity-platform",
+  "vendor_id": "firebase",
+  "vendor": "Firebase Auth / Identity Platform",
+  "plan": "Pay as you go",
+  "tier": "usage",
+  "base_mo": 0,
+  "included_users": 50000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.0055,
+  "overage_bands": [
+   {
+    "to": 100000,
+    "rate": 0.0055
+   },
+   {
+    "to": 1000000,
+    "rate": 0.0046
+   },
+   {
+    "to": 10000000,
+    "rate": 0.0032
+   },
+   {
+    "to": null,
+    "rate": 0.0025
+   }
+  ],
+  "sso_included": null,
+  "sso_extra_mo": null,
+  "federated_free": 50,
+  "federated_per_mau": 0.015,
+  "sms_per_message_us": 0.01,
+  "notes": "Tier 1 (email, phone, anonymous, social): 0–50k MAU free, then $0.0055 (50k–100k), $0.0046 (100k–1M), $0.0032 (1M–10M), $0.0025 (10M+). Tier 2 SAML/OIDC: 50 MAU free then $0.015/MAU. Phone auth and SMS MFA billed per SMS sent by region (US $0.01, first 10/day not billed). Firebase pricing page: no cost up to 50K MAUs with Identity Platform, then Google Cloud pricing.",
+  "source": "https://cloud.google.com/identity-platform/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_model": "none",
+  "scim_model": "not_published",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "No SCIM / Directory Sync on the Identity Platform pricing page (read 2026-10-31).",
+  "scim_source": "https://cloud.google.com/identity-platform/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "descope-free",
+  "vendor_id": "descope",
+  "vendor": "Descope",
+  "plan": "Free Forever",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 7500,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 3,
+  "sso_extra_mo": null,
+  "notes": "7,500 MAU, 10 monthly active tenants, 3 SSO connections, 1 federated app (OIDC). No overages: upgrade required to exceed limits. MFA/step-up included.",
+  "source": "https://www.descope.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_max": 10,
+  "org_counts": "active tenant",
+  "org_note": "10 monthly active tenants, no overages (upgrade required). A tenant is active when it has 2+ users and at least one logs in that month.",
+  "org_source": "https://www.descope.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "SCIM provisioning is listed under Growth (\"Everything in Pro, plus\").",
+  "scim_source": "https://www.descope.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "descope-pro",
+  "vendor_id": "descope",
+  "vendor": "Descope",
+  "plan": "Pro",
+  "tier": "paid",
+  "base_mo": 249,
+  "included_users": 10000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.05,
+  "sso_included": 5,
+  "sso_extra_mo": 50,
+  "notes": "Starts at $249/mo, billed annually. 10,000 MAU then $0.05/MAU. 35 monthly active tenants then $1/tenant. 5 SSO connections then $50 each. SCIM is a Growth feature.",
+  "source": "https://www.descope.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_included": 35,
+  "org_extra_mo": 1,
+  "org_counts": "active tenant",
+  "org_note": "35 monthly active tenants included, then $1 per additional tenant.",
+  "org_source": "https://www.descope.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "SCIM provisioning is listed under Growth (\"Everything in Pro, plus\").",
+  "scim_source": "https://www.descope.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "descope-growth",
+  "vendor_id": "descope",
+  "vendor": "Descope",
+  "plan": "Growth",
+  "tier": "paid",
+  "base_mo": 799,
+  "included_users": 25000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.05,
+  "sso_included": 10,
+  "sso_extra_mo": 50,
+  "notes": "Starts at $799/mo. 25,000 MAU then $0.05/MAU. 100 monthly active tenants. 10 SSO connections then $50 each. SCIM provisioning, bot protection, 1M anonymous users.",
+  "source": "https://www.descope.com/pricing",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_included": 100,
+  "org_extra_mo": 1,
+  "org_counts": "active tenant",
+  "org_note": "100 monthly active tenants included, then $1 per additional tenant.",
+  "org_source": "https://www.descope.com/pricing",
+  "org_checked": "2026-10-31",
+  "scim_model": "included",
+  "scim_included": null,
+  "scim_extra_mo": null,
+  "scim_note": "SCIM provisioning included on Growth; no per-connection SCIM fee printed.",
+  "scim_source": "https://www.descope.com/pricing",
+  "scim_checked": "2026-10-31"
+ },
+ {
+  "id": "scalekit-free",
+  "vendor_id": "scalekit",
+  "vendor": "Scalekit",
+  "plan": "Free",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": 25000,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 1,
+  "sso_extra_mo": null,
+  "notes": "25,000 MAUs and 25 organizations hard caps (auto-upgrade to Growth). 1 SSO and 1 SCIM connection included. Scalekit branding on auth widgets & emails.",
+  "source": "https://www.scalekit.com/pricing/auth-for-saas",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_max": 25,
+  "org_counts": "MAO",
+  "org_note": "25 monthly active organizations (MAO) hard cap on Free; no overages — upgrade to Growth. An organization is active when it has at least 2 users and at least 1 logs in that month.",
+  "org_source": "https://www.scalekit.com/pricing/auth-for-saas",
+  "org_checked": "2026-11-07",
+  "scim_model": "separate",
+  "scim_included": 1,
+  "scim_extra_mo": null,
+  "scim_note": "1 SCIM connection included on Free; more requires Growth. First SSO and first SCIM are free on every plan.",
+  "scim_source": "https://www.scalekit.com/pricing/auth-for-saas",
+  "scim_checked": "2026-11-07"
+ },
+ {
+  "id": "scalekit-growth",
+  "vendor_id": "scalekit",
+  "vendor": "Scalekit",
+  "plan": "Growth",
+  "tier": "paid",
+  "base_mo": 99,
+  "included_users": 100000,
+  "user_unit": "MAU",
+  "overage_per_user": 0.05,
+  "sso_included": 1,
+  "sso_extra_mo": 60,
+  "sso_bands": [
+   {
+    "from": 2,
+    "to": 15,
+    "rate": 60
+   },
+   {
+    "from": 16,
+    "to": 30,
+    "rate": 45
+   },
+   {
+    "from": 31,
+    "to": 50,
+    "rate": 35
+   },
+   {
+    "from": 51,
+    "to": 100,
+    "rate": 30
+   }
+  ],
+  "sso_note": "100+ connections: custom (Let's talk). First SSO connection free.",
+  "notes": "Growth $99/mo. 100,000 MAUs then $0.05/MAU; 100 organizations then $1/org. First SSO and first SCIM free, then the published connection ladder ($60/$45/$35/$30). EU data residency add-on $99/mo not modeled.",
+  "source": "https://www.scalekit.com/pricing/auth-for-saas",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_included": 100,
+  "org_extra_mo": 1,
+  "org_counts": "MAO",
+  "org_note": "100 monthly active organizations included, then $1 per additional org. An organization is active when it has at least 2 users and at least 1 logs in that month.",
+  "org_source": "https://www.scalekit.com/pricing/auth-for-saas",
+  "org_checked": "2026-11-07",
+  "scim_model": "separate",
+  "scim_included": 1,
+  "scim_extra_mo": 60,
+  "scim_bands": [
+   {
+    "from": 2,
+    "to": 15,
+    "rate": 60
+   },
+   {
+    "from": 16,
+    "to": 30,
+    "rate": 45
+   },
+   {
+    "from": 31,
+    "to": 50,
+    "rate": 35
+   },
+   {
+    "from": 51,
+    "to": 100,
+    "rate": 30
+   }
+  ],
+  "scim_note": "SCIM is a separate connection from SSO: 1 included free, then the same ladder as SSO ($60 2–15, $45 16–30, $35 31–50, $30 51–100). A customer on both is two connections.",
+  "scim_source": "https://www.scalekit.com/pricing/auth-for-saas",
+  "scim_checked": "2026-11-07"
+ },
+ {
+  "id": "ssojet-free",
+  "vendor_id": "ssojet",
+  "vendor": "SSOJet",
+  "plan": "Free",
+  "tier": "free",
+  "base_mo": 0,
+  "included_users": null,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": null,
+  "notes": "Free forever. Unlimited users, MAUs and organizations. Passkeys, social login, magic link, email OTP, MFA. No enterprise SSO or SCIM — upgrade to Business when the first enterprise customer asks.",
+  "source": "https://ssojet.com/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_unlimited": true,
+  "org_note": "Unlimited organizations on Free.",
+  "org_source": "https://ssojet.com/pricing/",
+  "org_checked": "2026-11-07",
+  "scim_model": "none",
+  "scim_included": 0,
+  "scim_extra_mo": null,
+  "scim_note": "No enterprise SSO or SCIM on Free.",
+  "scim_source": "https://ssojet.com/pricing/",
+  "scim_checked": "2026-11-07"
+ },
+ {
+  "id": "ssojet-business",
+  "vendor_id": "ssojet",
+  "vendor": "SSOJet",
+  "plan": "Business",
+  "tier": "paid",
+  "base_mo": 0,
+  "included_users": null,
+  "user_unit": "MAU",
+  "overage_per_user": null,
+  "sso_included": 0,
+  "sso_extra_mo": 79,
+  "sso_bands": [
+   {
+    "from": 1,
+    "to": 4,
+    "rate": 79
+   },
+   {
+    "from": 5,
+    "to": 9,
+    "rate": 72
+   },
+   {
+    "from": 10,
+    "to": 24,
+    "rate": 65
+   },
+   {
+    "from": 25,
+    "to": 49,
+    "rate": 55
+   },
+   {
+    "from": 50,
+    "to": 99,
+    "rate": 47
+   }
+  ],
+  "sso_note": "Business marketing starts at 2 connections; connection 1 is priced at the published 2–4 list rate ($79/mo). Annual billing ~25% less ($59 at 2–4). 100+ connections: custom. Test-environment connections are free.",
+  "notes": "No base fee and no per-user charge. Monthly list bills every connection at the volume rate for the total count: $79/conn (1–4; published table starts at 2–4), $72 (5–9), $65 (10–24), $55 (25–49), $47 (50–99); bill capped at the next tier’s entry price. SSO and SCIM each count as one connection on the same ladder. Annual ≈25% less (not used in rankings).",
+  "source": "https://ssojet.com/pricing/",
+  "checked": "2026-11-07",
+  "status": "verified",
+  "mfa_available": true,
+  "org_unlimited": true,
+  "org_note": "Unlimited organizations on Business.",
+  "org_source": "https://ssojet.com/pricing/",
+  "org_checked": "2026-11-07",
+  "scim_model": "pooled",
+  "scim_included": 0,
+  "scim_extra_mo": 79,
+  "scim_bands": [
+   {
+    "from": 1,
+    "to": 4,
+    "rate": 79
+   },
+   {
+    "from": 5,
+    "to": 9,
+    "rate": 72
+   },
+   {
+    "from": 10,
+    "to": 24,
+    "rate": 65
+   },
+   {
+    "from": 25,
+    "to": 49,
+    "rate": 55
+   },
+   {
+    "from": 50,
+    "to": 99,
+    "rate": 47
+   }
+  ],
+  "scim_note": "SSO and SCIM share one connection ladder: each SSO or SCIM link is one connection. Adding SCIM customers raises the total connection count (and may drop the per-connection rate). Same monthly list as SSO.",
+  "scim_source": "https://ssojet.com/pricing/",
+  "scim_checked": "2026-11-07",
+  "sso_bands_all": true
+ }
 ]
